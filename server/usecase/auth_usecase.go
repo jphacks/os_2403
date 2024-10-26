@@ -28,7 +28,7 @@ type InputSignIn struct {
 
 type IAuthUsecase interface {
 	SignUp(ctx context.Context, input InputSignUp) error
-	SignIn(ctx context.Context, input InputSignIn) error
+	SignIn(ctx context.Context, input InputSignIn) (uuid.UUID, error)
 }
 
 type authUsecase struct {
@@ -97,20 +97,20 @@ func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) error {
 	return nil
 }
 
-func (u *authUsecase) SignIn(ctx context.Context, input InputSignIn) error {
+func (u *authUsecase) SignIn(ctx context.Context, input InputSignIn) (uuid.UUID, error) {
 	fmt.Println("User SignIn Usecase")
 	// ユーザーをリポジトリから取得
 	user, err := u.userRepo.FindByEmail(ctx, input.Email)
 	if err != nil {
-		return fmt.Errorf("failed to get user: %w", err)
+		return uuid.Nil, fmt.Errorf("failed to get user: %w", err)
 	}
 
 	// ハッシュ化されたパスワードと入力されたパスワードを比較
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
 	if err != nil {
-		return fmt.Errorf("invalid credentials: %w", err)
+		return uuid.Nil, fmt.Errorf("invalid credentials: %w", err)
 	}
 
 	// ログイン成功
-	return nil
+	return user.UUID, nil
 }

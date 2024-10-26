@@ -77,10 +77,15 @@ func (h *authUserHandler) SignIn(ctx *gin.Context) {
 	}
 
 	// SignInメソッドを呼び出す
-	if err := h.authUsecase.SignIn(ctx, request); err != nil {
+	//if err := h.authUsecase.SignIn(ctx, request); err != nil {
+	//	ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	//	return
+	//}
+	uuid, err := h.authUsecase.SignIn(ctx, request)
+	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "login in successful"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "login in successful", "uuid": uuid})
 }
