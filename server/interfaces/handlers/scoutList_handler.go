@@ -28,7 +28,7 @@ type changeStatusRequest struct {
 	Status    uint   `json:"status"`
 }
 
-func (h *ScoutHandler) GetScout(w http.ResponseWriter, r *http.Request) {
+func (h *ScoutHandler) GetCommunityDetailByScoutList(w http.ResponseWriter, r *http.Request) {
 	userUUIDStr := r.URL.Query().Get("user_uuid")
 	userUUID, err := uuid.Parse(userUUIDStr)
 	if err != nil {
@@ -36,7 +36,7 @@ func (h *ScoutHandler) GetScout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	scouts, err := h.scoutUsecase.Get(r.Context(), userUUID)
+	scouts, err := h.scoutUsecase.GetWithCommunityDetails(r.Context(), userUUID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
