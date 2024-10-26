@@ -27,7 +27,7 @@ func (h *eventHandler) GetAllEvents(ctx *gin.Context) {
 
 	response := make([]map[string]interface{}, len(events))
 	for i, event := range events {
-		community, err := h.communityUsecase.FindByUUID(ctx, event.CommunityUUID)
+		community, err := h.communityUsecase.FindByID(ctx, usecase.InputCommnityFindByID{event.CommunityUUID})
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch community details"})
 			return
@@ -42,7 +42,7 @@ func (h *eventHandler) GetAllEvents(ctx *gin.Context) {
 			"img":      event.Img,
 			"title":    event.Title,
 			"detailed": event.Detailed,
-			"date":     event.Date.Format("2006-01-02"), // Adjust date format as needed
+			"date":     event.Date.Format("2006-01-02"),
 			"tag":      event.Tags,
 		}
 	}
@@ -50,15 +50,14 @@ func (h *eventHandler) GetAllEvents(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
-// CreateEvent handles the creation of a new event
 func (h *eventHandler) CreateEvent(ctx *gin.Context) {
 	var req struct {
 		CommunityUUID string `json:"community_uuid"`
 		Title         string `json:"title"`
 		Img           string `json:"img"`
 		Detailed      string `json:"detailed"`
-		Date          string `json:"date"` // Date in string format
-		Tags          []uint `json:"tag"`  // Tags as an array of uint
+		Date          string `json:"date"`
+		Tags          []int  `json:"tag"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -66,7 +65,6 @@ func (h *eventHandler) CreateEvent(ctx *gin.Context) {
 		return
 	}
 
-	// Convert UUID and Date
 	communityUUID, err := uuid.Parse(req.CommunityUUID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid community UUID format"})
@@ -85,7 +83,7 @@ func (h *eventHandler) CreateEvent(ctx *gin.Context) {
 		Img:           req.Img,
 		Detailed:      req.Detailed,
 		Date:          date,
-		Tags:          models.IntArray(req.Tags), // Assuming IntArray is defined in your models
+		Tags:          models.IntArray(req.Tags),
 	}
 
 	if err := h.eventUsecase.CreateEvent(ctx, event); err != nil {
@@ -96,15 +94,14 @@ func (h *eventHandler) CreateEvent(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-// UpdateEvent handles updating an existing event
 func (h *eventHandler) UpdateEvent(ctx *gin.Context) {
 	var req struct {
 		CommunityUUID string `json:"community_uuid"`
 		Title         string `json:"title"`
 		Img           string `json:"img"`
 		Detailed      string `json:"detailed"`
-		Date          string `json:"date"` // Date in string format
-		Tags          []uint `json:"tag"`  // Tags as an array of uint
+		Date          string `json:"date"`
+		Tags          []int  `json:"tag"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -112,7 +109,6 @@ func (h *eventHandler) UpdateEvent(ctx *gin.Context) {
 		return
 	}
 
-	// Convert UUID and Date
 	communityUUID, err := uuid.Parse(req.CommunityUUID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid community UUID format"})
@@ -131,7 +127,7 @@ func (h *eventHandler) UpdateEvent(ctx *gin.Context) {
 		Img:           req.Img,
 		Detailed:      req.Detailed,
 		Date:          date,
-		Tags:          models.IntArray(req.Tags), // Assuming IntArray is defined in your models
+		Tags:          models.IntArray(req.Tags),
 	}
 
 	if err := h.eventUsecase.UpdateEvent(ctx, event); err != nil {
