@@ -14,13 +14,13 @@ type userHandler struct {
 }
 
 type IAuthHandler interface {
+	SignUp(ctx *gin.Context)
 	SignIn(ctx *gin.Context)
-	Login(ctx *gin.Context)
 }
 
 type (
-	SignInRequest = usecase.InputSignIn
-	LoginRequest  = usecase.InputLogin
+	SignInRequest = usecase.InputSignUp
+	LoginRequest  = usecase.InputSignIn
 )
 
 func NewUserHandler(authUsecase usecase.IAuthUsecase, store *sessions.CookieStore) IAuthHandler {
@@ -30,7 +30,7 @@ func NewUserHandler(authUsecase usecase.IAuthUsecase, store *sessions.CookieStor
 	}
 }
 
-func (h *userHandler) SignIn(ctx *gin.Context) {
+func (h *userHandler) SignUp(ctx *gin.Context) {
 	var request SignInRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
@@ -38,7 +38,7 @@ func (h *userHandler) SignIn(ctx *gin.Context) {
 	}
 
 	// SignInメソッドを呼び出す
-	if err := h.authUsecase.SignIn(ctx, request); err != nil {
+	if err := h.authUsecase.SignUp(ctx, request); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -69,7 +69,7 @@ func (h *userHandler) SignIn(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
 }
 
-func (h *userHandler) Login(ctx *gin.Context) {
+func (h *userHandler) SignIn(ctx *gin.Context) {
 	var request LoginRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
@@ -77,7 +77,7 @@ func (h *userHandler) Login(ctx *gin.Context) {
 	}
 
 	// SignInメソッドを呼び出す
-	if err := h.authUsecase.Login(ctx, request); err != nil {
+	if err := h.authUsecase.SignIn(ctx, request); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type InputSignIn struct {
+type InputSignUp struct {
 	Name     string
 	Email    string
 	Password string
@@ -21,14 +21,14 @@ type InputSignIn struct {
 	Text     string
 }
 
-type InputLogin struct {
+type InputSignIn struct {
 	Email    string
 	Password string
 }
 
 type IAuthUsecase interface {
+	SignUp(ctx context.Context, input InputSignUp) error
 	SignIn(ctx context.Context, input InputSignIn) error
-	Login(ctx context.Context, input InputLogin) error
 }
 
 type authUsecase struct {
@@ -47,7 +47,7 @@ func NewUserUseCase(userRepo repositories.IUserRepository, sessionRepo repositor
 	}
 }
 
-func (u *authUsecase) SignIn(ctx context.Context, input InputSignIn) error {
+func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) error {
 	fmt.Println("usecase")
 	fmt.Println(input)
 	var user *models.User
@@ -97,7 +97,7 @@ func (u *authUsecase) SignIn(ctx context.Context, input InputSignIn) error {
 	return nil
 }
 
-func (u *authUsecase) Login(ctx context.Context, input InputLogin) error {
+func (u *authUsecase) SignIn(ctx context.Context, input InputSignIn) error {
 	// ユーザーをリポジトリから取得
 	user, err := u.userRepo.FindByEmail(ctx, input.Email)
 	if err != nil {

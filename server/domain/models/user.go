@@ -14,15 +14,3 @@ type User struct {
 	Mem3     uint      `gorm:"type:int unsigned"`
 	Tags     []int     `gorm:"type:json"`
 }
-
-type CreateUser struct {
-	Name     string
-	Email    string
-	Password string
-	Img      string
-	Self     string
-	Mem1     uint
-	Mem2     uint
-	Mem3     uint
-	Tags     []int
-}

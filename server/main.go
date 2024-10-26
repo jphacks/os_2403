@@ -55,8 +55,11 @@ func main() {
 
 	router.GET("/health", health)
 
-	router.POST("/signup", userHandler.Login)
-	router.POST("/signin", userHandler.SignIn)
+	router.POST("/user/signin", userHandler.SignIn)
+	router.POST("/user/signup", userHandler.SignUp)
+
+	router.POST("/community/signin", userHandler.SignIn)
+	router.POST("/community/signup", userHandler.SignUp)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
