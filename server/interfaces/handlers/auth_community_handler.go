@@ -23,6 +23,7 @@ type (
 	LoginCommunityRequest  = usecase.InputCommunitySignIn
 )
 
+
 func NewAuthCommunityHandler(authUsecase usecase.IAuthCommunityUsecase, store *sessions.CookieStore) IAuthCommunityHandler {
 	return &communityHandler{
 		authUsecase: authUsecase,
