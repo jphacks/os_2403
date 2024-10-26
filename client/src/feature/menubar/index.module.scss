@@ -7,7 +7,7 @@
   justify-content: space-between;
   align-items: center;
   color: theme.$black;
-  background: theme.$background;
+  background: white;
 }
 
 .icons {
@@ -40,7 +40,7 @@
 }
 
 .search {
-    width: 300px;
+    width: 30%;
     background: white;
     border-radius: 8px;
     border: 1px solid #e5e5e5;

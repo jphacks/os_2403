@@ -2,69 +2,60 @@
 @use "@/styles/utils.scss";
 
 .container {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 .search {
-    width: 100%;
-    background: white;
-}
-
-.inputWrapper {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    gap: 8px;
-    background: white;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
+  width: 100%;
+  background: white;
+  @include utils.padding(0.5em);
+  border: 1px solid theme.$black;
+  border-radius: 5px;
 }
 
 .input {
-    width: 100%;
-    border: none;
-    outline: none;
-    padding: 0;
-    font-size: 14px;
-
-    &::placeholder {
-        color: #666;
-    }
+  width: 80%;
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 16px;
+  &::placeholder {
+    color: #666;
+  }
 }
 
 .listWrapper {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    z-index: 50;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
 }
 
 .list {
-    @include utils.space-x(10px);
-    background: white;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  @include utils.space-x(10px);
+  background: white;
+  border: 1px solid theme.$background;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
-    :global([cmdk-group]) {
-        padding: 8px;
-    }
+  :global([cmdk-group]) {
+    padding: 8px;
+  }
+}
 
-    :global([cmdk-group-heading]) {
-        color: theme.$gray;
-        font-size: 14px;
-        padding: 8px 8px;
-    }
 
-    :global([cmdk-item]) {
-        padding: 8px;
-        cursor: pointer;
+.item {
+  padding: 8px;
+  cursor: pointer;
 
-        &:hover {
-            background-color: theme.$background;
-            border-radius: 4px;
-        }
-    }
+  &:hover {
+    background-color: theme.$background;
+    border-radius: 4px;
+  }
+}
+
+.empty {
+  padding: 8px;
 }

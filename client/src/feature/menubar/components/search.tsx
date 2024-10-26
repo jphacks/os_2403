@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useState } from "react";
-import { Search as SearchIcon } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import {
 	Command,
 	CommandInput,
@@ -12,38 +11,43 @@ import {
 } from "@/components/ui/command";
 import style from "./search.module.scss";
 
-const universities = [
-	{ value: "tokyo", label: "東京大学" },
-	{ value: "kyoto", label: "京都大学" },
-	{ value: "osaka", label: "大阪大学" },
-	{ value: "tohoku", label: "東北大学" },
-    { value: "tokyo", label: "東京大学" },
-	{ value: "kyoto", label: "京都大学" },
-	{ value: "osaka", label: "大阪大学" },
-	{ value: "tohoku", label: "東北大学" },
-	{ value: "nagoya", label: "名古屋大学" },
-];
+interface Datatype {
+	label: string;
+}
 
-function Search() {
+function Search({ data }: { data: Datatype[] }) {
 	const [isOpen, setIsOpen] = useState(false);
+	const [searchValue, setSearchValue] = useState("");
+	const [currentArray, setCurrentArray] = useState<Datatype[]>([]);
+
+	useEffect(() => {
+		const filtered = data.filter(datatype =>
+			datatype.label.toLowerCase().includes(searchValue.toLowerCase())
+		);
+		setCurrentArray(filtered);
+	}, [searchValue, data]);
 
 	return (
 		<div className={style.container}>
 			<Command className={style.search} onFocus={() => setIsOpen(true)} onBlur={() => setIsOpen(false)}>
-				<div className={style.inputWrapper}>
-					<CommandInput className={style.input} placeholder="イベント・サークルを探す" />
-				</div>
+					<CommandInput
+						className={style.input}
+						placeholder="イベント・サークルを探す"
+						value={searchValue}
+						onValueChange={setSearchValue}
+					/>
 				{isOpen && (
 					<div className={style.listWrapper}>
 						<CommandList className={style.list}>
-							<CommandEmpty>見つかりません。</CommandEmpty>
-							<CommandGroup title="大学">
-								{universities.slice(0, 5).map((university) => (
+							<CommandEmpty className={style.empty}>見つかりません。</CommandEmpty>
+							<CommandGroup title="検索">
+								{currentArray.slice(0, 5).map((datatype) => (
 									<CommandItem
-										key={university.label}
-										value={university.label}
+										key={datatype.label}
+										value={datatype.label}
+										className={style.item}
 									>
-										{university.label}
+										{datatype.label}
 									</CommandItem>
 								))}
 							</CommandGroup>
