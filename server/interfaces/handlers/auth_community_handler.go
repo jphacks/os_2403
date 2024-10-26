@@ -23,7 +23,6 @@ type (
 	LoginCommunityRequest  = usecase.InputCommunitySignIn
 )
 
-
 func NewAuthCommunityHandler(authUsecase usecase.IAuthCommunityUsecase, store *sessions.CookieStore) IAuthCommunityHandler {
 	return &communityHandler{
 		authUsecase: authUsecase,
@@ -78,10 +77,11 @@ func (h *communityHandler) SignIn(ctx *gin.Context) {
 	}
 
 	// SignInメソッドを呼び出す
-	if err := h.authUsecase.SignIn(ctx, request); err != nil {
+	uuid, err := h.authUsecase.SignIn(ctx, request)
+	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "login in successful"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "login in successful", "uuid": uuid})
 }

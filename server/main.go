@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 	"github.com/jphacks/os_2403/infrastructure/dao"
+	"github.com/jphacks/os_2403/infrastructure/middleware"
 	"github.com/jphacks/os_2403/interfaces/handlers"
 	"github.com/jphacks/os_2403/usecase"
 	"github.com/rollbar/rollbar-go"
@@ -49,22 +50,28 @@ func main() {
 	communityUsecase := usecase.NewCommunityUseCase(communityRepo, memberRepo, tagRepo)
 	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo)
 	eventUsecase := usecase.NewEventUsecase(eventRepo)
+	tagUsecase := usecase.NewTagUseCase(tagRepo)
 
 	authUserHandler := handlers.NewAuthUserHandler(authUserUsecase, store)
 	authCommunityHandler := handlers.NewAuthCommunityHandler(authcommunityUsecase, store)
 	userHandler := handlers.NewUserHandler(userUsecase)
 	communityHandler := handlers.NewCommunityHandler(communityUsecase)
 	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase)
+	tagHandler := handlers.NewTagHandler(tagUsecase)
 	eventHandler := handlers.NewEventHandler(eventUsecase)
 
-	// 他の初期化ここに書いてね
+	// WebSocketの初期化
+	wsService := middleware.NewWebSocketService()
+	messageRepo := dao.NewMessageRepository(db)
+	chatUsecase := usecase.NewChatUseCase(messageRepo, wsService)
+	chatHandler := handlers.NewChatHandler(chatUsecase, wsService) // 他の初期化ここに書いてね
 
 	// ルーティング
 	router := gin.Default()
 
 	// ミドルウェアの初期化
 	//authMiddleware := middleware.NewAuthMiddleware(store)
-	//router.Use(middleware.CORS())
+	router.Use(middleware.CORS())
 
 	router.GET("/health", health)
 
@@ -72,11 +79,14 @@ func main() {
 	router.POST("/user/signup", authUserHandler.SignUp)
 
 	router.PUT("/user", userHandler.Update)
+	router.GET("/user", userHandler.FindByID)
 
 	router.POST("/community/signin", authCommunityHandler.SignIn)
 	router.POST("/community/signup", authCommunityHandler.SignUp)
 
 	router.PUT("/community", communityHandler.Update)
+
+	router.GET("/tag", tagHandler.GetRandom)
 
 	router.GET("/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
 	router.POST("/createscout", scoutListHandler.CreateScout)
@@ -85,6 +95,9 @@ func main() {
 	router.GET("/getevent", eventHandler.GetAllEvents)
 	router.POST("/createdevent", eventHandler.CreateEvent)
 	router.PUT("/updataevent", eventHandler.UpdateEvent)
+
+	router.GET("/ws/chat/:room_id", chatHandler.HandleWebSocket)
+	router.GET("/messages/:room_id", chatHandler.GetMessages) // チャット履歴取得用
 
 	log.Fatal(http.ListenAndServe(":80", router))
 }

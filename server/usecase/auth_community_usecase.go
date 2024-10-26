@@ -29,7 +29,7 @@ type InputCommunitySignIn struct {
 
 type IAuthCommunityUsecase interface {
 	SignUp(ctx context.Context, input InputCommunitySignUp) error
-	SignIn(ctx context.Context, input InputCommunitySignIn) error
+	SignIn(ctx context.Context, input InputCommunitySignIn) (uuid.UUID, error)
 }
 
 type authCommunityUsecase struct {
@@ -102,19 +102,19 @@ func (u *authCommunityUsecase) SignUp(ctx context.Context, input InputCommunityS
 	return nil
 }
 
-func (u *authCommunityUsecase) SignIn(ctx context.Context, input InputCommunitySignIn) error {
+func (u *authCommunityUsecase) SignIn(ctx context.Context, input InputCommunitySignIn) (uuid.UUID, error) {
 	// ユーザーをリポジトリから取得
 	community, err := u.communityRepo.FindByEmail(ctx, input.Email)
 	if err != nil {
-		return fmt.Errorf("failed to get user: %w", err)
+		return uuid.Nil, fmt.Errorf("failed to get user: %w", err)
 	}
 
 	// ハッシュ化されたパスワードと入力されたパスワードを比較
 	err = bcrypt.CompareHashAndPassword([]byte(community.Password), []byte(input.Password))
 	if err != nil {
-		return fmt.Errorf("invalid credentials: %w", err)
+		return uuid.Nil, fmt.Errorf("invalid credentials: %w", err)
 	}
 
 	// ログイン成功
-	return nil
+	return community.UUID, nil
 }

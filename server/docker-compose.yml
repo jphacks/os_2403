@@ -16,7 +16,7 @@ services:
     tty: true
     build: "./"
     ports:
-      - 8080:8080
+      - 8080:80
     command: sh -c 'go mod tidy && air'
 
   db:
