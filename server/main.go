@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 	"github.com/jphacks/os_2403/infrastructure/dao"
+	"github.com/jphacks/os_2403/infrastructure/middleware"
 	"github.com/jphacks/os_2403/interfaces/handlers"
 	"github.com/jphacks/os_2403/usecase"
 	"github.com/rollbar/rollbar-go"
@@ -61,7 +62,7 @@ func main() {
 
 	// ミドルウェアの初期化
 	//authMiddleware := middleware.NewAuthMiddleware(store)
-	//router.Use(middleware.CORS())
+	router.Use(middleware.CORS())
 
 	router.GET("/health", health)
 
