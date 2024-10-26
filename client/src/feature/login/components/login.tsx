@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import style from "./style.module.scss";
+import react from "react";
 
 type LoginCardProps = {
 	// title: string;
@@ -44,6 +45,10 @@ type LoginCardProps = {
 export const LoginDialog = (props: LoginCardProps) => {
 	const [currentUser, setCurrentUser] = useAtom<User | null>(userAtom);
 	const router = useRouter();
+
+	react.useEffect(() => {
+		console.log("currentUser updated:", currentUser);
+	}, [currentUser]);
 
 	let title = "";
 	let alternative = "";
@@ -63,28 +68,18 @@ export const LoginDialog = (props: LoginCardProps) => {
 		},
 	});
 
-	const onSubmit = (data: z.infer<typeof LoginFormSchema>) => {
+	const onSubmit = async (data: z.infer<typeof LoginFormSchema>) => {
 		try {
-			apiClient.post("/user/signin", data);
+			await apiClient.post("/user/signin", data);
 
-			const response = apiClient.post("/user/signin", data);
+			const response = await apiClient.post("/user/signin", data);
 
-			// const user: User = {
-			// 	uuid: response.uuid,
-			// 	name: response.name,
-			// 	email: response.email,
-			// 	password: response.password,
-			// 	img: response.img,
-			// 	self: response.self,
-			// 	mem1: response.mem1,
-			// 	mem2: response.mem2,
-			// 	mem3: response.mem3,
-			// 	tag: response.tag,
-			// };
-			// setCurrentUser(user);
+			const user: User = {
+				uuid: response.data.uuid,
+			};
+			setCurrentUser(user);
 
 			router.push("/");
-			// console.log("フォーム送信データ:", data);
 		} catch (err) {
 			console.error(err);
 		}

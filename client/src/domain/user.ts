@@ -3,15 +3,15 @@ import { z } from "zod";
 
 export type User = {
 	uuid: number;
-	name: string;
-	email: string;
-	password: string;
-	img: string;
-	self: string;
-	mem1: number;
-	mem2: number;
-	mem3: number;
-	tag: number[];
+	// name: string;
+	// email: string;
+	// password: string;
+	// img: string;
+	// self: string;
+	// mem1: number;
+	// mem2: number;
+	// mem3: number;
+	// tag: number[];
 };
 export const userAtom = atom<User | null>(null);
 
@@ -33,4 +33,4 @@ export const LoginFormSchema = z.object({
 	password: z.string().min(1, { message: "入力必須な項目です。" }),
 });
 
-export type LoginForm = z.infer<typeof loginFormSchema>;
+export type LoginForm = z.infer<typeof LoginFormSchema>;
