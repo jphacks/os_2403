@@ -41,11 +41,13 @@ func main() {
 	sessionRepo := dao.NewSessionRepository(db)
 	communityRepo := dao.NewCommunityRepository(db)
 
-	userUsecase := usecase.NewUserUseCase(userRepo, sessionRepo, memberRepo, tagRepo)
+	authUserUsecase := usecase.NewAuthUserUseCase(userRepo, sessionRepo, memberRepo, tagRepo)
 	communityUsecase := usecase.NewAuthCommunityUseCase(communityRepo, sessionRepo, memberRepo, tagRepo)
+	userUsecase := usecase.NewUserUseCase(userRepo, memberRepo, tagRepo)
 
-	userHandler := handlers.NewUserHandler(userUsecase, store)
-	communityHandler := handlers.NewCommunityHandler(communityUsecase, store)
+	authUserHandler := handlers.NewAuthUserHandler(authUserUsecase, store)
+	communityHandler := handlers.NewAuthCommunityHandler(communityUsecase, store)
+	userHandler := handlers.NewUserHandler(userUsecase)
 
 	// 他の初期化ここに書いてね
 
@@ -58,8 +60,11 @@ func main() {
 
 	router.GET("/health", health)
 
-	router.POST("/user/signin", userHandler.SignIn)
-	router.POST("/user/signup", userHandler.SignUp)
+	router.POST("/user/signin", authUserHandler.SignIn)
+	router.POST("/user/signup", authUserHandler.SignUp)
+
+	router.PUT("/user", userHandler.Update)
+
 
 	router.POST("/community/signin", communityHandler.SignIn)
 	router.POST("/community/signup", communityHandler.SignUp)

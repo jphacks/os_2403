@@ -1,0 +1,39 @@
+@use "../../../styles/theme";
+
+.mobo {
+  font-family: MOBO;
+  color: theme.$wheat;
+  margin: auto;
+}
+
+.card {
+  background: theme.$black;
+  width: 80%;
+  margin: auto;
+  color: theme.$wheat;
+
+
+  .span {
+    color: theme.$red;
+  }
+
+  .input::placeholder { //placeholderの中を灰色に
+    color: theme.$gray;
+
+  }
+
+  .form {
+    width: 80%;
+    margin: auto;
+  }
+
+  .cardFooter {
+    width: 100%;
+    place-content: center;
+
+    .button {
+      width: 30%;
+    }
+  }
+
+}
