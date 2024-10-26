@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card"
 import CardTag from "@/components/tags/card-tag"
-import { Bookmark, Heart, SquareX } from "lucide-react"
+import {  Heart, SquareX } from "lucide-react"
 import style from "./style.module.scss"
 
 
@@ -33,12 +33,10 @@ export function EventCard({
   publisher,
   datetime,
   tags,
-  imageUrl,
+  imageUrl = "https://github.com/shadcn.png",
   liked = false,
-  bookmarked = false,
 }: EventCardProps): ReactElement {
   const [isLiked, setIsLiked] = useState(liked)
-  const [isBookmarked, setIsBookmarked] = useState(bookmarked)
 
   return (
 
@@ -51,9 +49,6 @@ export function EventCard({
                 {tag.label}
               </CardTag>
             ))}
-            {tags.length > 3 && (
-              <p className={style.moreButton}>...</p>
-            )}
           </div>
         </div>
         <div className={style.closeButton}>
@@ -63,7 +58,11 @@ export function EventCard({
 
       <CardContent>
         <div className={style.imgBox}>
-          aa
+          <img
+            className={style.img}
+            src={imageUrl}
+            alt={title}
+          />
         </div>
         <div className={style.icons}>
           <Heart
@@ -71,12 +70,6 @@ export function EventCard({
             fill={isLiked ? "#E74C3C" : "none"}
             stroke="#E74C3C"
             onClick={() => setIsLiked(!isLiked)}
-          />
-          <Bookmark
-            size={32}
-            fill={isBookmarked ? "#434141" : "none"}
-            stroke={"#434141"}
-            onClick={() => setIsBookmarked(!isBookmarked)}
           />
         </div>
 
@@ -87,7 +80,7 @@ export function EventCard({
           <div className={style.footerInfo}>
             <div className={style.publisherRow}>
               <Avatar className={style.avatar}>
-                <AvatarImage src="" />
+                <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <span className={style.publisherName}>{publisher}</span>

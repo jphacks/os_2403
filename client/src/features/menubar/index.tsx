@@ -29,7 +29,7 @@ export const Menubar = () => {
                     <Circle size={40} color="#434141" />
                 </a>
                 <a href="/school" className={style.icon}>
-                    <Invite size={40} />
+                    <Invite size={60} />
                     <span className={style.badge}>{inviteNum}</span>
                 </a>
                 <a href="/chat" className={style.icon}>
