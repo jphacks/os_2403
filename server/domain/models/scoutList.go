@@ -16,12 +16,6 @@ type ScoutList struct {
 	Community      Community  `gorm:"foreignKey:Community_UUID;references:UUID"`
 }
 
-type ScoutDetailList struct {
-	User_UUID      uuid.UUID `gorm:"type:varchar(36)"`
-	Status         uint      `gorm:"type:int unsigned"`
-	Community_UUID uuid.UUID `gorm:"type:varchar(36)"`
-}
-
 type ScoutListResponse struct {
 	ID             uint          `json:"id"`
 	Status         uint          `json:"status"`

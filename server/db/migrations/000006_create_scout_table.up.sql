@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `ScoutLists` (
+CREATE TABLE IF NOT EXISTS `scout_lists` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, -- 主キー
     `user_uuid` CHAR(36) NOT NULL,                         -- ユーザーUUID（外部キーとして扱う）
     `status` INT NOT NULL,                                 -- ステータス

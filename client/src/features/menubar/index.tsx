@@ -1,6 +1,6 @@
 import React from "react";
 import style from "./index.module.scss";
-import { Circle, Bookmark } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { MailIcon } from "./components/mail";
 import Invite from "@/../public/invite";
 import Search from "./components/search";
@@ -20,13 +20,17 @@ const mockData = [
 
 const inviteNum = 3;
 const mailNum = 80;
+const userIcon = "https://github.com/shadcn.png";
 
 export const Menubar = () => {
     return (
         <div className={style.header}>
             <div className={style.icons}>
                 <a href="/home" className={style.icon}>
-                    <Circle size={40} color="#434141" />
+                    <Avatar className={style.avatar}>
+                        <AvatarImage src={userIcon} />
+                        <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
                 </a>
                 <a href="/school" className={style.icon}>
                     <Invite size={60} />
@@ -42,7 +46,7 @@ export const Menubar = () => {
                 </a>
             </div>
             <div className={style.search}>
-                <Search data={mockData}/>
+                <Search data={mockData} />
             </div>
         </div>
     );

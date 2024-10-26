@@ -10,7 +10,7 @@ import (
 )
 
 type IScoutListUsecase interface {
-	Create(ctx context.Context, scoutList *models.ScoutDetailList) error
+	Create(ctx context.Context, scoutList *models.ScoutList) error
 	Get(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error)
 	ChangeStatus(ctx context.Context, userUUID uuid.UUID, status uint) error
 	GetWithCommunityDetails(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error)
@@ -28,7 +28,7 @@ func NewScoutListUsecase(repo repositories.IScoutListRepository) IScoutListUseca
 	}
 }
 
-func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.ScoutDetailList) error {
+func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.ScoutList) error {
 	// メール送信
 	var recipients []string
 	var user *models.User
@@ -48,8 +48,6 @@ func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.S
 	if err != nil {
 		return err
 	}
-
-	//　DBへ追加
 	return u.scoutListRepo.Create(ctx, scoutDetailList)
 }
 
