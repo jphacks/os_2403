@@ -54,23 +54,23 @@ export const SignUpDialog = (props: Props) => {
 
 	const onSubmit = async (data: z.infer<typeof SignupFormSchema>) => {
 		try {
-			console.log("Form data:", data);
+			// console.log("Form data:", data);
 			const response = await createUser(data);
-			console.log("Response:", response);
+			// console.log("Response:", response);
 
-			const user: User = {
-				uuid: response.uuid,
-				name: response.name,
-				email: response.email,
-				password: response.password,
-				img: response.img,
-				self: response.self,
-				mem1: response.mem1,
-				mem2: response.mem2,
-				mem3: response.mem3,
-				tag: response.tag,
-			};
-			setCurrentUser(user);
+			// const user: User = {
+			// 	uuid: response.uuid,
+			// 	name: response.name,
+			// 	email: response.email,
+			// 	password: response.password,
+			// 	img: response.img,
+			// 	self: response.self,
+			// 	mem1: response.mem1,
+			// 	mem2: response.mem2,
+			// 	mem3: response.mem3,
+			// 	tag: response.tag,
+			// };
+			// setCurrentUser(user);
 			router.push("/login/user");
 		} catch (error) {
 			console.error("Error submitting form:", error);
