@@ -1,0 +1,20 @@
+.
+├── db
+│   └── migrations
+├── domain
+│   ├── models
+│   ├── repositories
+│   └── services
+├── infrastructure
+│   ├── middleware
+│   └── dao
+├── interfaces
+│   └── handlers
+├── usecase
+├── main.go
+├── Makefile
+├── README.md
+├── .air.toml
+├── .env
+├── Dockerfile
+└── docker-compose.yml
