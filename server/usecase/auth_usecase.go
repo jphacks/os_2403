@@ -38,7 +38,7 @@ type authUsecase struct {
 	tagRepo     repositories.ITagRepository
 }
 
-func NewUserUseCase(userRepo repositories.IUserRepository, sessionRepo repositories.ISessionRepository, memberRepo repositories.IMemberRepository, tagRepo repositories.ITagRepository) IAuthUsecase {
+func NewAuthUserUseCase(userRepo repositories.IUserRepository, sessionRepo repositories.ISessionRepository, memberRepo repositories.IMemberRepository, tagRepo repositories.ITagRepository) IAuthUsecase {
 	return &authUsecase{
 		userRepo:    userRepo,
 		sessionRepo: sessionRepo,

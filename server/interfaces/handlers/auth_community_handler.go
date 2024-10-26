@@ -23,7 +23,7 @@ type (
 	LoginCommunityRequest  = usecase.InputCommunitySignIn
 )
 
-func NewCommunityHandler(authUsecase usecase.IAuthCommunityUsecase, store *sessions.CookieStore) IAuthCommunityHandler {
+func NewAuthCommunityHandler(authUsecase usecase.IAuthCommunityUsecase, store *sessions.CookieStore) IAuthCommunityHandler {
 	return &communityHandler{
 		authUsecase: authUsecase,
 		store:       store,
