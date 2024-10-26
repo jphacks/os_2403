@@ -52,10 +52,14 @@ func main() {
 	authUserHandler := handlers.NewAuthUserHandler(authUserUsecase, store)
 	authCommunityHandler := handlers.NewAuthCommunityHandler(authcommunityUsecase, store)
 	userHandler := handlers.NewUserHandler(userUsecase)
-  communityHandler := handlers.NewCommunityHandler(communityUsecase)
+	communityHandler := handlers.NewCommunityHandler(communityUsecase)
 	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase)
 
-	// 他の初期化ここに書いてね
+	// WebSocketの初期化
+	wsService := middleware.NewWebSocketService()
+	messageRepo := dao.NewMessageRepository(db)
+	chatUsecase := usecase.NewChatUseCase(messageRepo, wsService)
+	chatHandler := handlers.NewChatHandler(chatUsecase, wsService) // 他の初期化ここに書いてね
 
 	// ルーティング
 	router := gin.Default()
@@ -79,6 +83,9 @@ func main() {
 	router.GET("/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
 	router.POST("/createscout", scoutListHandler.CreateScout)
 	router.PUT("/changescoutstatus", scoutListHandler.ChangeStatus)
+
+	router.GET("/ws/chat/:room_id", chatHandler.HandleWebSocket)
+	router.GET("/messages/:room_id", chatHandler.GetMessages) // チャット履歴取得用
 
 	log.Fatal(http.ListenAndServe(":80", router))
 }
