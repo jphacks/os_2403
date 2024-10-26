@@ -58,7 +58,7 @@ func main() {
 	communityHandler := handlers.NewCommunityHandler(communityUsecase)
 	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase)
 	tagHandler := handlers.NewTagHandler(tagUsecase)
-	eventHandler := handlers.NewEventHandler(eventUsecase)
+	eventHandler := handlers.NewEventHandler(eventUsecase, communityUsecase)
 
 	// WebSocketの初期化
 	wsService := middleware.NewWebSocketService()

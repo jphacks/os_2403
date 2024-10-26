@@ -15,7 +15,7 @@ type Event struct {
 	Date          time.Time      `gorm:"not null" json:"date"`
 	Tags          IntArray       `gorm:"type:json;not null" json:"tags"`
 	CreatedAt     time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	UpdatesAt     time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
+	UpdatedAt     time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 	DeletedAt     gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 }
 
