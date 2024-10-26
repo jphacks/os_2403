@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Menubar } from "../feature/menubar"
-import localFont from "next/font/local";
+import { Menubar } from "../features/menubar";
 import "@/styles/globals.scss";
 
 
