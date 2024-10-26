@@ -40,14 +40,17 @@ func main() {
 	memberRepo := dao.NewMemberRepository(db)
 	sessionRepo := dao.NewSessionRepository(db)
 	communityRepo := dao.NewCommunityRepository(db)
+	scoutListRepo := dao.NewscoutListRepository(db)
 
 	authUserUsecase := usecase.NewAuthUserUseCase(userRepo, sessionRepo, memberRepo, tagRepo)
 	communityUsecase := usecase.NewAuthCommunityUseCase(communityRepo, sessionRepo, memberRepo, tagRepo)
 	userUsecase := usecase.NewUserUseCase(userRepo, memberRepo, tagRepo)
+	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo)
 
 	authUserHandler := handlers.NewAuthUserHandler(authUserUsecase, store)
 	communityHandler := handlers.NewAuthCommunityHandler(communityUsecase, store)
 	userHandler := handlers.NewUserHandler(userUsecase)
+	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase)
 
 	// 他の初期化ここに書いてね
 
@@ -65,11 +68,14 @@ func main() {
 
 	router.PUT("/user", userHandler.Update)
 
-
 	router.POST("/community/signin", communityHandler.SignIn)
 	router.POST("/community/signup", communityHandler.SignUp)
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	router.GET("/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
+	router.POST("/createscout", scoutListHandler.CreateScout)
+	router.PUT("/changescoutstatus", scoutListHandler.ChangeStatus)
+
+	log.Fatal(http.ListenAndServe(":80", router))
 }
 
 // initDBは別ファイルの方がいいのかな\(´ω` \)

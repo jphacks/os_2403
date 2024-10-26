@@ -13,7 +13,7 @@ type ScoutList struct {
 	CreatedAt      time.Time  `gorm:"type:timestamp"`
 	UpdatedAt      time.Time  `gorm:"type:timestamp"`
 	DeletedAt      *time.Time `gorm:"type:timestamp"`
-	Community      Community  `gorm:"foreignKey:Community_UUID;references:UUID"` // Add relationship
+	Community      Community  `gorm:"foreignKey:Community_UUID;references:UUID"`
 }
 
 type ScoutDetailList struct {
@@ -22,7 +22,6 @@ type ScoutDetailList struct {
 	Community_UUID uuid.UUID `gorm:"type:varchar(36)"`
 }
 
-// Updated response struct with community details
 type ScoutListResponse struct {
 	ID             uint          `json:"id"`
 	Status         uint          `json:"status"`
@@ -30,7 +29,6 @@ type ScoutListResponse struct {
 	CommunityInfo  CommunityInfo `json:"community_info"`
 }
 
-// New struct for community information
 type CommunityInfo struct {
 	Name string `json:"name"`
 	Img  string `json:"img"`

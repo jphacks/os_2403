@@ -11,6 +11,10 @@ type scoutListRepository struct {
 	db *gorm.DB
 }
 
+func NewscoutListRepository(db *gorm.DB) *scoutListRepository {
+	return &scoutListRepository{db: db}
+}
+
 func (r *scoutListRepository) Get(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error) {
 	var scoutLists []models.ScoutList
 
@@ -88,4 +92,15 @@ func (r *scoutListRepository) GetWithCommunityDetails(ctx context.Context, userU
 	}
 
 	return responses, nil
+}
+
+func (r *scoutListRepository) Create(ctx context.Context, scoutList *models.ScoutDetailList) error {
+	return r.db.WithContext(ctx).Create(scoutList).Error
+}
+
+func (r *scoutListRepository) ChangeStatus(ctx context.Context, userUUID uuid.UUID, status uint) error {
+	return r.db.WithContext(ctx).
+		Model(&models.ScoutDetailList{}).
+		Where("user_uuid = ?", userUUID).
+		Update("status", status).Error
 }

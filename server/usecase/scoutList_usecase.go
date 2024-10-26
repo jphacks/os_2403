@@ -11,7 +11,6 @@ type IScoutListUsecase interface {
 	Create(ctx context.Context, scoutList *models.ScoutDetailList) error
 	Get(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error)
 	ChangeStatus(ctx context.Context, userUUID uuid.UUID, status uint) error
-	GetByCommunityUUID(ctx context.Context, communityUUID uuid.UUID) (*models.ScoutList, error)
 	GetWithCommunityDetails(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error)
 }
 
@@ -35,10 +34,6 @@ func (u *scoutListUsecase) Get(ctx context.Context, userUUID uuid.UUID) ([]model
 
 func (u *scoutListUsecase) ChangeStatus(ctx context.Context, userUUID uuid.UUID, status uint) error {
 	return u.scoutListRepo.ChangeStatus(ctx, userUUID, status)
-}
-
-func (u *scoutListUsecase) GetByCommunityUUID(ctx context.Context, communityUUID uuid.UUID) (*models.ScoutList, error) {
-	return u.scoutListRepo.GetByCommunityUUID(ctx, communityUUID)
 }
 
 func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error) {

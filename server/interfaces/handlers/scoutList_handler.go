@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/jphacks/os_2403/domain/models"
 	"github.com/jphacks/os_2403/usecase"
@@ -12,56 +13,61 @@ type ScoutHandler struct {
 	scoutUsecase usecase.IScoutListUsecase
 }
 
-func NewScoutHandler(usecase usecase.IScoutListUsecase) *ScoutHandler {
+func NewScoutListHandler(usecase usecase.IScoutListUsecase) *ScoutHandler {
 	return &ScoutHandler{
 		scoutUsecase: usecase,
 	}
 }
 
+type IScoutListHandler interface {
+	GetCommunityDetailByScoutList(ctx *gin.Context)
+	CreateScout(ctx *gin.Context)
+	ChangeStatus(ctx *gin.Context)
+}
+
 type createScoutRequest struct {
-	User_UUID      string `json:"user_uuid"`
-	Community_UUID string `json:"community_uuid"`
+	UserUUID      string `json:"user_uuid"`
+	CommunityUUID string `json:"community_uuid"`
 }
 
 type changeStatusRequest struct {
-	User_UUID string `json:"user_uuid"`
-	Status    uint   `json:"status"`
+	UserUUID string `json:"user_uuid"`
+	Status   uint   `json:"status"`
 }
 
-func (h *ScoutHandler) GetCommunityDetailByScoutList(w http.ResponseWriter, r *http.Request) {
-	userUUIDStr := r.URL.Query().Get("user_uuid")
+func (h *ScoutHandler) GetCommunityDetailByScoutList(ctx *gin.Context) {
+	userUUIDStr := ctx.Query("user_uuid")
 	userUUID, err := uuid.Parse(userUUIDStr)
 	if err != nil {
-		http.Error(w, "Invalid UUID format", http.StatusBadRequest)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID format"})
 		return
 	}
 
-	scouts, err := h.scoutUsecase.GetWithCommunityDetails(r.Context(), userUUID)
+	scouts, err := h.scoutUsecase.GetWithCommunityDetails(ctx.Request.Context(), userUUID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(scouts)
+	ctx.JSON(http.StatusOK, scouts)
 }
 
-func (h *ScoutHandler) CreateScout(w http.ResponseWriter, r *http.Request) {
+func (h *ScoutHandler) CreateScout(ctx *gin.Context) {
 	var req createScoutRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(ctx.Request.Body).Decode(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Failed to decode request body"})
 		return
 	}
 
-	userUUID, err := uuid.Parse(req.User_UUID)
+	userUUID, err := uuid.Parse(req.UserUUID)
 	if err != nil {
-		http.Error(w, "Invalid user UUID format", http.StatusBadRequest)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user UUID format"})
 		return
 	}
 
-	communityUUID, err := uuid.Parse(req.Community_UUID)
+	communityUUID, err := uuid.Parse(req.CommunityUUID)
 	if err != nil {
-		http.Error(w, "Invalid community UUID format", http.StatusBadRequest)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid community UUID format"})
 		return
 	}
 
@@ -71,31 +77,31 @@ func (h *ScoutHandler) CreateScout(w http.ResponseWriter, r *http.Request) {
 		Community_UUID: communityUUID,
 	}
 
-	if err := h.scoutUsecase.Create(r.Context(), scoutDetail); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if err := h.scoutUsecase.Create(ctx.Request.Context(), scoutDetail); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	ctx.Status(http.StatusCreated)
 }
 
-func (h *ScoutHandler) ChangeStatus(w http.ResponseWriter, r *http.Request) {
+func (h *ScoutHandler) ChangeStatus(ctx *gin.Context) {
 	var req changeStatusRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(ctx.Request.Body).Decode(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Failed to decode request body"})
 		return
 	}
 
-	userUUID, err := uuid.Parse(req.User_UUID)
+	userUUID, err := uuid.Parse(req.UserUUID)
 	if err != nil {
-		http.Error(w, "Invalid UUID format", http.StatusBadRequest)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID format"})
 		return
 	}
 
-	if err := h.scoutUsecase.ChangeStatus(r.Context(), userUUID, req.Status); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if err := h.scoutUsecase.ChangeStatus(ctx.Request.Context(), userUUID, req.Status); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	ctx.Status(http.StatusOK)
 }
