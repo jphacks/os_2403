@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import style from "@/features/profile/components/style.module.scss";
+import style from "@/feature/profile/components/style.module.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleChevronRight } from "lucide-react";
 
@@ -36,7 +36,22 @@ const profileFormShema = z.object({
 	introduction: z.string(),
 });
 
-export const ProfileSetting = () => {
+type PrpfileSettingProps = {
+	type: "user" | "community";
+};
+
+export const ProfileSetting = (props: PrpfileSettingProps) => {
+	let name = "";
+	let introduce = "";
+
+	if (props.type === "user") {
+		name = "ニックネーム";
+		introduce = "自己紹介";
+	} else if (props.type === "community") {
+		name = "団体名";
+		introduce = "団体紹介";
+	}
+
 	const form = useForm<z.infer<typeof profileFormShema>>({
 		resolver: zodResolver(profileFormShema),
 		defaultValues: {
@@ -67,7 +82,8 @@ export const ProfileSetting = () => {
 							render={({ field }) => (
 								<FormItem className={style.form}>
 									<FormLabel className={style.label}>
-										<span className={style.span}>*</span>ニックネーム
+										<span className={style.span}>*</span>
+										{name}
 									</FormLabel>
 									<FormControl>
 										<Input
@@ -184,7 +200,7 @@ export const ProfileSetting = () => {
 							name="introduction"
 							render={({ field }) => (
 								<FormItem className={style.form}>
-									<FormLabel className={style.label}>自己紹介</FormLabel>
+									<FormLabel className={style.label}>{introduce}</FormLabel>
 									<FormControl>
 										<Textarea
 											placeholder="Text"

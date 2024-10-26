@@ -1,4 +1,4 @@
-import { LoginDialog } from "@/features/login/components/login";
+import { LoginDialog } from "@/feature/login/components/login";
 
 const LoginPage = () => {
 	return <LoginDialog type={"user"} />;
