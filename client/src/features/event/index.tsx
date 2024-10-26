@@ -20,17 +20,18 @@ interface Tag {
 interface EventCardProps {
   title: string
   publisher: string
+  publisherIcon: string
   datetime: string
   tags: Tag[]
-  imageUrl?: string
+  imageUrl: string
   liked?: boolean
-  bookmarked?: boolean
 }
 
 
 export function EventCard({
   title,
   publisher,
+  publisherIcon = "https://github.com/shadcn.png",
   datetime,
   tags,
   imageUrl = "https://github.com/shadcn.png",
@@ -80,7 +81,7 @@ export function EventCard({
           <div className={style.footerInfo}>
             <div className={style.publisherRow}>
               <Avatar className={style.avatar}>
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src={publisherIcon} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <span className={style.publisherName}>{publisher}</span>
