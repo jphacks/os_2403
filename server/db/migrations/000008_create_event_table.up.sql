@@ -5,7 +5,7 @@ CREATE TABLE events (
                         img VARCHAR(255) NOT NULL,
                         detailed TEXT NOT NULL,
                         date DATETIME NOT NULL,
-                        tag JSON NOT NULL,
+                        tags JSON NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                         deleted_at TIMESTAMP NULL,

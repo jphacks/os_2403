@@ -3,6 +3,7 @@ package dao
 import (
 	"context"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/jphacks/os_2403/domain/models"
 	"gorm.io/gorm"
 )
@@ -36,7 +37,7 @@ func (r *communityRepository) FindByEmail(ctx context.Context, email string) (*m
 	return community, nil
 }
 
-func (r *communityRepository) FindByID(ctx context.Context, uuid string) (*models.Community, error) {
+func (r *communityRepository) FindByID(ctx context.Context, uuid uuid.UUID) (*models.Community, error) {
 	var community *models.Community
 	if err := r.db.WithContext(ctx).Where("uuid = ?", uuid).Find(&community).Error; err != nil {
 		return nil, err

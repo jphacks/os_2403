@@ -57,7 +57,7 @@ func (h *eventHandler) CreateEvent(ctx *gin.Context) {
 		Img           string `json:"img"`
 		Detailed      string `json:"detailed"`
 		Date          string `json:"date"`
-		Tags          []int  `json:"tag"`
+		Tags          []int  `json:"tags"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -96,12 +96,13 @@ func (h *eventHandler) CreateEvent(ctx *gin.Context) {
 
 func (h *eventHandler) UpdateEvent(ctx *gin.Context) {
 	var req struct {
+		ID            uint   `json:"id"`
 		CommunityUUID string `json:"community_uuid"`
 		Title         string `json:"title"`
 		Img           string `json:"img"`
 		Detailed      string `json:"detailed"`
 		Date          string `json:"date"`
-		Tags          []int  `json:"tag"`
+		Tags          []int  `json:"tags"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -122,6 +123,7 @@ func (h *eventHandler) UpdateEvent(ctx *gin.Context) {
 	}
 
 	event := &models.Event{
+		ID:            req.ID,
 		CommunityUUID: communityUUID,
 		Title:         req.Title,
 		Img:           req.Img,
