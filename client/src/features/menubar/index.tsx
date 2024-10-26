@@ -22,7 +22,6 @@ const inviteNum = 3;
 const mailNum = 80;
 
 export const Menubar = () => {
-
     return (
         <div className={style.header}>
             <div className={style.icons}>
@@ -36,12 +35,9 @@ export const Menubar = () => {
                 <a href="/chat" className={style.icon}>
                     <MailIcon count={mailNum} size={40} />
                 </a>
-                <a href="/address" className={style.icon}>
-                    <Bookmark size={40} color="#434141" />
-                </a>
             </div>
             <div className={style.logo}>
-                <a href="/home">
+                <a href="/event">
                     ロゴ＋タイトル
                 </a>
             </div>
