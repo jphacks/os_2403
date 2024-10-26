@@ -4,13 +4,18 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-migrate/migrate/v4"
+	migrate_mysql "github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
+	"github.com/jphacks/os_2403/infrastructure/dao"
+	"github.com/jphacks/os_2403/interfaces/handlers"
+	"github.com/jphacks/os_2403/usecase"
+	"github.com/rollbar/rollbar-go"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	//"github.com/jphacks/os_2403/domain/services"
-	//"github.com/jphacks/os_2403/infrastructure/dao"
-	//"github.com/jphacks/os_2403/interfaces/handlers"
-	//"github.com/jphacks/os_2403/usecase"
+	"gorm.io/gorm/logger"
 	"log"
 	"net/http"
 	"os"
@@ -27,11 +32,17 @@ func main() {
 	fmt.Println(db)
 
 	// 初期化はinfra(persistence)->domain/service->usecase->handlerの順番で行うようにしよう
-	// uuid系の初期化
-	//uuidRepo := persistence.NewUUIDRepository(db)
-	//uuidService := services.NewUUIDService()
-	//uuidUseCase := usecase.NewUUIDUseCase(uuidRepo, uuidService)
-	//uuidHandler := handlers.NewUUIDHandler(uuidUseCase)
+
+	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+
+	userRepo := dao.NewUserRepository(db)
+	tagRepo := dao.NewTagRepository(db)
+	memberRepo := dao.NewMemberRepository(db)
+	sessionRepo := dao.NewSessionRepository(db)
+
+	userUsecase := usecase.NewUserUseCase(userRepo, sessionRepo, memberRepo, tagRepo)
+
+	userHandler := handlers.NewUserHandler(userUsecase, store)
 
 	// 他の初期化ここに書いてね
 
@@ -42,7 +53,10 @@ func main() {
 	//authMiddleware := middleware.NewAuthMiddleware(store)
 	//router.Use(middleware.CORS())
 
-	router.GET("health", health)
+	router.GET("/health", health)
+
+	router.POST("/signup", userHandler.Login)
+	router.POST("/signin", userHandler.SignIn)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
@@ -73,6 +87,28 @@ func initDB() (*gorm.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect database: %w", err)
 	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		rollbar.Error(err)
+		panic(err)
+	}
+	dbDriver, err := migrate_mysql.WithInstance(sqlDB, &migrate_mysql.Config{})
+	if err != nil {
+		rollbar.Error(err)
+		panic(err)
+	}
+	m, err := migrate.NewWithDatabaseInstance("file://db/migrations", "mysql", dbDriver)
+	if err != nil {
+		rollbar.Error(err)
+		panic(err)
+	}
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		rollbar.Error(err)
+		panic(err)
+	}
+
+	db.Logger = db.Logger.LogMode(logger.Info)
 
 	return db, nil
 }
