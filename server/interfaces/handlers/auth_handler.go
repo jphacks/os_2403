@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type userHandler struct {
+type authUserHandler struct {
 	authUsecase     usecase.IAuthUsecase
 	sessionsUsecase usecase.IAuthUsecase
 	store           *sessions.CookieStore
@@ -23,14 +23,14 @@ type (
 	LoginRequest  = usecase.InputSignIn
 )
 
-func NewUserHandler(authUsecase usecase.IAuthUsecase, store *sessions.CookieStore) IAuthHandler {
-	return &userHandler{
+func NewAuthUserHandler(authUsecase usecase.IAuthUsecase, store *sessions.CookieStore) IAuthHandler {
+	return &authUserHandler{
 		authUsecase: authUsecase,
 		store:       store,
 	}
 }
 
-func (h *userHandler) SignUp(ctx *gin.Context) {
+func (h *authUserHandler) SignUp(ctx *gin.Context) {
 	var request SignInRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
@@ -69,7 +69,7 @@ func (h *userHandler) SignUp(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
 }
 
-func (h *userHandler) SignIn(ctx *gin.Context) {
+func (h *authUserHandler) SignIn(ctx *gin.Context) {
 	var request LoginRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
