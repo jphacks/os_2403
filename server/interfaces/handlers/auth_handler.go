@@ -66,7 +66,7 @@ func (h *authUserHandler) SignUp(ctx *gin.Context) {
 
 	//h.sessionsUsecase.SignIn(ctx, )
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
+	ctx.JSON(http.StatusCreated, gin.H{"message": "sign in successful"})
 }
 
 func (h *authUserHandler) SignIn(ctx *gin.Context) {
