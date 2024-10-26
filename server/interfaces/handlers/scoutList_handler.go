@@ -71,7 +71,7 @@ func (h *ScoutHandler) CreateScout(ctx *gin.Context) {
 		return
 	}
 
-	scoutDetail := &models.ScoutDetailList{
+	scoutDetail := &models.ScoutList{
 		User_UUID:      userUUID,
 		Status:         0, // 最初は未読(0)で登録
 		Community_UUID: communityUUID,

@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS `ScountLists`;
+DROP TABLE IF EXISTS `scout_lists`;
