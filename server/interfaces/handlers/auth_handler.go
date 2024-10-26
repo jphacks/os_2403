@@ -19,8 +19,8 @@ type IAuthHandler interface {
 }
 
 type (
-	SignInRequest = usecase.InputSignUp
-	LoginRequest  = usecase.InputSignIn
+	SignUpRequest = usecase.InputSignUp
+	SignInRequest = usecase.InputSignIn
 )
 
 func NewAuthUserHandler(authUsecase usecase.IAuthUsecase, store *sessions.CookieStore) IAuthHandler {
@@ -31,7 +31,7 @@ func NewAuthUserHandler(authUsecase usecase.IAuthUsecase, store *sessions.Cookie
 }
 
 func (h *authUserHandler) SignUp(ctx *gin.Context) {
-	var request SignInRequest
+	var request SignUpRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -70,7 +70,7 @@ func (h *authUserHandler) SignUp(ctx *gin.Context) {
 }
 
 func (h *authUserHandler) SignIn(ctx *gin.Context) {
-	var request LoginRequest
+	var request SignInRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
