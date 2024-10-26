@@ -22,8 +22,13 @@ type InputCommunityUpdate struct {
 	Range    []int
 }
 
+type InputCommnityFindByID struct {
+	UUID uuid.UUID
+}
+
 type ICommunityUsecase interface {
 	Update(ctx context.Context, input InputCommunityUpdate) error
+	FindByID(ctx context.Context, input InputCommnityFindByID) (*models.Community, error)
 }
 
 type communityUsecase struct {
@@ -88,4 +93,12 @@ func (u *communityUsecase) Update(ctx context.Context, input InputCommunityUpdat
 	}
 
 	return nil
+}
+
+func (u *communityUsecase) FindByID(ctx context.Context, input InputCommnityFindByID) (*models.Community, error) {
+	community, err := u.userRepo.FindByID(ctx, input.UUID)
+	if err != nil {
+		return nil, err
+	}
+	return community, nil
 }

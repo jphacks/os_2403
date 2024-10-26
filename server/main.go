@@ -42,12 +42,14 @@ func main() {
 	sessionRepo := dao.NewSessionRepository(db)
 	communityRepo := dao.NewCommunityRepository(db)
 	scoutListRepo := dao.NewscoutListRepository(db)
+	eventRepo := dao.NewEventRepository(db)
 
 	authUserUsecase := usecase.NewAuthUserUseCase(userRepo, sessionRepo, memberRepo, tagRepo)
 	authcommunityUsecase := usecase.NewAuthCommunityUseCase(communityRepo, sessionRepo, memberRepo, tagRepo)
 	userUsecase := usecase.NewUserUseCase(userRepo, memberRepo, tagRepo)
 	communityUsecase := usecase.NewCommunityUseCase(communityRepo, memberRepo, tagRepo)
 	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo)
+	eventUsecase := usecase.NewEventUsecase(eventRepo)
 	tagUsecase := usecase.NewTagUseCase(tagRepo)
 
 	authUserHandler := handlers.NewAuthUserHandler(authUserUsecase, store)
@@ -55,7 +57,8 @@ func main() {
 	userHandler := handlers.NewUserHandler(userUsecase)
 	communityHandler := handlers.NewCommunityHandler(communityUsecase)
 	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase)
-	tagHanfler := handlers.NewTagHandler(tagUsecase)
+	tagHandler := handlers.NewTagHandler(tagUsecase)
+	eventHandler := handlers.NewEventHandler(eventUsecase)
 
 	// WebSocketの初期化
 	wsService := middleware.NewWebSocketService()
@@ -83,11 +86,15 @@ func main() {
 
 	router.PUT("/community", communityHandler.Update)
 
-	router.GET("/tag", tagHanfler.GetRandom)
+	router.GET("/tag", tagHandler.GetRandom)
 
 	router.GET("/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
 	router.POST("/createscout", scoutListHandler.CreateScout)
 	router.PUT("/changescoutstatus", scoutListHandler.ChangeStatus)
+
+	router.GET("/getevent", eventHandler.GetAllEvents)
+	router.POST("/createdevent", eventHandler.CreateEvent)
+	router.PUT("/updataevent", eventHandler.UpdateEvent)
 
 	router.GET("/ws/chat/:room_id", chatHandler.HandleWebSocket)
 	router.GET("/messages/:room_id", chatHandler.GetMessages) // チャット履歴取得用
