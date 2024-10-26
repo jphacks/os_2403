@@ -19,6 +19,13 @@ func (r *communityRepository) Create(ctx context.Context, user *models.Community
 	return r.db.WithContext(ctx).Create(user).Error
 }
 
+func (r *communityRepository) Update(ctx context.Context, community *models.Community) error {
+	return r.db.WithContext(ctx).
+		Model(&models.User{UUID: community.UUID}). // モデル全体を指定
+		Where("uuid = ?", community.UUID).         // 特定のユーザーを指定
+		Updates(community).Error
+}
+
 func (r *communityRepository) FindByEmail(ctx context.Context, email string) (*models.Community, error) {
 	var community *models.Community
 	fmt.Println(email)
