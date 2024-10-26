@@ -22,8 +22,13 @@ type InputUserUpdate struct {
 	Text     string
 }
 
+type InputUserFindByID struct {
+	UUID string
+}
+
 type IUesrUsecase interface {
 	Update(ctx context.Context, input InputUserUpdate) error
+	FindByID(ctx context.Context, input InputUserFindByID) (*models.User, error)
 }
 
 type userUsecase struct {
@@ -88,4 +93,13 @@ func (u *userUsecase) Update(ctx context.Context, input InputUserUpdate) error {
 	}
 
 	return nil
+}
+
+func (u *userUsecase) FindByID(ctx context.Context, input InputUserFindByID) (*models.User, error) {
+	user, err := u.userRepo.FindByID(ctx, input.UUID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	return user, nil
 }
