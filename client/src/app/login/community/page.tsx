@@ -1,7 +1,7 @@
 import { LoginDialog } from "@/features/login/components/login";
 
 const LoginPage = () => {
-	return <LoginDialog type={"user"} />;
+	return <LoginDialog type={"community"} />;
 };
 
 export default LoginPage;
