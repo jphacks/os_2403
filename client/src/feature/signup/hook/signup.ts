@@ -1,4 +1,4 @@
-import { SignupForm, User } from "@/domain/user";
+import { LoginForm, SignupForm, User } from "@/domain/user";
 import { apiClient } from "@/utils/client";
 
 export const createUser = async (data: SignupForm) => {

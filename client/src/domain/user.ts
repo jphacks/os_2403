@@ -27,3 +27,10 @@ export const SignupFormSchema = z.object({
 });
 
 export type SignupForm = z.infer<typeof SignupFormSchema>;
+
+export const LoginFormSchema = z.object({
+	email: z.string().min(1, { message: "入力必須な項目です。" }),
+	password: z.string().min(1, { message: "入力必須な項目です。" }),
+});
+
+export type LoginForm = z.infer<typeof loginFormSchema>;

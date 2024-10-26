@@ -20,9 +20,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoginForm, LoginFormSchema, User, userAtom } from "@/domain/user";
+import { apiClient } from "@/utils/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAtom } from "jotai/index";
 import { CircleChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import style from "./style.module.scss";
@@ -32,12 +36,15 @@ type LoginCardProps = {
 	type: "user" | "community";
 };
 
-const loginForm = z.object({
-	mail: z.string().min(1, { message: "メールアドレスを入力してください。" }),
-	password: z.string().min(1, { message: "パスワードを入力してください。" }),
-});
+// const loginForm = z.object({
+// 	mail: z.string().min(1, { message: "メールアドレスを入力してください。" }),
+// 	password: z.string().min(1, { message: "パスワードを入力してください。" }),
+// });
 
 export const LoginDialog = (props: LoginCardProps) => {
+	const [currentUser, setCurrentUser] = useAtom<User | null>(userAtom);
+	const router = useRouter();
+
 	let title = "";
 	let alternative = "";
 	if (props.type === "user") {
@@ -48,16 +55,39 @@ export const LoginDialog = (props: LoginCardProps) => {
 		alternative = "利用者の方はこちら";
 	}
 
-	const form = useForm<z.infer<typeof loginForm>>({
-		resolver: zodResolver(loginForm),
+	const form = useForm<z.infer<typeof LoginFormSchema>>({
+		resolver: zodResolver(LoginFormSchema),
 		defaultValues: {
-			mail: "",
+			email: "",
 			password: "",
 		},
 	});
 
-	const onSubmit = (data: z.infer<typeof loginForm>) => {
-		console.log("フォーム送信データ:", data);
+	const onSubmit = (data: z.infer<typeof LoginFormSchema>) => {
+		try {
+			apiClient.post("/user/signin", data);
+
+			const response = apiClient.post("/user/signin", data);
+
+			// const user: User = {
+			// 	uuid: response.uuid,
+			// 	name: response.name,
+			// 	email: response.email,
+			// 	password: response.password,
+			// 	img: response.img,
+			// 	self: response.self,
+			// 	mem1: response.mem1,
+			// 	mem2: response.mem2,
+			// 	mem3: response.mem3,
+			// 	tag: response.tag,
+			// };
+			// setCurrentUser(user);
+
+			router.push("/");
+			// console.log("フォーム送信データ:", data);
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	return (
@@ -71,7 +101,7 @@ export const LoginDialog = (props: LoginCardProps) => {
 						<CardContent>
 							<FormField
 								control={form.control}
-								name="mail"
+								name="email"
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>メールアドレス</FormLabel>
