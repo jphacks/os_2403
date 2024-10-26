@@ -19,30 +19,35 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { SignupFormSchema, User, userAtom } from "@/domain/user";
+import { createUser } from "@/feature/signup/hook/signup";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAtom } from "jotai/index";
 import { CircleChevronRight } from "lucide-react";
-import react from "react";
+import react, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import style from "./style.module.scss";
 
-const signupForm = z.object({
-	nickname: z.string().min(1, { message: "入力必須な項目です。" }),
-	belong_to1: z.string().min(1, { message: "入力必須な項目です。" }),
-	belong_to2: z.string(),
-	belong_to3: z.string(),
-	mail: z.string().min(1, { message: "入力必須な項目です。" }),
-	password: z.string().min(1, { message: "入力必須な項目です。" }),
-	introduction: z.string(),
-});
+// const SignupFormSchema = z.object({
+// 	nickname: z.string().min(1, { message: "入力必須な項目です。" }),
+// 	belong_to1: z.string().min(1, { message: "入力必須な項目です。" }),
+// 	belong_to2: z.string(),
+// 	belong_to3: z.string(),
+// 	mail: z.string().min(1, { message: "入力必須な項目です。" }),
+// 	password: z.string().min(1, { message: "入力必須な項目です。" }),
+// 	introduction: z.string(),
+// });
 
 type Props = {
 	introduction: string;
 };
 
 export const SignUpDialog = (props: Props) => {
-	const form = useForm<z.infer<typeof signupForm>>({
-		resolver: zodResolver(signupForm),
+	const [currentUser, setCurrentUser] = useAtom<User | null>(userAtom);
+
+	const form = useForm<z.infer<typeof SignupFormSchema>>({
+		// resolver: zodResolver(SignupFormSchema),
 		defaultValues: {
 			nickname: "",
 			belong_to1: "",
@@ -54,11 +59,29 @@ export const SignUpDialog = (props: Props) => {
 		},
 	});
 
-	// react.useEffect(() => {
-	// 	form.trigger();
-	// });
-	const onSubmit = (data: z.infer<typeof signupForm>) => {
-		console.log("フォーム送信データ:", data);
+	const onSubmit = async (data: z.infer<typeof SignupFormSchema>) => {
+		try {
+			console.log("Form data:", data);
+			const response = await createUser(data);
+			console.log("Response:", response);
+
+			const user: User = {
+				uuid: response.uuid,
+				name: response.name,
+				email: response.email,
+				password: response.password,
+				img: response.img,
+				self: response.self,
+				mem1: response.mem1,
+				mem2: response.mem2,
+				mem3: response.mem3,
+				tag: response.tag,
+			};
+			setCurrentUser(user);
+		} catch (error) {
+			console.error("Error submitting form:", error);
+		}
+		// console.log("test");
 	};
 
 	return (
