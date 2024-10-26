@@ -1,4 +1,4 @@
-import { ProfileSetting } from "@/features/profile/components/ProfileSetting";
+import { ProfileSetting } from "@/feature/profile/components/ProfileSetting";
 
 const ProfileSettingPage = () => {
 	return <ProfileSetting />;

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import style from "@/features/profile/components/style.module.scss";
+import style from "@/feature/profile/components/style.module.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleChevronRight } from "lucide-react";
 
