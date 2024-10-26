@@ -87,18 +87,6 @@ export const LoginDialog = (props: LoginCardProps) => {
 								)}
 							/>
 
-							{/*<Label htmlFor="password">パスワード</Label>*/}
-							{/*<Input*/}
-							{/*	type="password"*/}
-							{/*	placeholder="パスワードを入力してください"*/}
-							{/*	className={style.input}*/}
-							{/*/>*/}
-							{/*<Link href="">*/}
-							{/*	<div className={style.flex}>*/}
-							{/*		<CircleChevronRight />*/}
-							{/*		パスワードを忘れですか？*/}
-							{/*	</div>*/}
-							{/*</Link>*/}
 							<FormField
 								control={form.control}
 								name="password"
