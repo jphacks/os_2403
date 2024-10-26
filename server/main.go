@@ -48,12 +48,14 @@ func main() {
 	userUsecase := usecase.NewUserUseCase(userRepo, memberRepo, tagRepo)
 	communityUsecase := usecase.NewCommunityUseCase(communityRepo, memberRepo, tagRepo)
 	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo)
+	tagUsecase := usecase.NewTagUseCase(tagRepo)
 
 	authUserHandler := handlers.NewAuthUserHandler(authUserUsecase, store)
 	authCommunityHandler := handlers.NewAuthCommunityHandler(authcommunityUsecase, store)
 	userHandler := handlers.NewUserHandler(userUsecase)
-  communityHandler := handlers.NewCommunityHandler(communityUsecase)
+	communityHandler := handlers.NewCommunityHandler(communityUsecase)
 	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase)
+	tagHanfler := handlers.NewTagHandler(tagUsecase)
 
 	// 他の初期化ここに書いてね
 
@@ -75,6 +77,8 @@ func main() {
 	router.POST("/community/signup", authCommunityHandler.SignUp)
 
 	router.PUT("/community", communityHandler.Update)
+
+	router.GET("/tag", tagHanfler.GetRandom)
 
 	router.GET("/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
 	router.POST("/createscout", scoutListHandler.CreateScout)
