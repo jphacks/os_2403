@@ -52,7 +52,7 @@ func main() {
 	authUserHandler := handlers.NewAuthUserHandler(authUserUsecase, store)
 	authCommunityHandler := handlers.NewAuthCommunityHandler(authcommunityUsecase, store)
 	userHandler := handlers.NewUserHandler(userUsecase)
-  communityHandler := handlers.NewCommunityHandler(communityUsecase)
+	communityHandler := handlers.NewCommunityHandler(communityUsecase)
 	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase)
 
 	// 他の初期化ここに書いてね
@@ -70,6 +70,7 @@ func main() {
 	router.POST("/user/signup", authUserHandler.SignUp)
 
 	router.PUT("/user", userHandler.Update)
+	router.GET("/user", userHandler.FindByID)
 
 	router.POST("/community/signin", authCommunityHandler.SignIn)
 	router.POST("/community/signup", authCommunityHandler.SignUp)
