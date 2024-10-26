@@ -1,0 +1,15 @@
+@use "./theme";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "MOBO";
+  //font-family: 'Calibri';
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
