@@ -24,20 +24,12 @@ import { createUser } from "@/feature/signup/hook/signup";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai/index";
 import { CircleChevronRight } from "lucide-react";
+import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import react, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import style from "./style.module.scss";
-
-// const SignupFormSchema = z.object({
-// 	nickname: z.string().min(1, { message: "入力必須な項目です。" }),
-// 	belong_to1: z.string().min(1, { message: "入力必須な項目です。" }),
-// 	belong_to2: z.string(),
-// 	belong_to3: z.string(),
-// 	mail: z.string().min(1, { message: "入力必須な項目です。" }),
-// 	password: z.string().min(1, { message: "入力必須な項目です。" }),
-// 	introduction: z.string(),
-// });
 
 type Props = {
 	introduction: string;
@@ -45,17 +37,18 @@ type Props = {
 
 export const SignUpDialog = (props: Props) => {
 	const [currentUser, setCurrentUser] = useAtom<User | null>(userAtom);
+	const router = useRouter();
 
 	const form = useForm<z.infer<typeof SignupFormSchema>>({
 		// resolver: zodResolver(SignupFormSchema),
 		defaultValues: {
-			nickname: "",
-			belong_to1: "",
-			belong_to2: "",
-			belong_to3: "",
-			mail: "",
+			name: "",
+			mem1: "",
+			mem2: "",
+			mem3: "",
+			email: "",
 			password: "",
-			introduction: "",
+			self: "",
 		},
 	});
 
@@ -78,10 +71,10 @@ export const SignUpDialog = (props: Props) => {
 				tag: response.tag,
 			};
 			setCurrentUser(user);
+			router.push("/login/user");
 		} catch (error) {
 			console.error("Error submitting form:", error);
 		}
-		// console.log("test");
 	};
 
 	return (
@@ -95,7 +88,7 @@ export const SignUpDialog = (props: Props) => {
 					<CardContent>
 						<FormField
 							control={form.control}
-							name="nickname"
+							name="name"
 							render={({ field }) => (
 								<FormItem className={style.form}>
 									<FormLabel className={style.label}>
@@ -114,7 +107,7 @@ export const SignUpDialog = (props: Props) => {
 						/>
 						<FormField
 							control={form.control}
-							name="belong_to1"
+							name="mem1"
 							render={({ field }) => (
 								<FormItem className={style.form}>
 									<FormLabel className={style.label}>
@@ -134,7 +127,7 @@ export const SignUpDialog = (props: Props) => {
 
 						<FormField
 							control={form.control}
-							name="belong_to2"
+							name="mem2"
 							render={({ field }) => (
 								<FormItem className={style.form}>
 									<FormLabel className={style.label}>所属2</FormLabel>
@@ -152,7 +145,7 @@ export const SignUpDialog = (props: Props) => {
 
 						<FormField
 							control={form.control}
-							name="belong_to3"
+							name="mem3"
 							render={({ field }) => (
 								<FormItem className={style.form}>
 									<FormLabel className={style.label}>所属3</FormLabel>
@@ -170,7 +163,7 @@ export const SignUpDialog = (props: Props) => {
 
 						<FormField
 							control={form.control}
-							name="mail"
+							name="email"
 							render={({ field }) => (
 								<FormItem className={style.form}>
 									<FormLabel className={style.label}>
@@ -213,7 +206,7 @@ export const SignUpDialog = (props: Props) => {
 
 						<FormField
 							control={form.control}
-							name="introduction"
+							name="self"
 							render={({ field }) => (
 								<FormItem className={style.form}>
 									<FormLabel className={style.label}>

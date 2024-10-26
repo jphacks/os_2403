@@ -16,14 +16,14 @@ export type User = {
 export const userAtom = atom<User | null>(null);
 
 export const SignupFormSchema = z.object({
-	nickname: z.string().min(1, { message: "入力必須な項目です。" }),
-	belong_to1: z.string().min(1, { message: "入力必須な項目です。" }),
-	belong_to2: z.string(),
-	belong_to3: z.string(),
+	name: z.string().min(1, { message: "入力必須な項目です。" }),
+	mem1: z.string().min(1, { message: "入力必須な項目です。" }),
+	mem2: z.string(),
+	mem3: z.string(),
 	img: z.string(),
-	mail: z.string().min(1, { message: "入力必須な項目です。" }),
+	email: z.string().min(1, { message: "入力必須な項目です。" }),
 	password: z.string().min(1, { message: "入力必須な項目です。" }),
-	introduction: z.string(),
+	self: z.string(),
 });
 
 export type SignupForm = z.infer<typeof SignupFormSchema>;
