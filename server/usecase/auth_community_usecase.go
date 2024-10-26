@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type InputSignUp struct {
+type InputCommunitySignUp struct {
 	Name     string
 	Email    string
 	Password string
@@ -19,38 +19,40 @@ type InputSignUp struct {
 	Mem2     string
 	Mem3     string
 	Text     string
+	Range    []int
 }
 
-type InputSignIn struct {
+type InputCommunitySignIn struct {
 	Email    string
 	Password string
 }
 
-type IAuthUsecase interface {
-	SignUp(ctx context.Context, input InputSignUp) error
-	SignIn(ctx context.Context, input InputSignIn) error
+type IAuthCommunityUsecase interface {
+	SignUp(ctx context.Context, input InputCommunitySignUp) error
+	SignIn(ctx context.Context, input InputCommunitySignIn) error
 }
 
-type authUsecase struct {
-	userRepo    repositories.IUserRepository
-	sessionRepo repositories.ISessionRepository
-	memberRepo  repositories.IMemberRepository
-	tagRepo     repositories.ITagRepository
+type authCommunityUsecase struct {
+	communityRepo repositories.ICommunityRepository
+	sessionRepo   repositories.ISessionRepository
+	memberRepo    repositories.IMemberRepository
+	tagRepo       repositories.ITagRepository
 }
 
-func NewAuthUserUseCase(userRepo repositories.IUserRepository, sessionRepo repositories.ISessionRepository, memberRepo repositories.IMemberRepository, tagRepo repositories.ITagRepository) IAuthUsecase {
-	return &authUsecase{
-		userRepo:    userRepo,
-		sessionRepo: sessionRepo,
-		memberRepo:  memberRepo,
-		tagRepo:     tagRepo,
+func NewAuthCommunityUseCase(community repositories.ICommunityRepository, sessionRepo repositories.ISessionRepository, memberRepo repositories.IMemberRepository, tagRepo repositories.ITagRepository) IAuthCommunityUsecase {
+	return &authCommunityUsecase{
+		communityRepo: community,
+		sessionRepo:   sessionRepo,
+		memberRepo:    memberRepo,
+		tagRepo:       tagRepo,
 	}
 }
 
-func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) error {
+func (u *authCommunityUsecase) SignUp(ctx context.Context, input InputCommunitySignUp) error {
 	fmt.Println("usecase")
 	fmt.Println(input)
-	var user *models.User
+
+	var community *models.Community
 
 	mem1 := &models.Member{
 		Name: input.Mem1,
@@ -75,8 +77,10 @@ func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) error {
 		return fmt.Errorf("failed to hash password: %v", err)
 	}
 
+	fmt.Println(input.Range)
+
 	// 新規ユーザーの作成
-	user = &models.User{
+	community = &models.Community{
 		UUID:     uuid.New(),
 		Name:     input.Name,
 		Email:    input.Email,
@@ -86,27 +90,27 @@ func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) error {
 		Mem1:     mem1ID,
 		Mem2:     mem2ID,
 		Mem3:     mem3ID,
+		MemRange: models.IntArray(input.Range), // IntArray型に変換
 	}
 
-	fmt.Println(user)
+	fmt.Println(community)
 
-	if err := u.userRepo.Create(ctx, user); err != nil {
+	if err := u.communityRepo.Create(ctx, community); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (u *authUsecase) SignIn(ctx context.Context, input InputSignIn) error {
-	fmt.Println("User SignIn Usecase")
+func (u *authCommunityUsecase) SignIn(ctx context.Context, input InputCommunitySignIn) error {
 	// ユーザーをリポジトリから取得
-	user, err := u.userRepo.FindByEmail(ctx, input.Email)
+	community, err := u.communityRepo.FindByEmail(ctx, input.Email)
 	if err != nil {
 		return fmt.Errorf("failed to get user: %w", err)
 	}
 
 	// ハッシュ化されたパスワードと入力されたパスワードを比較
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(community.Password), []byte(input.Password))
 	if err != nil {
 		return fmt.Errorf("invalid credentials: %w", err)
 	}

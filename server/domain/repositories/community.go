@@ -7,5 +7,6 @@ import (
 
 type ICommunityRepository interface {
 	Create(ctx context.Context, community *models.Community) error
+	Update(ctx context.Context, community *models.Community) error
 	FindByEmail(ctx context.Context, email string) (*models.Community, error)
 }
