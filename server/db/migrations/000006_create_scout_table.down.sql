@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS `ScoutList` (
+   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   `user_uuid` UUID REFERENCES `users`(`uuid`) NOT NULL,
+    `status` INT NOT NULL,
+    `community_uuid` UUID INT NOT NULL, --`community_uuid` UUID REFERENCES `community`(`uuid`) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    `deleted_at` TIMESTAMP
+);
