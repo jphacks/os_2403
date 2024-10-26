@@ -41,18 +41,21 @@ func main() {
 	sessionRepo := dao.NewSessionRepository(db)
 	communityRepo := dao.NewCommunityRepository(db)
 	scoutListRepo := dao.NewscoutListRepository(db)
+	eventRepo := dao.NewEventRepository(db)
 
 	authUserUsecase := usecase.NewAuthUserUseCase(userRepo, sessionRepo, memberRepo, tagRepo)
 	authcommunityUsecase := usecase.NewAuthCommunityUseCase(communityRepo, sessionRepo, memberRepo, tagRepo)
 	userUsecase := usecase.NewUserUseCase(userRepo, memberRepo, tagRepo)
 	communityUsecase := usecase.NewCommunityUseCase(communityRepo, memberRepo, tagRepo)
 	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo)
+	eventUsecase := usecase.NewEventUsecase(eventRepo)
 
 	authUserHandler := handlers.NewAuthUserHandler(authUserUsecase, store)
 	authCommunityHandler := handlers.NewAuthCommunityHandler(authcommunityUsecase, store)
 	userHandler := handlers.NewUserHandler(userUsecase)
-  communityHandler := handlers.NewCommunityHandler(communityUsecase)
+	communityHandler := handlers.NewCommunityHandler(communityUsecase)
 	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase)
+	eventHandler := handlers.NewEventHandler(eventUsecase)
 
 	// 他の初期化ここに書いてね
 
@@ -78,6 +81,10 @@ func main() {
 	router.GET("/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
 	router.POST("/createscout", scoutListHandler.CreateScout)
 	router.PUT("/changescoutstatus", scoutListHandler.ChangeStatus)
+
+	router.GET("/getevent", eventHandler.GetAllEvents)
+	router.POST("/createdevent", eventHandler.CreateEvent)
+	router.PUT("/updataevent", eventHandler.UpdateEvent)
 
 	log.Fatal(http.ListenAndServe(":80", router))
 }
