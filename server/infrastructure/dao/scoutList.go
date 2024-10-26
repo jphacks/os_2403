@@ -33,6 +33,7 @@ func (r *scoutListRepository) Get(ctx context.Context, userUUID uuid.UUID) ([]mo
 			Status:         scout.Status,
 			Community_UUID: scout.Community_UUID,
 			CommunityInfo: models.CommunityInfo{
+				Name: scout.Community.Name,
 				Img:  scout.Community.Img,
 				Self: scout.Community.Self,
 				Mem1: scout.Community.Mem1,
@@ -61,6 +62,7 @@ func (r *scoutListRepository) GetWithCommunityDetails(ctx context.Context, userU
 	query := r.db.WithContext(ctx).
 		Table("scout_lists").
 		Select("scout_lists.*, "+
+			"communities.name AS community_name, "+
 			"communities.img as community_img, "+
 			"communities.self as community_self, "+
 			"communities.mem1 as community_mem1, "+
@@ -94,13 +96,13 @@ func (r *scoutListRepository) GetWithCommunityDetails(ctx context.Context, userU
 	return responses, nil
 }
 
-func (r *scoutListRepository) Create(ctx context.Context, scoutList *models.ScoutDetailList) error {
+func (r *scoutListRepository) Create(ctx context.Context, scoutList *models.ScoutList) error {
 	return r.db.WithContext(ctx).Create(scoutList).Error
 }
 
 func (r *scoutListRepository) ChangeStatus(ctx context.Context, userUUID uuid.UUID, status uint) error {
 	return r.db.WithContext(ctx).
-		Model(&models.ScoutDetailList{}).
+		Model(&models.ScoutList{}).
 		Where("user_uuid = ?", userUUID).
 		Update("status", status).Error
 }

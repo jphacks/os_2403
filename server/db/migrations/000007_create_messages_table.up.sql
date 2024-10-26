@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS `messages` (
     `deleted_at` TIMESTAMP NULL DEFAULT NULL,             -- 削除日時（論理削除）
 
 -- 外部キー制約
-    FOREIGN KEY (`room_id`) REFERENCES `ScoutLists`(`id`),     -- ルームIDを参照
+    FOREIGN KEY (`room_id`) REFERENCES `scout_lists`(`id`),     -- ルームIDを参照
     FOREIGN KEY (`user_id`) REFERENCES `users`(`uuid`)    -- ユーザーUUIDを参照
     );

@@ -8,7 +8,7 @@ import (
 )
 
 type IScoutListUsecase interface {
-	Create(ctx context.Context, scoutList *models.ScoutDetailList) error
+	Create(ctx context.Context, scoutList *models.ScoutList) error
 	Get(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error)
 	ChangeStatus(ctx context.Context, userUUID uuid.UUID, status uint) error
 	GetWithCommunityDetails(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error)
@@ -24,7 +24,7 @@ func NewScoutListUsecase(repo repositories.IScoutListRepository) IScoutListUseca
 	}
 }
 
-func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.ScoutDetailList) error {
+func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.ScoutList) error {
 	return u.scoutListRepo.Create(ctx, scoutDetailList)
 }
 
