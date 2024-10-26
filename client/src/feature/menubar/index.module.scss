@@ -1,0 +1,47 @@
+@use "@/styles/theme.scss";
+@use "@/styles/utils.scss";
+
+.header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  color: theme.$black;
+  background: theme.$background;
+}
+
+.icons {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  @include utils.padding(1em);
+}
+
+.icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: theme.$red;
+  color: theme.$background;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.logo {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.search {
+    width: 300px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
+  }
