@@ -4,8 +4,8 @@
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 import { invitesAtom } from '@/domain/inviteAtom';
-import { InviteList } from './components/InviteList';
-import { InviteCard } from './components/InviteCard';
+import { InviteList } from './components/invite-list';
+import { InviteCard } from './components/invite-card';
 import styles from './index.module.scss';
 
 export function Invite() {

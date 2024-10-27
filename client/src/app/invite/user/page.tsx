@@ -1,4 +1,4 @@
-import { Invite } from "@/feature/Invite";
+import { Invite } from "@/feature/invite";
 
 const InvitePage = () => {
 	return <Invite/>;

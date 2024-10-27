@@ -1,12 +1,12 @@
 
-function LikeSearch({size=149}) {
+function LikeSearch({ size = 149 }) {
     return (
         <svg
-        width= {size}
-        height= {size * 60/149}
-        viewBox="0 0 149 60"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+            width={size}
+            height={size * 60 / 149}
+            viewBox="0 0 149 60"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
         >
             <mask id="path-1-outside-1_51_814" maskUnits="userSpaceOnUse" x="-1" y="-1" width="151" height="62" fill="black">
                 <rect fill="white" x="-1" y="-1" width="151" height="62" />

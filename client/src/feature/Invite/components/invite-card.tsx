@@ -1,6 +1,5 @@
 'use client'
 
-import { Heart } from 'lucide-react';
 import styles from './card.module.scss';
 
 interface InviteCardProps {
@@ -23,7 +22,7 @@ export const InviteCard = ({
       <div className={styles.content}>
         <h2 className={styles.title}>{title}</h2>
         <p className={styles.subtitle}>{subtitle}</p>
-        
+
         <div className={styles.metadata}>
           <span className={styles.timestamp}>{timestamp}</span>
         </div>
