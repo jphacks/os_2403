@@ -11,8 +11,6 @@ import (
 )
 
 type ScoutHandler struct {
-	scoutUsecase usecase.IScoutListUsecase
-	userUsecase  usecase.IUesrUsecase
 	scoutUsecase     usecase.IScoutListUsecase
 	userUsecase      usecase.IUesrUsecase
 	communityUsecase usecase.ICommunityUsecase

@@ -1,6 +1,6 @@
 module github.com/jphacks/os_2403
 
-go 1.23.2
+go 1.23.1
 
 require (
 	github.com/gin-gonic/gin v1.10.0

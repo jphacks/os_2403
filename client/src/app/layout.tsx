@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Menubar } from "../features/menubar";
+import { Menubar } from "../feature/menubar";
 import "@/styles/globals.scss";
 
 

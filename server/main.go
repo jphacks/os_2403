@@ -4,8 +4,6 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-migrate/migrate/v4"
-	migrate_mysql "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
@@ -13,10 +11,8 @@ import (
 	"github.com/jphacks/os_2403/infrastructure/middleware"
 	"github.com/jphacks/os_2403/interfaces/handlers"
 	"github.com/jphacks/os_2403/usecase"
-	"github.com/rollbar/rollbar-go"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 	"log"
 	"net/http"
 	"os"
@@ -129,28 +125,28 @@ func initDB() (*gorm.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect database: %w", err)
 	}
-
-	sqlDB, err := db.DB()
-	if err != nil {
-		rollbar.Error(err)
-		panic(err)
-	}
-	dbDriver, err := migrate_mysql.WithInstance(sqlDB, &migrate_mysql.Config{})
-	if err != nil {
-		rollbar.Error(err)
-		panic(err)
-	}
-	m, err := migrate.NewWithDatabaseInstance("file://db/migrations", "mysql", dbDriver)
-	if err != nil {
-		rollbar.Error(err)
-		panic(err)
-	}
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		rollbar.Error(err)
-		panic(err)
-	}
-
-	db.Logger = db.Logger.LogMode(logger.Info)
+	//
+	//sqlDB, err := db.DB()
+	//if err != nil {
+	//	rollbar.Error(err)
+	//	panic(err)
+	//}
+	//dbDriver, err := migrate_mysql.WithInstance(sqlDB, &migrate_mysql.Config{})
+	//if err != nil {
+	//	rollbar.Error(err)
+	//	panic(err)
+	//}
+	//m, err := migrate.NewWithDatabaseInstance("file://db/migrations", "mysql", dbDriver)
+	//if err != nil {
+	//	rollbar.Error(err)
+	//	panic(err)
+	//}
+	//if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+	//	rollbar.Error(err)
+	//	panic(err)
+	//}
+	//
+	//db.Logger = db.Logger.LogMode(logger.Info)
 
 	return db, nil
 }

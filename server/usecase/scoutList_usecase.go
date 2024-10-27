@@ -54,7 +54,7 @@ func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.S
 
 	fmt.Println(recipients)
 
-	community, err = u.communityRepo.FindByID(ctx, scoutDetailList.Community_UUID)
+	community, err = u.communityRepo.FindByID(ctx, scoutDetailList.Community_UUID.String())
 	if err != nil {
 		return err
 	}
