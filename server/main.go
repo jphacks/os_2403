@@ -58,7 +58,7 @@ func main() {
 	communityHandler := handlers.NewCommunityHandler(communityUsecase)
 	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase)
 	tagHandler := handlers.NewTagHandler(tagUsecase)
-	eventHandler := handlers.NewEventHandler(eventUsecase)
+	eventHandler := handlers.NewEventHandler(eventUsecase, communityUsecase)
 
 	// WebSocketの初期化
 	wsService := middleware.NewWebSocketService()
@@ -91,6 +91,7 @@ func main() {
 	router.GET("/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
 	router.POST("/createscout", scoutListHandler.CreateScout)
 	router.PUT("/changescoutstatus", scoutListHandler.ChangeStatus)
+	router.GET("/getmessageuser", scoutListHandler.GetMessageUser)
 
 	router.GET("/getevent", eventHandler.GetAllEvents)
 	router.POST("/createdevent", eventHandler.CreateEvent)
