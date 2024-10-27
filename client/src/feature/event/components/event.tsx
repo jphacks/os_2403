@@ -73,11 +73,12 @@ const tags = [
 ];
 
 export const EventSettingSchema = z.object({
-	eventName: z.string().min(1, { message: "入力必須です。" }),
+	community_uuid: z.string(),
+	title: z.string().min(1, { message: "入力必須です。" }),
 	img: z.string().min(1, { message: "入力必須です。" }),
-	eventDay: z.date(),
-	tags: z.string().array(),
-	detail: z.string(),
+	date: z.date(),
+	tag: z.string().array(),
+	detailed: z.string(),
 });
 
 export type EventSettingRequest = z.infer<typeof EventSettingSchema>;
@@ -85,11 +86,19 @@ export type EventSettingRequest = z.infer<typeof EventSettingSchema>;
 export const DatePickerField = () => {
 	const form = useForm<z.infer<typeof EventSettingSchema>>({
 		resolver: zodResolver(EventSettingSchema),
+		defaultValues: {
+			community_uuid: "eae7583a-77d3-422a-8399-1f3f9b0d7d08",
+			title: "",
+			img: "",
+			date: undefined,
+			tag: [],
+			detailed: "",
+		},
 	});
 
 	const onSubmit = async (data: z.infer<typeof EventSettingSchema>) => {
-		const response = createEvent(data);
-		console.log(response.data);
+		const response = await createEvent(data);
+		console.log(data);
 	};
 
 	return (
@@ -100,7 +109,7 @@ export const DatePickerField = () => {
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<FormField
 						control={form.control}
-						name="eventName"
+						name="title"
 						render={({ field }) => (
 							<FormItem className={style.form}>
 								<FormLabel className={style.label}>イベント名</FormLabel>
@@ -129,7 +138,7 @@ export const DatePickerField = () => {
 
 					<FormField
 						control={form.control}
-						name="tags"
+						name="tag"
 						render={({ field }) => (
 							<FormItem className={style.tag}>
 								<FormLabel className={style.label}>
@@ -169,28 +178,20 @@ export const DatePickerField = () => {
 																if (isSelected) {
 																	// タグを削除
 																	form.setValue(
-																		"tags",
+																		"tag",
 																		currentTags.filter(
 																			(value) => value !== tag.value,
 																		),
 																	);
 																} else if (currentTags.length < 3) {
 																	// タグを追加（3つまで）
-																	form.setValue("tags", [
+																	form.setValue("tag", [
 																		...currentTags,
 																		tag.value,
 																	]);
 																}
 															}}
 														>
-															{/*<Check*/}
-															{/*	className={cn(*/}
-															{/*		"mr-2 h-4 w-4",*/}
-															{/*		field.value?.includes(tag.value)*/}
-															{/*			? "opacity-100"*/}
-															{/*			: "opacity-0",*/}
-															{/*	)}*/}
-															{/*/>*/}
 															{tag.label}
 														</CommandItem>
 													))}
@@ -217,7 +218,7 @@ export const DatePickerField = () => {
 
 					<FormField
 						control={form.control}
-						name="eventDay"
+						name="date"
 						render={({ field }) => (
 							<FormItem className={style.date}>
 								<div className={style.label}>
@@ -240,7 +241,7 @@ export const DatePickerField = () => {
 									<PopoverContent align="start">
 										<Calendar
 											mode="single"
-											selected={field.value}
+											selected={field.value ? new Date(field.value) : undefined}
 											onSelect={field.onChange}
 											disabled={(date) => date < new Date()}
 											initialFocus
@@ -254,7 +255,7 @@ export const DatePickerField = () => {
 					<br />
 					<FormField
 						control={form.control}
-						name="detail"
+						name="detailed"
 						render={({ field }) => (
 							<FormItem className={style.form}>
 								<FormLabel className={style.label}>詳細</FormLabel>
