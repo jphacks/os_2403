@@ -38,11 +38,6 @@ type LoginCardProps = {
 	type: "user" | "community";
 };
 
-// const loginForm = z.object({
-// 	mail: z.string().min(1, { message: "メールアドレスを入力してください。" }),
-// 	password: z.string().min(1, { message: "パスワードを入力してください。" }),
-// });
-
 export const LoginDialog = (props: LoginCardProps) => {
 	const [currentUser, setCurrentUser] = useAtom<User | null>(userAtom);
 	const [currentCommunity, setCurrentCommunity] = useState<Community | null>();
