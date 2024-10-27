@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jphacks/os_2403/domain/models"
 	"github.com/jphacks/os_2403/usecase"
+	"log"
 	"net/http"
 	"time"
 )
@@ -71,7 +72,9 @@ func (h *eventHandler) CreateEvent(ctx *gin.Context) {
 		return
 	}
 
-	date, err := time.Parse("2006-01-02", req.Date) // Adjust date format as needed
+	log.Println(req.Date)
+
+	date, err := time.Parse(time.RFC3339, req.Date) // Adjust date format as needed
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format"})
 		return
