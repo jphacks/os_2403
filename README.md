@@ -1,5 +1,5 @@
 # HubMe
-<img width="960" alt="スクリーンショット 2024-10-27 130514" src="https://github.com/user-attachments/assets/f0c05cb8-7502-4a03-8bc6-8ad4ccbfa677">
+<img width="960" alt="スクリーンショット 2024-10-27 145439" src="https://github.com/user-attachments/assets/f071148a-20f2-4daa-9c54-6f1d189dc970">
 
 ## 製品概要
 ### 背景(製品開発のきっかけ、課題等）
