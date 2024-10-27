@@ -35,6 +35,7 @@ import {
 import TagButton from "@/components/tags/tag-button";
 import { yellow } from "next/dist/lib/picocolors";
 import { cn } from "@/lib/utils";
+import { createEvent } from "@/feature/event/hooks/event";
 
 const tags = [
 	{ label: "英語", value: "英語" },
@@ -71,7 +72,7 @@ const tags = [
 	{ label: "漫画", value: "漫画" },
 ];
 
-const EventSettingSchema = z.object({
+export const EventSettingSchema = z.object({
 	eventName: z.string().min(1, { message: "入力必須です。" }),
 	img: z.string().min(1, { message: "入力必須です。" }),
 	eventDay: z.date(),
@@ -79,13 +80,16 @@ const EventSettingSchema = z.object({
 	detail: z.string(),
 });
 
+export type EventSettingRequest = z.infer<typeof EventSettingSchema>;
+
 export const DatePickerField = () => {
 	const form = useForm<z.infer<typeof EventSettingSchema>>({
 		resolver: zodResolver(EventSettingSchema),
 	});
 
 	const onSubmit = async (data: z.infer<typeof EventSettingSchema>) => {
-		console.log(data);
+		const response = createEvent(data);
+		console.log(response.data);
 	};
 
 	return (
