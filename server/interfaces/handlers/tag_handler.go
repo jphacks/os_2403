@@ -25,12 +25,6 @@ func NewTagHandler(tagUsecase usecase.ITagUsecase) ITagHandler {
 }
 
 func (h *tagHandler) GetRandom(ctx *gin.Context) {
-	var request TagUpdateRequest
-	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(400, gin.H{"error": err.Error()})
-		return
-	}
-
 	//
 	tags, err := h.tagUsecase.GetRandom(ctx)
 	if err != nil {
