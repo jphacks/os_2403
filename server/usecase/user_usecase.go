@@ -19,7 +19,7 @@ type InputUserUpdate struct {
 	Mem1     string
 	Mem2     string
 	Mem3     string
-	Text     string
+	Tags     []string `json:"tag"`
 }
 
 type InputUserFindByID struct {
@@ -66,6 +66,17 @@ func (u *userUsecase) Update(ctx context.Context, input InputUserUpdate) error {
 	}
 	mem3ID, _ := u.memberRepo.Create(ctx, mem3)
 
+	var tags []int
+
+	for _, t := range input.Tags {
+		tag := &models.Tag{
+			Name: t,
+		}
+		tag_num, _ := u.tagRepo.Create(ctx, tag)
+
+		tags = append(tags, tag_num) // tagsにtag_numを追加
+	}
+
 	fmt.Println(mem3ID)
 
 	// パスワードをハッシュ化
@@ -85,6 +96,7 @@ func (u *userUsecase) Update(ctx context.Context, input InputUserUpdate) error {
 		Mem1:     mem1ID,
 		Mem2:     mem2ID,
 		Mem3:     mem3ID,
+		Tags:     tags,
 	}
 
 	fmt.Println(user)

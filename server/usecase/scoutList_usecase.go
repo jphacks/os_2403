@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"crypto/tls"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/jphacks/os_2403/domain/models"
 	"github.com/jphacks/os_2403/domain/repositories"
@@ -27,16 +28,17 @@ type CreateScoutsRequest struct {
 	CommunityUUID string `json:"community_uuid"`
 }
 
-func NewScoutListUsecase(repo repositories.IScoutListRepository) IScoutListUsecase {
+func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo repositories.IUserRepository, communityRepo repositories.ICommunityRepository) IScoutListUsecase {
 	return &scoutListUsecase{
 		scoutListRepo: repo,
+		userRepo:      userRepo,
+		communityRepo: communityRepo,
 	}
 }
 
 func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.ScoutList) error {
 	// メール送信
 	var recipients []string
-	var user *models.User
 	var community *models.Community
 
 	user, err := u.userRepo.FindByID(ctx, scoutDetailList.User_UUID.String())
@@ -45,6 +47,9 @@ func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.S
 	}
 
 	recipients = append(recipients, user.Email)
+
+	fmt.Println(recipients)
+
 	community, err = u.communityRepo.FindByID(ctx, scoutDetailList.Community_UUID)
 	if err != nil {
 		return err
@@ -69,6 +74,8 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, userUUID
 }
 
 func sendEmail(recipients []string, publisher string) error {
+	fmt.Println("hogehoge")
+
 	m := gomail.NewMessage()
 
 	// 送信元

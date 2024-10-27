@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/jphacks/os_2403/domain/models"
@@ -144,6 +145,9 @@ func (h *ScoutHandler) CreateScouts(ctx *gin.Context) {
 			Status:         0, // 最初は未読(0)で登録
 			Community_UUID: communityUUID,
 		}
+
+		fmt.Println("hogehoeghegohgoe")
+		fmt.Println(scoutDetail.User_UUID)
 
 		if err := h.scoutUsecase.Create(ctx.Request.Context(), scoutDetail); err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

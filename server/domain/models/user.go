@@ -12,5 +12,5 @@ type User struct {
 	Mem1     uint      `gorm:"type:int unsigned"`
 	Mem2     uint      `gorm:"type:int unsigned"`
 	Mem3     uint      `gorm:"type:int unsigned"`
-	Tags     []int     `gorm:"type:json"`
+	Tags     IntArray  `gorm:"type:json"`
 }

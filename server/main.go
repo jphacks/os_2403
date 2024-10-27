@@ -48,7 +48,7 @@ func main() {
 	authcommunityUsecase := usecase.NewAuthCommunityUseCase(communityRepo, sessionRepo, memberRepo, tagRepo)
 	userUsecase := usecase.NewUserUseCase(userRepo, memberRepo, tagRepo)
 	communityUsecase := usecase.NewCommunityUseCase(communityRepo, memberRepo, tagRepo)
-	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo)
+	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo, userRepo, communityRepo)
 	eventUsecase := usecase.NewEventUsecase(eventRepo)
 	tagUsecase := usecase.NewTagUseCase(tagRepo)
 
@@ -89,7 +89,7 @@ func main() {
 	router.GET("/tag", tagHandler.GetRandom)
 
 	router.GET("/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
-	router.POST("/createscout", scoutListHandler.CreateScout)
+	router.POST("/createscout", scoutListHandler.CreateScouts)
 	router.PUT("/changescoutstatus", scoutListHandler.ChangeStatus)
 
 	router.GET("/getevent", eventHandler.GetAllEvents)
