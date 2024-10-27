@@ -52,12 +52,15 @@ export const LoginDialog = (props: LoginCardProps) => {
 
 	let title = "";
 	let alternative = "";
+	let api_url = "";
 	if (props.type === "user") {
 		title = "利用者ログイン";
 		alternative = "イベント・サークル運営者の方はこちら";
+		api_url = "/user/signin";
 	} else if (props.type === "community") {
 		title = "イベント・サークル運営者ログイン";
 		alternative = "利用者の方はこちら";
+		api_url = "/community/signin";
 	}
 
 	const form = useForm<z.infer<typeof LoginFormSchema>>({
@@ -70,9 +73,9 @@ export const LoginDialog = (props: LoginCardProps) => {
 
 	const onSubmit = async (data: z.infer<typeof LoginFormSchema>) => {
 		try {
-			await apiClient.post("/user/signin", data);
+			// await apiClient.post(api_url, data);
 
-			const response = await apiClient.post("/user/signin", data);
+			const response = await apiClient.post(api_url, data);
 
 			const user: User = {
 				uuid: response.data.uuid,
