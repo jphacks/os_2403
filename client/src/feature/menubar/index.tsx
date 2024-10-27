@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { MailIcon } from "./components/mail";
 import Invite from "@/../public/invite";
 import Search from "./components/search";
+import Logo from "@/../public/logo";
 
 const mockData = [
     { label: "東京大学" },
@@ -26,13 +27,13 @@ export const Menubar = () => {
     return (
         <div className={style.header}>
             <div className={style.icons}>
-                <a href="/home" className={style.icon}>
+                <a href="/profile/setting/user" className={style.icon}>
                     <Avatar className={style.avatar}>
                         <AvatarImage src={userIcon} />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                 </a>
-                <a href="/school" className={style.icon}>
+                <a href="/invite" className={style.icon}>
                     <Invite size={60} />
                     <span className={style.badge}>{inviteNum}</span>
                 </a>
@@ -42,7 +43,7 @@ export const Menubar = () => {
             </div>
             <div className={style.logo}>
                 <a href="/event">
-                    ロゴ＋タイトル
+                    <Logo size={50}/>
                 </a>
             </div>
             <div className={style.search}>

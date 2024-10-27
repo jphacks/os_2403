@@ -3,7 +3,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Room, Message, SendMessage } from '../types/types';
 import './ChatWindow.scss';
 
-const myUserID = '867aec0c-d47c-4b42-bfa9-fc0b40cd2ce2';
+const myUserID = 'uuiduuiduuid';
 
 interface ChatWindowProps {
   room: Room | null;
@@ -19,7 +19,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
       return;
     }
 
-    ws.current = new WebSocket(`ws://localhost:8080/ws/chat/${room.id}`);
+    ws.current = new WebSocket(`wss://hubme.xyz/ws/chat/${room.id}`);
 
     ws.current.onopen = () => {
       console.log('WebSocket connection established');
