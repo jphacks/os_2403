@@ -1,0 +1,7 @@
+@use "../../../styles/theme";
+
+.background {
+  background-color: theme.$black;
+  height: 100%;
+  min-height: 90vh;
+}
