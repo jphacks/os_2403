@@ -30,14 +30,31 @@ import react, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import style from "./style.module.scss";
+import { apiClient } from "@/utils/client";
 
-type Props = {
-	introduction: string;
+type SignUpProps = {
+	type: "user" | "community";
 };
 
-export const SignUpDialog = (props: Props) => {
+export const SignUpDialog = (props: SignUpProps) => {
 	const [currentUser, setCurrentUser] = useAtom<User | null>(userAtom);
 	const router = useRouter();
+
+	let name = "";
+	let introduction = "";
+	let api_url = "";
+	let go_url = "";
+	if (props.type === "user") {
+		name = "ニックネーム";
+		introduction = "自己紹介";
+		api_url = "/user/signup";
+		go_url = "/login/user";
+	} else if (props.type === "community") {
+		name = "団体名";
+		introduction = "団体紹介";
+		api_url = "/community/signup";
+		go_url = "/login/community";
+	}
 
 	const form = useForm<z.infer<typeof SignupFormSchema>>({
 		// resolver: zodResolver(SignupFormSchema),
@@ -54,24 +71,8 @@ export const SignUpDialog = (props: Props) => {
 
 	const onSubmit = async (data: z.infer<typeof SignupFormSchema>) => {
 		try {
-			// console.log("Form data:", data);
-			const response = await createUser(data);
-			// console.log("Response:", response);
-
-			// const user: User = {
-			// 	uuid: response.uuid,
-			// 	name: response.name,
-			// 	email: response.email,
-			// 	password: response.password,
-			// 	img: response.img,
-			// 	self: response.self,
-			// 	mem1: response.mem1,
-			// 	mem2: response.mem2,
-			// 	mem3: response.mem3,
-			// 	tag: response.tag,
-			// };
-			// setCurrentUser(user);
-			router.push("/login/user");
+			await apiClient.post(api_url, data);
+			router.push(go_url);
 		} catch (error) {
 			console.error("Error submitting form:", error);
 		}
@@ -92,7 +93,8 @@ export const SignUpDialog = (props: Props) => {
 							render={({ field }) => (
 								<FormItem className={style.form}>
 									<FormLabel className={style.label}>
-										<span className={style.span}>*</span>ニックネーム
+										<span className={style.span}>*</span>
+										{name}
 									</FormLabel>
 									<FormControl>
 										<Input
@@ -209,9 +211,7 @@ export const SignUpDialog = (props: Props) => {
 							name="self"
 							render={({ field }) => (
 								<FormItem className={style.form}>
-									<FormLabel className={style.label}>
-										{props.introduction}
-									</FormLabel>
+									<FormLabel className={style.label}>{introduction}</FormLabel>
 									<FormControl>
 										<Textarea
 											placeholder="Text"
