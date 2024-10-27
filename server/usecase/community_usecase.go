@@ -96,7 +96,7 @@ func (u *communityUsecase) Update(ctx context.Context, input InputCommunityUpdat
 }
 
 func (u *communityUsecase) FindByID(ctx context.Context, input InputCommnityFindByID) (*models.Community, error) {
-	community, err := u.userRepo.FindByID(ctx, input.UUID)
+	community, err := u.userRepo.FindByID(ctx, input.UUID.String())
 	if err != nil {
 		return nil, err
 	}

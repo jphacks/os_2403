@@ -51,3 +51,24 @@ func (r *userRepository) FindByID(ctx context.Context, uuid string) (*models.Use
 	}
 	return &user, nil // ユーザーが見つかった場合はポインタを返す
 }
+
+func (r *userRepository) FindByTag(ctx context.Context, tag int) ([]*models.User, error) {
+	var users []*models.User
+
+	// JSON_CONTAINS を使用してTags配列内にtagが存在するかチェック
+	err := r.db.WithContext(ctx).
+		Where("JSON_CONTAINS(tags, CAST(? AS JSON), '$')", tag).
+		Find(&users).
+		Error
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to find users by tag: %w", err)
+	}
+
+	// ユーザーが見つからない場合は空のスライスを返す
+	if len(users) == 0 {
+		return []*models.User{}, nil
+	}
+
+	return users, nil
+}

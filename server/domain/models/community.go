@@ -38,7 +38,7 @@ type Community struct {
 	Mem1      uint           `gorm:"type:int unsigned"`
 	Mem2      uint           `gorm:"type:int unsigned"`
 	Mem3      uint           `gorm:"type:int unsigned"`
-	Tags      []int          `gorm:"type:json" json:"tags"`
+	Tags      IntArray       `gorm:"type:json" json:"tags"`
 	MemRange  IntArray       `gorm:"column:MemRange;type:json" json:"range"`
 	CreatedAt time.Time      `gorm:"autoCreateTime"`
 	UpdatedAt time.Time      `gorm:"autoUpdateTime"`

@@ -106,3 +106,35 @@ func (r *scoutListRepository) ChangeStatus(ctx context.Context, userUUID uuid.UU
 		Where("user_uuid = ?", userUUID).
 		Update("status", status).Error
 }
+
+func (r *scoutListRepository) GetUsersWithStatus(ctx context.Context, communityUUID uuid.UUID, status uint) ([]models.MessageUser, error) {
+	var users []models.MessageUser
+
+	query := r.db.WithContext(ctx).
+		Table("scout_lists").
+		Select("scout_lists.user_uuid, users.name, users.img").
+		Joins("JOIN users ON scout_lists.user_uuid = users.uuid").
+		Where("scout_lists.community_uuid = ? AND scout_lists.status = ?", communityUUID, status)
+
+	if err := query.Scan(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (r *scoutListRepository) GetCommunitiesWithStatus(ctx context.Context, userUUID uuid.UUID, status uint) ([]models.MessageCommunity, error) {
+	var communities []models.MessageCommunity
+
+	query := r.db.WithContext(ctx).
+		Table("scout_lists").
+		Select("scout_lists.community_uuid, communities.name, communities.img").
+		Joins("JOIN communities ON scout_lists.community_uuid = communities.uuid").
+		Where("scout_lists.user_uuid = ? AND scout_lists.status = ?", userUUID, status)
+
+	if err := query.Scan(&communities).Error; err != nil {
+		return nil, err
+	}
+
+	return communities, nil
+}

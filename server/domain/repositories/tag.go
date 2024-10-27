@@ -6,6 +6,6 @@ import (
 )
 
 type ITagRepository interface {
-	Create(ctx context.Context, tag *models.Tag) (uint, error)
+	Create(ctx context.Context, tag *models.Tag) (int, error)
 	GetRandomTags(ctx context.Context, limit int) ([]*models.Tag, error)
 }

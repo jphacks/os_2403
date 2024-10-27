@@ -32,3 +32,15 @@ type CommunityInfo struct {
 	Mem3 uint   `json:"mem3"`
 	Tags []int  `json:"tags"`
 }
+
+type MessageCommunity struct {
+	CommunityUUID uuid.UUID `json:"community_uuid"`
+	Name          string    `json:"name"`
+	Img           string    `json:"img"`
+}
+
+type MessageUser struct {
+	UserUUID uuid.UUID `json:"user_uuid"`
+	Name     string    `json:"name"`
+	Img      string    `json:"img"`
+}
