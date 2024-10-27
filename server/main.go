@@ -56,7 +56,7 @@ func main() {
 	authCommunityHandler := handlers.NewAuthCommunityHandler(authcommunityUsecase, store)
 	userHandler := handlers.NewUserHandler(userUsecase)
 	communityHandler := handlers.NewCommunityHandler(communityUsecase)
-	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase)
+	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase, userUsecase)
 	tagHandler := handlers.NewTagHandler(tagUsecase)
 	eventHandler := handlers.NewEventHandler(eventUsecase, communityUsecase)
 

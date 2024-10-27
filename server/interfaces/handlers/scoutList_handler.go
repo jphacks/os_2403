@@ -11,11 +11,13 @@ import (
 
 type ScoutHandler struct {
 	scoutUsecase usecase.IScoutListUsecase
+	userUsecase  usecase.IUesrUsecase
 }
 
-func NewScoutListHandler(usecase usecase.IScoutListUsecase) *ScoutHandler {
+func NewScoutListHandler(usecase usecase.IScoutListUsecase, userUsecase usecase.IUesrUsecase) *ScoutHandler {
 	return &ScoutHandler{
 		scoutUsecase: usecase,
+		userUsecase:  userUsecase,
 	}
 }
 
@@ -23,12 +25,17 @@ type IScoutListHandler interface {
 	GetCommunityDetailByScoutList(ctx *gin.Context)
 	CreateScout(ctx *gin.Context)
 	ChangeStatus(ctx *gin.Context)
+	CreateScouts(ctx *gin.Context)
 }
 
 type createScoutRequest struct {
 	UserUUID      string `json:"user_uuid"`
 	CommunityUUID string `json:"community_uuid"`
 }
+
+type (
+	CreateScoutsRequest = usecase.CreateScoutsRequest
+)
 
 type changeStatusRequest struct {
 	UserUUID string `json:"user_uuid"`
@@ -104,4 +111,45 @@ func (h *ScoutHandler) ChangeStatus(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusOK)
+}
+
+func (h *ScoutHandler) CreateScouts(ctx *gin.Context) {
+	var req CreateScoutsRequest
+	if err := json.NewDecoder(ctx.Request.Body).Decode(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Failed to decode request body"})
+		return
+	}
+
+	users, err := h.userUsecase.FindByTags(ctx, req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	communityUUID, err := uuid.Parse(req.CommunityUUID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid community UUID format"})
+		return
+	}
+
+	for _, user := range users {
+		userUUID, err := uuid.Parse(user.UUID.String())
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user UUID format"})
+			return
+		}
+
+		scoutDetail := &models.ScoutList{
+			User_UUID:      userUUID,
+			Status:         0, // 最初は未読(0)で登録
+			Community_UUID: communityUUID,
+		}
+
+		if err := h.scoutUsecase.Create(ctx.Request.Context(), scoutDetail); err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	ctx.Status(http.StatusCreated)
 }
