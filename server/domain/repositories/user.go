@@ -10,4 +10,5 @@ type IUserRepository interface {
 	Update(ctx context.Context, user *models.User) error
 	FindByEmail(ctx context.Context, email string) (*models.User, error)
 	FindByID(ctx context.Context, uuid string) (*models.User, error)
+	FindByTag(ctx context.Context, tag int) ([]*models.User, error)
 }

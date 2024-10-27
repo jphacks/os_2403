@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"crypto/tls"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/jphacks/os_2403/domain/models"
 	"github.com/jphacks/os_2403/domain/repositories"
@@ -24,9 +25,16 @@ type scoutListUsecase struct {
 	communityRepo repositories.ICommunityRepository
 }
 
-func NewScoutListUsecase(repo repositories.IScoutListRepository) IScoutListUsecase {
+type CreateScoutsRequest struct {
+	Tags          int    `json:"tags"`
+	CommunityUUID string `json:"community_uuid"`
+}
+
+func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo repositories.IUserRepository, communityRepo repositories.ICommunityRepository) IScoutListUsecase {
 	return &scoutListUsecase{
 		scoutListRepo: repo,
+		userRepo:      userRepo,
+		communityRepo: communityRepo,
 	}
 }
 
@@ -43,6 +51,10 @@ func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.S
 
 	recipients = append(recipients, user.Email)
 	community, err = u.communityRepo.FindByID(ctx, scoutDetailList.Community_UUID.String())
+
+	fmt.Println(recipients)
+
+	community, err = u.communityRepo.FindByID(ctx, scoutDetailList.Community_UUID)
 	if err != nil {
 		return err
 	}
@@ -66,6 +78,8 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, userUUID
 }
 
 func sendEmail(recipients []string, publisher string) error {
+	fmt.Println("hogehoge")
+
 	m := gomail.NewMessage()
 
 	// 送信元
