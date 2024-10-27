@@ -1,9 +1,10 @@
-'use client'
+'use client';
 
 import React from 'react';
 import { useAtom } from 'jotai';
 import { Heart } from 'lucide-react';
 import { declineInviteAtom } from '@/domain/inviteAtom';
+import './Invite.scss'; // SCSS ファイルをインポート
 
 interface InviteProps {
   id: string;
@@ -23,35 +24,35 @@ export const Invite = ({
   const [, declineInvite] = useAtom(declineInviteAtom);
 
   return (
-    <div className="max-w-sm bg-gray-100 rounded-lg p-4">
-      <div className="flex gap-4">
-        <div className="flex-1 flex flex-col">
-          <div className="flex justify-between items-start mb-2">
-            <h3 className="text-xl font-bold">{title}</h3>
+    <div className="invite-container">
+      <div className="invite-content">
+        <div className="invite-details">
+          <div className="invite-header">
+            <h3 className="invite-title">{title}</h3>
             <button
               type="button"
-              className="text-sm text-gray-500 hover:text-gray-700"
+              className="decline-button"
               onClick={() => declineInvite(id)}
             >
               招待を辞退する
             </button>
           </div>
 
-          <div className="flex items-center gap-2 mb-2">
-            <Heart className="text-red-500" size={20} />
-            <span className="text-gray-600">{date}</span>
+          <div className="invite-date">
+            <Heart className="heart-icon" size={20} />
+            <span className="date-text">{date}</span>
           </div>
 
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">{university}</span>
+          <div className="invite-footer">
+            <span className="university-text">{university}</span>
             <button
               type="button"
-              className="text-gray-600 hover:text-gray-800 flex items-center"
+              className="view-detail-button"
               onClick={onViewDetail}
             >
               もっと詳しく
               <svg
-                className="w-4 h-4 ml-1"
+                className="chevron-icon"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

@@ -1,4 +1,3 @@
-// app/features/Invite/index.tsx
 'use client'
 
 import { useAtom } from 'jotai';
@@ -31,7 +30,6 @@ export function Invite() {
         date: '2024年5月1日',
         university: '○○大学',
       },
-      // 招待データ
     ]);
   }, [setInvites]);
 
