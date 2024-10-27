@@ -3,7 +3,7 @@ import Page = Property.Page;
 import { SignUpDialog } from "@/feature/signup/components/signup";
 
 const SignupPage = () => {
-	return <SignUpDialog introduction="団体紹介" />;
+	return <SignUpDialog type={"community"} />;
 };
 
 export default SignupPage;

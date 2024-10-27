@@ -48,12 +48,12 @@ export const SignUpDialog = (props: SignUpProps) => {
 		name = "ニックネーム";
 		introduction = "自己紹介";
 		api_url = "/user/signup";
-		go_url = "login/user";
+		go_url = "/login/user";
 	} else if (props.type === "community") {
 		name = "団体名";
 		introduction = "団体紹介";
 		api_url = "/community/signup";
-		go_url = "login/community";
+		go_url = "/login/community";
 	}
 
 	const form = useForm<z.infer<typeof SignupFormSchema>>({
