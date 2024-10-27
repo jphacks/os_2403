@@ -13,6 +13,9 @@ import (
 type ScoutHandler struct {
 	scoutUsecase usecase.IScoutListUsecase
 	userUsecase  usecase.IUesrUsecase
+	scoutUsecase     usecase.IScoutListUsecase
+	userUsecase      usecase.IUesrUsecase
+	communityUsecase usecase.ICommunityUsecase
 }
 
 func NewScoutListHandler(usecase usecase.IScoutListUsecase, userUsecase usecase.IUesrUsecase) *ScoutHandler {
@@ -27,6 +30,7 @@ type IScoutListHandler interface {
 	CreateScout(ctx *gin.Context)
 	ChangeStatus(ctx *gin.Context)
 	CreateScouts(ctx *gin.Context)
+	GetMessageUser(ctx *gin.Context)
 }
 
 type createScoutRequest struct {
@@ -156,4 +160,56 @@ func (h *ScoutHandler) CreateScouts(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusCreated)
+}
+
+func (h *ScoutHandler) GetMessageUser(ctx *gin.Context) {
+	var req struct {
+		IsUser bool   `json:"isUser"`
+		UUID   string `json:"uuid"`
+	}
+
+	if err := json.NewDecoder(ctx.Request.Body).Decode(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Failed to decode request body"})
+		return
+	}
+
+	uuidParsed, err := uuid.Parse(req.UUID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID format"})
+		return
+	}
+
+	var result []interface{}
+
+	if req.IsUser {
+		users, err := h.scoutUsecase.GetUsersWithStatus(ctx.Request.Context(), uuidParsed, 3)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		for _, user := range users {
+			result = append(result, map[string]interface{}{
+				"uuid": user.UserUUID,
+				"name": user.Name,
+				"img":  user.Img,
+			})
+		}
+	} else {
+		communities, err := h.scoutUsecase.GetCommunitiesWithStatus(ctx.Request.Context(), uuidParsed, 3)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		for _, community := range communities {
+			result = append(result, map[string]interface{}{
+				"uuid": community.CommunityUUID,
+				"name": community.Name,
+				"img":  community.Img,
+			})
+		}
+	}
+
+	ctx.JSON(http.StatusOK, result)
 }

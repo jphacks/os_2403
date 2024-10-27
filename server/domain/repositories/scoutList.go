@@ -11,4 +11,6 @@ type IScoutListRepository interface {
 	Get(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error)
 	GetWithCommunityDetails(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error)
 	ChangeStatus(ctx context.Context, userUUID uuid.UUID, status uint) error
+	GetUsersWithStatus(ctx context.Context, communityUUID uuid.UUID, status uint) ([]models.MessageUser, error)
+	GetCommunitiesWithStatus(ctx context.Context, userUUID uuid.UUID, status uint) ([]models.MessageCommunity, error)
 }

@@ -1,12 +1,12 @@
 'use client'
 
 import React from "react";
-import { EventCard } from "@/features/event";
+import { EventCard } from "@/feature/event";
 import InviteCheck from "../../../public/invite-check";
 import styles from "./style.module.scss";
 import TagButton from "@/components/tags/tag-button";
 import LikeSearch from "../../../public/like-search";
-import { Popup } from "@/features/popup";
+import { Popup } from "@/feature/popup";
 
 const EventPage = () => {
     return (
