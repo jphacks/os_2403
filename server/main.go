@@ -91,6 +91,7 @@ func main() {
 	router.GET("/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
 	router.POST("/createscout", scoutListHandler.CreateScout)
 	router.PUT("/changescoutstatus", scoutListHandler.ChangeStatus)
+	router.GET("/getmessageuser", scoutListHandler.GetMessageUser)
 
 	router.GET("/getevent", eventHandler.GetAllEvents)
 	router.POST("/createdevent", eventHandler.CreateEvent)
