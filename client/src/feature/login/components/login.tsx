@@ -93,7 +93,7 @@ export const LoginDialog = (props: LoginCardProps) => {
 				setCurrentCommunity(community);
 			}
 
-			router.push("/");
+			router.push("/event");
 		} catch (err) {
 			console.error(err);
 		}
