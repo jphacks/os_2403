@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Room, Message, SendMessage } from '../types/types'; // types.ts からインポート
+import { Room, Message, SendMessage } from '../types/types';
+import './ChatWindow.scss';
 
 const myUserID = '867aec0c-d47c-4b42-bfa9-fc0b40cd2ce2';
 
@@ -47,13 +48,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
       console.log('WebSocket connection closed');
     };
 
-    // クリーンアップ関数
     return () => {
       ws.current?.close();
     };
   }, [room]);
 
-  // メッセージ送信時の処理
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -72,10 +71,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
       user_id: room.uuid,
     };
 
-    // WebSocket 経由でメッセージを送信
     ws.current.send(JSON.stringify(message));
 
-    // 自分のメッセージをすぐに表示（オプション）
     const newMessageObject: Message = {
       id: Date.now(),
       Message: newMessage,
@@ -88,70 +85,54 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
     };
 
     setMessages((prevMessages) => [...prevMessages, newMessageObject]);
-
-    // メッセージ入力欄をクリア
     setNewMessage('');
   };
 
   if (!room) {
     return (
-      <div className="h-[750px] w-[70%] flex flex-col items-center justify-center">
+      <div className="chat-window-empty">
         <p>チャットするユーザーを選択してください</p>
       </div>
     );
   }
 
   return (
-    <div className="h-[750px] w-[70%] rounded-md border border-gray-200 flex flex-col">
-      {/* ヘッダー */}
-      <div className="p-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold">{room.name}</h2>
+    <div className="chat-window-container">
+      <div className="chat-window-header">
+        <h2 className="chat-window-title">{room.name}</h2>
       </div>
-      {/* スクロールエリア */}
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
+      <ScrollArea className="chat-window-scroll-area">
+        <div className="chat-window-messages">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${
-                message.UserID === myUserID ? 'justify-end' : 'justify-start'
+              className={`chat-message ${
+                message.UserID === myUserID ? 'my-message' : 'other-message'
               }`}
             >
-              <div className="block">
-                {/* メッセージバブル */}
-                <div
-                  className={`max-w-xs p-3 rounded-lg ${
-                    message.UserID === myUserID
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-black'
-                  }`}
-                >
+              <div className="chat-message-content">
+                <div className="chat-message-bubble">
                   <p>{message.Message}</p>
                 </div>
-                {/* タイムスタンプ */}
-                <span className="text-xs text-gray-600">
+                <span className="chat-message-timestamp">
                   {new Date(message.CreatedAt).toLocaleTimeString()}
                 </span>
               </div>
             </div>
           ))}
         </div>
-        <ScrollBar className="h-4 w-full bg-black rounded-full" />
+        <ScrollBar className="chat-window-scroll-bar" />
       </ScrollArea>
-      {/* メッセージ入力欄 */}
-      <div className="p-4 border-t border-gray-200">
-        <form onSubmit={handleSendMessage} className="flex">
+      <div className="chat-window-input-container">
+        <form onSubmit={handleSendMessage} className="chat-window-form">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            className="flex-1 p-2 border border-gray-300 rounded"
+            className="chat-window-input"
             placeholder="メッセージを入力..."
           />
-          <button
-            type="submit"
-            className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
-          >
+          <button type="submit" className="chat-window-send-button">
             送信
           </button>
         </form>
