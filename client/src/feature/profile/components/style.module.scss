@@ -1,0 +1,74 @@
+@use "../../../styles/theme";
+
+.mobo {
+  font-family: MOBO;
+  color: theme.$wheat;
+  margin: auto;
+}
+
+.card {
+  background: theme.$black;
+  width: 80%;
+  margin: auto;
+  color: theme.$wheat;
+
+
+  .span {
+    color: theme.$red;
+  }
+
+  .input::placeholder { //placeholderの中を灰色に
+    color: theme.$gray;
+
+  }
+
+  .form {
+    width: 80%;
+    margin: auto;
+  }
+
+  .cardFooter {
+    width: 100%;
+    place-content: center;
+
+    .button {
+      width: 30%;
+    }
+  }
+
+}
+
+.word {
+  border-bottom: 1px solid black;
+}
+
+.h1 {
+  font-size: 200%;
+  display: block;
+}
+
+.block {
+  display: block;
+}
+
+.profile_card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 60%;
+
+  display: grid;
+  grid-template-rows: 1fr auto;
+
+  .button {
+    //display: flex;
+    //justify-content: flex-end;
+    margin-right: 20px;
+
+    grid-row: 2;
+    place-self: end right;
+  }
+
+}
