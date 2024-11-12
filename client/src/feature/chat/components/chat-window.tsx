@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Room, Message, SendMessage } from '../types/types';
-import './ChatWindow.scss';
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import React, { useState, useEffect, useRef } from "react";
+import { Message, Room, SendMessage } from "../types/types";
+import "./ChatWindow.scss";
 
-const myUserID = 'uuiduuiduuid';
+const myUserID = "uuiduuiduuid";
 
 interface ChatWindowProps {
   room: Room | null;
@@ -11,7 +11,7 @@ interface ChatWindowProps {
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const ws = useRef<WebSocket | null>(null);
 
   useEffect(() => {
@@ -22,10 +22,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
     ws.current = new WebSocket(`wss://hubme.xyz/ws/chat/${room.id}`);
 
     ws.current.onopen = () => {
-      console.log('WebSocket connection established');
+      console.log("WebSocket connection established");
     };
 
-    ws.current.onmessage = (event) => {
+    ws.current.onmessage = event => {
       const data = JSON.parse(event.data);
       const receivedMessage: Message = {
         id: data.id,
@@ -37,15 +37,15 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
         UpdatedAt: data.UpdatedAt,
         DeletedAt: data.DeletedAt,
       };
-      setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+      setMessages(prevMessages => [...prevMessages, receivedMessage]);
     };
 
-    ws.current.onerror = (error) => {
-      console.error('WebSocket error:', error);
+    ws.current.onerror = error => {
+      console.error("WebSocket error:", error);
     };
 
     ws.current.onclose = () => {
-      console.log('WebSocket connection closed');
+      console.log("WebSocket connection closed");
     };
 
     return () => {
@@ -57,7 +57,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
     e.preventDefault();
 
     if (
-      newMessage.trim() === '' ||
+      newMessage.trim() === "" ||
       !ws.current ||
       ws.current.readyState !== WebSocket.OPEN ||
       !room
@@ -84,8 +84,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
       DeletedAt: null,
     };
 
-    setMessages((prevMessages) => [...prevMessages, newMessageObject]);
-    setNewMessage('');
+    setMessages(prevMessages => [...prevMessages, newMessageObject]);
+    setNewMessage("");
   };
 
   if (!room) {
@@ -103,11 +103,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
       </div>
       <ScrollArea className="chat-window-scroll-area">
         <div className="chat-window-messages">
-          {messages.map((message) => (
+          {messages.map(message => (
             <div
               key={message.id}
               className={`chat-message ${
-                message.UserID === myUserID ? 'my-message' : 'other-message'
+                message.UserID === myUserID ? "my-message" : "other-message"
               }`}
             >
               <div className="chat-message-content">
@@ -128,7 +128,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
           <input
             type="text"
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={e => setNewMessage(e.target.value)}
             className="chat-window-input"
             placeholder="メッセージを入力..."
           />

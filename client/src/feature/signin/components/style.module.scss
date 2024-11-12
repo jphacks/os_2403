@@ -2,8 +2,8 @@
 
 .mobo {
   font-family: MOBO;
-  font-style: normal;
   font-size: 200%;
+  font-style: normal;
 }
 
 .center {
@@ -11,24 +11,23 @@
 }
 
 .heading {
-  font-family: Mono;
   font-size: 20px;
-  font-color: #878383;
+  color: #878383;
 }
 
 .card {
-  font-family: 'Calibri';
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 
   width: 60%;
   height: 60%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  font-family: Calibri;
   background-color: theme.$background;
   box-shadow: 0 0 8px theme.$black;
+  transform: translate(-50%, -50%);
 
   .title {
     grid-row: 1;
@@ -57,10 +56,10 @@
   }
 
   .signup {
-    border-left: 1px solid theme.$gray;
 
     grid-column: 2;
     place-items: center;
+    border-left: 1px solid theme.$gray;
 
     .cardFot {
       width: 100%;

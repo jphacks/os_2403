@@ -22,33 +22,33 @@ type InputCommunityUpdate struct {
 	Range    []int
 }
 
-type InputCommnityFindByID struct {
+type InputCommunityFindByID struct {
 	UUID uuid.UUID
 }
 
 type ICommunityUsecase interface {
 	Update(ctx context.Context, input InputCommunityUpdate) error
-	FindByID(ctx context.Context, input InputCommnityFindByID) (*models.Community, error)
+	FindByID(ctx context.Context, input InputCommunityFindByID) (*models.Community, error)
 }
 
 type communityUsecase struct {
-	userRepo   repositories.ICommunityRepository
-	memberRepo repositories.IMemberRepository
-	tagRepo    repositories.ITagRepository
+	communityRepo repositories.ICommunityRepository
+	memberRepo    repositories.IMemberRepository
+	tagRepo       repositories.ITagRepository
 }
 
-func NewCommunityUseCase(userRepo repositories.ICommunityRepository, memberRepo repositories.IMemberRepository, tagRepo repositories.ITagRepository) ICommunityUsecase {
+func NewCommunityUseCase(communityRepo repositories.ICommunityRepository, memberRepo repositories.IMemberRepository, tagRepo repositories.ITagRepository) ICommunityUsecase {
 	return &communityUsecase{
-		userRepo:   userRepo,
-		memberRepo: memberRepo,
-		tagRepo:    tagRepo,
+		communityRepo: communityRepo,
+		memberRepo:    memberRepo,
+		tagRepo:       tagRepo,
 	}
 }
 
 func (u *communityUsecase) Update(ctx context.Context, input InputCommunityUpdate) error {
 	fmt.Println("usecase")
 	fmt.Println(input)
-	var user *models.Community
+	var community *models.Community
 
 	mem1 := &models.Member{
 		Name: input.Mem1,
@@ -74,7 +74,7 @@ func (u *communityUsecase) Update(ctx context.Context, input InputCommunityUpdat
 	}
 
 	// 新規ユーザーの作成
-	user = &models.Community{
+	community = &models.Community{
 		UUID:     input.UUID,
 		Name:     input.Name,
 		Email:    input.Email,
@@ -86,17 +86,17 @@ func (u *communityUsecase) Update(ctx context.Context, input InputCommunityUpdat
 		Mem3:     mem3ID,
 	}
 
-	fmt.Println(user)
+	fmt.Println(community)
 
-	if err := u.userRepo.Update(ctx, user); err != nil {
+	if err := u.communityRepo.Update(ctx, community); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (u *communityUsecase) FindByID(ctx context.Context, input InputCommnityFindByID) (*models.Community, error) {
-	community, err := u.userRepo.FindByID(ctx, input.UUID.String())
+func (u *communityUsecase) FindByID(ctx context.Context, input InputCommunityFindByID) (*models.Community, error) {
+	community, err := u.communityRepo.FindByID(ctx, input.UUID.String())
 	if err != nil {
 		return nil, err
 	}

@@ -24,6 +24,7 @@ func (r *userRepository) Update(ctx context.Context, user *models.User) error {
 	return r.db.WithContext(ctx).
 		Model(&models.User{UUID: user.UUID}). // モデル全体を指定
 		Where("uuid = ?", user.UUID).         // 特定のユーザーを指定
+		Omit("password").
 		Updates(user).Error
 }
 

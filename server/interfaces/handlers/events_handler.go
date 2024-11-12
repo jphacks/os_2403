@@ -28,7 +28,7 @@ func (h *eventHandler) GetAllEvents(ctx *gin.Context) {
 
 	response := make([]map[string]interface{}, len(events))
 	for i, event := range events {
-		community, err := h.communityUsecase.FindByID(ctx, usecase.InputCommnityFindByID{event.CommunityUUID})
+		community, err := h.communityUsecase.FindByID(ctx, usecase.InputCommunityFindByID{event.CommunityUUID})
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch community details"})
 			return
@@ -94,7 +94,7 @@ func (h *eventHandler) CreateEvent(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Status(http.StatusNoContent)
+	ctx.Status(http.StatusCreated)
 }
 
 func (h *eventHandler) UpdateEvent(ctx *gin.Context) {

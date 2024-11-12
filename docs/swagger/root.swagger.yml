@@ -1,0 +1,21 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: hubme api
+servers:
+  - url: "http://localhost:8080"
+paths:
+  /user/{uuid}:
+    $ref: "./paths/user.yml#/user_byUUID"
+  /user/signup:
+    $ref: "./paths/auth.yml#/user_signup"
+  /user/signin:
+    $ref: "./paths/auth.yml#/user_signin"
+  /community/{uuid}:
+    $ref: "./paths/community.yml#/community_byUUID"
+  /community/signup:
+    $ref: "./paths/auth.yml#/community_signup"
+  /community/signin:
+    $ref: "./paths/auth.yml#/community_signin"
+  /createEvent:
+    $ref: "./paths/event.yml#/createEvent"

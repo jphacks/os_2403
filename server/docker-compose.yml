@@ -14,7 +14,10 @@ services:
       - ./:/project/
     working_dir: /project
     tty: true
-    build: "./"
+#    build: "./"
+    build:
+      context: .
+      target: builder #ここで止めてgoとairを使えるように
     ports:
       - 8080:80
     command: sh -c 'go mod tidy && air'

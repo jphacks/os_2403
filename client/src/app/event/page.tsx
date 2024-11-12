@@ -1,97 +1,124 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { EventCard } from "@/feature/event";
-import InviteCheck from "../../../public/invite-check";
-import styles from "./style.module.scss";
 import TagButton from "@/components/tags/tag-button";
-import LikeSearch from "../../../public/like-search";
+import { EventCard } from "@/feature/event";
 import { Popup } from "@/feature/popup";
-import axios from 'axios';
-
-interface Tag {
-  id: string;
-  name: string;
-}
-
-const mockTags: Tag[] = [
-    { id: "1", name: "tag1" },
-    { id: "2", name: "tag2" },
-    { id: "3", name: "tag3" },
-    { id: "4", name: "tag4" },
-    { id: "5", name: "tag5" },
-    ];
+import { AuthProvider } from "@/lib/provider";
+import React, { useState, useEffect } from "react";
+import InviteCheck from "../../../public/invite-check";
+import LikeSearch from "../../../public/like-search";
+import styles from "./style.module.scss";
+import { TagType } from "@/domain/tag";
+import { EventType } from "@/domain/event";
+import { getEvents } from "@/feature/event/hooks/get-events";
+import { getTags } from "@/components/tags/hooks/get-tags";
+import {Skeleton} from "@/components/ui/skeleton";
+import { set } from "date-fns";
 
 
 const EventPage = () => {
+  const [tags, setTags] = useState<TagType[]>([]);
+  const [events, setEvents] = useState<EventType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-    const [tags, setTags] = useState<Tag[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    let mounted = true;
+    const fetchTags = async () => {
+      try {
+        const response = await getTags();
+        setTags(response);
+        console.log("Fetched tags:", response);
+      } catch (error) {
+        console.error("Failed to fetch tags:", error);
+      }
+    };
 
-    useEffect(() => {
-        const fetchTags = async () => {
-          setLoading(true);
-          try {
-            const response = await axios.get('http://haveme.xyz/tag');
-            const data = response.data;
-            if (data.tags) {
-              setTags(data.tags);
-            } else {
-              setError('No tags data found');
-            }
-          } catch (err) {
-            if (axios.isAxiosError(err)) {
-              setError(`Failed to fetch tags: ${err.message}`);
-            } else {
-              setError('An unexpected error occurred');
-            }
-          } finally {
-            setLoading(false);
-          }
-        };
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const fetchedEvents = await getEvents();
+        setEvents(fetchedEvents);
+        console.log("Fetched events:", fetchedEvents);
+      } catch (error) {
+        console.error("Failed to fetch events:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTags();
+    fetchEvents();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
-        fetchTags();
-      }, []);
+  const handleEventClose = () => {
+    console.log("Event closed");
+  }
 
+  return (
+    <>
+      <AuthProvider>
+        <Popup
+          cards={[
+            {
+              title: "タイトル",
+              publisher: "発行者",
+              publisherIcon: "https://github.com/shadcn.png",
+              datetime: "aaa",
+              tags: [],
+              imageUrl: "https://github.com/shadcn.png",
+            },
+          ]}
+        />
+        <div className={styles.inviteCheck}>
+          <InviteCheck size={500} />
+        </div>
+        <div className={styles.header}>
+          <div className={styles.titleWrapper}>
+            <LikeSearch size={100} />
+          </div>
 
-    return (
-        <>
-            <Popup cards={[
-                {
-                    title: "タイトル",
-                    publisher: "発行者",
-                    publisherIcon: "https://github.com/shadcn.png",
-                    datetime: "aaa",
-                    tags: [
-                    ],
-                    imageUrl: "https://github.com/shadcn.png",
-                }
-            ]}
-            />
-            <div className={styles.inviteCheck}>
-                <InviteCheck size={500} />
-            </div>
-            <div className={styles.header}>
-                <div className={styles.titleWrapper}>
-                    <LikeSearch size={100} />
-                </div>
+          <div className={styles.tagWrapper}>
+            {tags?.length > 0 ? (
+              <div className={styles.tagsContainer}>
+                {tags.map((tag) => (
+                  <TagButton key={tag.name} variant="red">
+                    {tag.name}
+                  </TagButton>
+                ))}
+              </div>
+            ) : (
+              <Skeleton
+                className={`w-full h-[40px] rounded-lg`}
+              />
+            )}
+          </div>
+        </div>
 
-                <div className={styles.tagWrapper}>
-                    <div className={styles.tagsContainer}>
-                        {mockTags.map((tag) => (
-                            <TagButton key={tag.id} variant="red">
-                                {tag.name}
-                            </TagButton>
-                        ))}
-                    </div>
-                </div>
-            </div>
+        <div className={styles.cardWrapper}>
+          {loading ? (
+            <div>Loading...</div>
+          ) : (
+            events.map((event) => (
+              <EventCard
+                key={event.community_uuid}
+                title={event.title}
+                publisher={event.community_info.name}
+                publisherIcon={event.community_info.img}
+                datetime={event.date}
+                tags={event.tag.map((tag) => ({
+                  name: tag.toString(),
+                }))}
+                imageUrl={event.img}
+                handleEventClose={handleEventClose}
+              />
+            ))
+          )}
+        </div>
+      </AuthProvider>
+    </>
+  );
+};
 
-            <div className={styles.cardWrapper}>
-                {/* ここにcard */}
-            </div>
-        </>
-    );
-}
 export default EventPage;

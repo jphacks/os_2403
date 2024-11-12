@@ -8,12 +8,13 @@
 .card {
   font-family: Calibri;
   position: absolute;
+  display: block;
   width: 60%;
+  margin: 50px auto 0;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 8px theme.$black;
-  font-family: Calibri;
   background-color: theme.$background;
 
   .label {

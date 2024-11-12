@@ -22,13 +22,27 @@ type InputUserUpdate struct {
 	Tags     []string `json:"tag"`
 }
 
+// uuid
 type InputUserFindByID struct {
 	UUID string
 }
 
+type UserResponse struct {
+	UUID     uuid.UUID
+	Name     string
+	Email    string
+	Password []byte
+	Img      string
+	Self     string
+	Mem1     string
+	Mem2     string
+	Mem3     string
+	Tags     []int `json:"tag"`
+}
+
 type IUesrUsecase interface {
 	Update(ctx context.Context, input InputUserUpdate) error
-	FindByID(ctx context.Context, input InputUserFindByID) (*models.User, error)
+	FindByID(ctx context.Context, input InputUserFindByID) (*UserResponse, error)
 	FindByTags(ctx context.Context, input CreateScoutsRequest) ([]*models.User, error)
 }
 
@@ -108,13 +122,29 @@ func (u *userUsecase) Update(ctx context.Context, input InputUserUpdate) error {
 	return nil
 }
 
-func (u *userUsecase) FindByID(ctx context.Context, input InputUserFindByID) (*models.User, error) {
+func (u *userUsecase) FindByID(ctx context.Context, input InputUserFindByID) (*UserResponse, error) {
 	user, err := u.userRepo.FindByID(ctx, input.UUID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
 
-	return user, nil
+	mem1, _ := u.memberRepo.FindByID(ctx, user.Mem1)
+	mem2, _ := u.memberRepo.FindByID(ctx, user.Mem2)
+	mem3, _ := u.memberRepo.FindByID(ctx, user.Mem3)
+
+	res := UserResponse{
+		UUID:     user.UUID,
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+		Img:      user.Img,
+		Self:     user.Self,
+		Mem1:     mem1.Name,
+		Mem2:     mem2.Name,
+		Mem3:     mem3.Name,
+		Tags:     user.Tags,
+	}
+	return &res, nil
 }
 
 func (u *userUsecase) FindByTags(ctx context.Context, input CreateScoutsRequest) ([]*models.User, error) {

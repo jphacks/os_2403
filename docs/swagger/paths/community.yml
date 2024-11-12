@@ -1,0 +1,44 @@
+community_byUUID:
+  get:
+    summary: コミュニティ情報取得
+    description: コミュニティ情報をuuidで取得
+    operationId: CommunityFindByID
+    parameters:
+      - $ref: "../components/community.yml#/CommunityUUIDRequest"
+    responses:
+      200:
+        description: "Successfully get community data"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "successful get community by id"
+                user:
+                  $ref: "../components/community.yml#/Community"
+      400:
+        description: "Failed to find community data by uuid"
+
+  put:
+    summary: コミュニティ情報を更新
+    description: コミュニティ情報をuuidで更新
+    operationId: CommunityFindByID
+    parameters:
+      - $ref: "../components/community.yml#/CommunityUUIDRequest"
+    responses:
+      200:
+        description: "Successfully get community data"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "successful get community by id"
+                user:
+                  $ref: "../components/community.yml#/Community"
+      400:
+        description: "Failed to find community data by uuid"

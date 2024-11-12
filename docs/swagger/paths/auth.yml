@@ -1,0 +1,78 @@
+user_signin:
+  post:
+    summary: ユーザーのサインイン
+    description: ユーザーのサインイン
+    operationId: SigninUser
+    requestBody:
+      content:
+        application/json:
+          schema:
+              $ref: "../components/auth.yml#/Signin"
+    responses:
+      200:
+        description: "Successfully signin user"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                  format: string
+                  description: "ユーザーのuuid"
+                  example: "ffafafafffafaf"
+
+user_signup:
+  post:
+    summary: ユーザーのサインアップ
+    description: ユーザーのサインアップ
+    operationId: SignupUser
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "../components/user.yml#/User"
+    responses:
+      201:
+        description: "サインアップ成功"
+
+
+
+community_signin:
+  post:
+    summary: コミュニティのサインイン
+    description: コミュニティのサインイン
+    operationId: SigninCommunity
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "../components/auth.yml#/Signin"
+    responses:
+      200:
+        description: "Successfully signin community"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                  format: string
+                  description: "communityのuuid"
+                  example: "ffafafafffafaf"
+
+
+community_signup:
+  post:
+    summary: コミュニティのサインアップ
+    description: コミュニティのサインアップ
+    operationId: SignupCommunity
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "../components/community.yml#/Community"
+    responses:
+      201:
+        description: "サインアップ成功"

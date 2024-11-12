@@ -21,8 +21,9 @@ func (r *communityRepository) Create(ctx context.Context, user *models.Community
 
 func (r *communityRepository) Update(ctx context.Context, community *models.Community) error {
 	return r.db.WithContext(ctx).
-		Model(&models.User{UUID: community.UUID}). // モデル全体を指定
-		Where("uuid = ?", community.UUID).         // 特定のユーザーを指定
+		Model(&models.Community{UUID: community.UUID}). // モデル全体を指定
+		Where("uuid = ?", community.UUID).              // 特定のユーザーを指定
+		Omit("password").
 		Updates(community).Error
 }
 

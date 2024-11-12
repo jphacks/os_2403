@@ -1,32 +1,24 @@
-'use client'
+"use client";
 
-import type { ReactElement } from "react"
-import { useState } from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card"
-import CardTag from "@/components/tags/card-tag"
-import {  Heart, SquareX } from "lucide-react"
-import style from "./style.module.scss"
+import CardTag from "@/components/tags/card-tag";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Heart, SquareX } from "lucide-react";
+import type { ReactElement } from "react";
+import { useState } from "react";
+import style from "./style.module.scss";
+import { TagType } from "@/domain/tag";
 
-
-type TagVariant = "red" | "blue" | "green" | "gray"
-
-interface Tag {
-  id: string
-  label: string
-  variant?: TagVariant
+type EventCardProps = {
+  title: string;
+  publisher: string;
+  publisherIcon: string;
+  datetime: string;
+  tags: TagType[];
+  imageUrl: string;
+  liked?: boolean;
+  handleEventClose: () => void;
 }
-
-interface EventCardProps {
-  title: string
-  publisher: string
-  publisherIcon: string
-  datetime: string
-  tags: Tag[]
-  imageUrl: string
-  liked?: boolean
-}
-
 
 export function EventCard({
   title,
@@ -36,34 +28,30 @@ export function EventCard({
   tags,
   imageUrl = "https://github.com/shadcn.png",
   liked = false,
+  handleEventClose
 }: EventCardProps): ReactElement {
-  const [isLiked, setIsLiked] = useState(liked)
+  const [isLiked, setIsLiked] = useState(liked);
 
   return (
-
     <Card className={style.card}>
       <CardHeader className={style.cardHeader}>
         <div className={style.tagWrapper}>
           <div className={style.tags}>
-            {tags.map((tag) => (
-              <CardTag key={tag.id} variant={tag.variant ?? "red"}>
-                {tag.label}
+            {tags.map(tag => (
+              <CardTag key={tag.name} variant={"red"}>
+                {tag.name}
               </CardTag>
             ))}
           </div>
         </div>
         <div className={style.closeButton}>
-          <SquareX size={24} stroke="#434141" onClick={() => console.log("delete")} />
+          <SquareX size={24} stroke="#434141" onClick={handleEventClose} />
         </div>
       </CardHeader>
 
       <CardContent>
         <div className={style.imgBox}>
-          <img
-            className={style.img}
-            src={imageUrl}
-            alt={title}
-          />
+          <img className={style.img} src={imageUrl} alt={title} />
         </div>
         <div className={style.icons}>
           <Heart
@@ -90,6 +78,6 @@ export function EventCard({
           </div>
         </div>
       </CardFooter>
-    </Card >
-  )
+    </Card>
+  );
 }

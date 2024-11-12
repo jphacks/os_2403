@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `communities` (
     `name` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL UNIQUE, -- Emailはユニーク制約付き
     `password` VARCHAR(255) NOT NULL, -- パスワードのハッシュを保存
-    `img` VARCHAR(255), -- プロフィール画像のURLなど
+    `img` TEXT, -- プロフィール画像のURLなど
     `self` TEXT, -- 自己紹介などの自由記述用
     `mem1` INT UNSIGNED, -- uintに対応する正の整数
     `mem2` INT UNSIGNED,

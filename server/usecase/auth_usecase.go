@@ -106,7 +106,7 @@ func (u *authUsecase) SignIn(ctx context.Context, input InputSignIn) (uuid.UUID,
 	}
 
 	// ハッシュ化されたパスワードと入力されたパスワードを比較
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
+	err = bcrypt.CompareHashAndPassword(user.Password, []byte(input.Password))
 	if err != nil {
 		return uuid.Nil, fmt.Errorf("invalid credentials: %w", err)
 	}

@@ -1,0 +1,13 @@
+createEvent:
+  post:
+    summary: イベント作成
+    description: イベント作成
+    operationId: CreateEvent
+    requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "../components/event.yml#/Event"
+    responses:
+      201:
+        description: イベント作成成功

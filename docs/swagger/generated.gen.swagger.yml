@@ -1,0 +1,390 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: hubme api
+servers:
+  - url: http://localhost:8080
+paths:
+  /user/{uuid}:
+    get:
+      summary: ユーザー情報取得
+      description: ユーザーの情報をuuidで取得
+      operationId: UserFindByID
+      parameters:
+        - $ref: '#/components/parameters/UserUUIDRequest'
+      responses:
+        '200':
+          description: Successfully get user data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: successful get user by id
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Failed to find user data by uuid
+    put:
+      summary: ユーザー情報を更新
+      description: ユーザー情報をuuidで更新
+      operationId: UserFindByID
+      parameters:
+        - $ref: '#/components/parameters/UserUUIDRequest'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserWithoutPassword'
+      responses:
+        '200':
+          description: Successfully get user data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: successful get user by id
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Failed to find user data by uuid
+  /user/signup:
+    post:
+      summary: ユーザーのサインアップ
+      description: ユーザーのサインアップ
+      operationId: SignupUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: サインアップ成功
+  /user/signin:
+    post:
+      summary: ユーザーのサインイン
+      description: ユーザーのサインイン
+      operationId: SigninUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signin'
+      responses:
+        '200':
+          description: Successfully signin user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uuid:
+                    type: string
+                    format: string
+                    description: ユーザーのuuid
+                    example: ffafafafffafaf
+  /community/{uuid}:
+    get:
+      summary: コミュニティ情報取得
+      description: コミュニティ情報をuuidで取得
+      operationId: CommunityFindByID
+      parameters:
+        - $ref: '#/components/parameters/CommunityUUIDRequest'
+      responses:
+        '200':
+          description: Successfully get community data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: successful get community by id
+                  user:
+                    $ref: '#/components/schemas/Community'
+        '400':
+          description: Failed to find community data by uuid
+    put:
+      summary: コミュニティ情報を更新
+      description: コミュニティ情報をuuidで更新
+      operationId: CommunityFindByID
+      parameters:
+        - $ref: '#/components/parameters/CommunityUUIDRequest'
+      responses:
+        '200':
+          description: Successfully get community data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: successful get community by id
+                  user:
+                    $ref: '#/components/schemas/Community'
+        '400':
+          description: Failed to find community data by uuid
+  /community/signup:
+    post:
+      summary: コミュニティのサインアップ
+      description: コミュニティのサインアップ
+      operationId: SignupCommunity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Community'
+      responses:
+        '201':
+          description: サインアップ成功
+  /community/signin:
+    post:
+      summary: コミュニティのサインイン
+      description: コミュニティのサインイン
+      operationId: SigninCommunity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signin'
+      responses:
+        '200':
+          description: Successfully signin community
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uuid:
+                    type: string
+                    format: string
+                    description: communityのuuid
+                    example: ffafafafffafaf
+  /createEvent:
+    post:
+      summary: イベント作成
+      description: イベント作成
+      operationId: CreateEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+      responses:
+        '201':
+          description: イベント作成成功
+components:
+  parameters:
+    UserUUIDRequest:
+      name: uuid
+      in: path
+      required: true
+      description: ユーザーのID
+      schema:
+        type: string
+    CommunityUUIDRequest:
+      name: uuid
+      in: path
+      required: true
+      description: コミュニティのID
+      schema:
+        type: string
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          format: string
+          description: ”ユーザーの名前"
+          example: やまけん
+        email:
+          type: string
+          format: string
+          description: メールアドレス
+          example: email
+        password:
+          type: string
+          format: string
+          description: パスワード
+          example: hogehoge
+        img:
+          type: string
+          format: string
+          description: イメージのs3パス
+          example: hogehoge.jpeg
+        self:
+          type: string
+          format: string
+          description: 自己紹介
+          example: hogehoge
+        mem1:
+          type: string
+          format: string
+          description: 所属1
+          example: A univ.
+        mem2:
+          type: string
+          format: string
+          description: 所属２
+          example: B Club
+        mem3:
+          type: string
+          format: string
+          description: 所属3
+          example: ''
+      required:
+        - uuid
+        - name
+        - email
+        - password
+    UserWithoutPassword:
+      tupe: object
+      properties:
+        name:
+          type: string
+          format: string
+          description: ”ユーザーの名前"
+          example: やまけん
+        email:
+          type: string
+          format: string
+          description: メールアドレス
+          example: email
+        img:
+          type: string
+          format: string
+          description: イメージのs3パス
+          example: hogehoge.jpeg
+        self:
+          type: string
+          format: string
+          description: 自己紹介
+          example: hogehoge
+        mem1:
+          type: string
+          format: string
+          description: 所属1
+          example: A univ.
+        mem2:
+          type: string
+          format: string
+          description: 所属２
+          example: B Club
+        mem3:
+          type: string
+          format: string
+          description: 所属3
+          example: ''
+      required:
+        - name
+        - email
+        - mem1
+    Signin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: string
+          description: メールアドレス
+          example: email
+        password:
+          type: string
+          format: string
+          description: パスワード
+          example: hogehoge
+      required:
+        - email
+        - password
+    Community:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: string
+          description: コミュニティのuuid
+          example: ffafafafffafaf
+        name:
+          type: string
+          format: string
+          description: ”コミュニティ名"
+          example: RCC
+        email:
+          type: string
+          format: string
+          description: メールアドレス
+          example: email
+        password:
+          type: string
+          format: string
+          description: パスワード
+          example: hogehoge
+        img:
+          type: string
+          format: string
+          description: イメージのs3パス
+          example: hogehoge.jpeg
+        self:
+          type: string
+          format: string
+          description: 自己紹介
+          example: hogehoge
+        mem1:
+          type: string
+          format: string
+          description: 所属1
+          example: A univ.
+        mem2:
+          type: string
+          format: string
+          description: 所属２
+          example: B Club
+        mem3:
+          type: string
+          format: string
+          description: 所属3
+          example: ''
+      required:
+        - uuid
+        - name
+        - email
+        - password
+    Event:
+      type: object
+      properties:
+        community_uuid:
+          type: string
+          format: string
+          description: コミュニティのuuid
+          example: lksahkhakhkfahkl
+        title:
+          type: string
+          format: string
+          description: イベントタイトル
+          exmple: 学祭
+        img:
+          type: string
+          format: string
+          description: イベント画像
+          example: /hogehoge.ping
+        detailed:
+          type: string
+          format: string
+          description: RCC学祭について...
+          date: 11月10日
+          tag:
+            - 1
+            - 2
+      required:
+        - community_uuid
+        - title
+        - img
+        - detailed

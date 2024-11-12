@@ -74,13 +74,14 @@ func main() {
 	router.POST("/user/signin", authUserHandler.SignIn)
 	router.POST("/user/signup", authUserHandler.SignUp)
 
-	router.PUT("/user", userHandler.Update)
-	router.GET("/user", userHandler.FindByID)
+	router.GET("/user/:uuid", userHandler.FindByID)
+	router.PUT("/user/:uuid", userHandler.Update)
 
 	router.POST("/community/signin", authCommunityHandler.SignIn)
 	router.POST("/community/signup", authCommunityHandler.SignUp)
 
-	router.PUT("/community", communityHandler.Update)
+	router.GET("/community/:uuid", communityHandler.FindById)
+	router.PUT("/community/:uuid", communityHandler.Update)
 
 	router.GET("/tag", tagHandler.GetRandom)
 

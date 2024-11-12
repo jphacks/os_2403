@@ -12,14 +12,34 @@
   margin: auto;
   color: theme.$wheat;
 
+  .avatorPreview {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+  }
+
+  .avatorForm {
+    display: flex;
+    gap: 10px;
+
+  }
+
+  .avatorFormControl {
+    margin-top: 10px;
+    width: 100%
+  }
+
 
   .span {
     color: theme.$red;
   }
 
+  .input {
+    color: theme.$black;
+  }
+
   .input::placeholder { //placeholderの中を灰色に
     color: theme.$gray;
-
   }
 
   .form {

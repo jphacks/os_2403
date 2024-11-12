@@ -1,0 +1,16 @@
+Signin:
+  type: object
+  properties:
+    email:
+      type: string
+      format: string
+      description: "メールアドレス"
+      example: "email"
+    password:
+      type: string
+      format: string
+      description: "パスワード"
+      example: "hogehoge"
+  required:
+    - email
+    - password

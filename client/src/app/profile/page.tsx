@@ -3,11 +3,11 @@ import { ProfileCard } from "@/feature/profile/components/Profile";
 import style from "./style.module.scss";
 
 const ProfilePage = () => {
-	return (
-		<div className={style.all}>
-			<ProfileCard />
-		</div>
-	);
+  return (
+    <div className={style.all}>
+      <ProfileCard />
+    </div>
+  );
 };
 
 export default ProfilePage;

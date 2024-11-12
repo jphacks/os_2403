@@ -1,8 +1,8 @@
-import React from 'react';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Avatar, AvatarImage, AvatarFallback } from '@radix-ui/react-avatar';
-import { Room } from '../types/types';
-import './ChatRooms.scss';
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import React from "react";
+import { Room } from "../types/types";
+import "./ChatRooms.scss";
 
 interface ChatRoomsProps {
   rooms: Room[];
@@ -17,7 +17,7 @@ const ChatRooms: React.FC<ChatRoomsProps> = ({ rooms, onSelectRoom }) => {
       </div>
       <ScrollArea className="chat-rooms-scroll-area">
         <div className="chat-rooms-list">
-          {rooms.map((room) => (
+          {rooms.map(room => (
             <button
               key={room.uuid}
               type="button"

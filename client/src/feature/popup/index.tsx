@@ -1,24 +1,19 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { EventCard } from '../event';
-import style from './index.module.scss';
-import Letter from '../../../public/letter';
-import InviteForYou from '../../../public/invite-for-you';
-import { Ellipsis, SquareX } from 'lucide-react';
+import { Ellipsis, SquareX } from "lucide-react";
+import React, { useState } from "react";
+import InviteForYou from "../../../public/invite-for-you";
+import Letter from "../../../public/letter";
+import { EventCard } from "../event";
+import style from "./index.module.scss";
+import { TagType } from "@/domain/tag";
 
-interface Tag {
-  id: string;
-  label: string;
-  variant?: 'red' | 'blue' | 'green' | 'gray';
-}
-
-interface CardType {
+type CardType = {
   title: string;
   publisher: string;
   publisherIcon: string;
   datetime: string;
-  tags: Tag[];
+  tags: TagType[];
   imageUrl: string;
   liked?: boolean;
 }
@@ -29,11 +24,16 @@ interface PopupProps {
 
 export const Popup: React.FC<PopupProps> = ({ cards }) => {
   const [display, setDisplay] = useState(true);
+  const [displayedCards, setDisplayedCards] = useState(cards);
 
-  if (!display || !cards || cards.length === 0) return null;
+  if (!display || !displayedCards || displayedCards.length === 0) return null;
 
   const handleClose = () => {
     setDisplay(false);
+  };
+
+  const handleEventClose = (cardTitle: string) => {
+    setDisplayedCards(displayedCards.filter(card => card.title !== cardTitle));
   };
 
   return (
@@ -50,10 +50,14 @@ export const Popup: React.FC<PopupProps> = ({ cards }) => {
       </div>
 
       <div className={style.cardWrapper}>
-        {cards.map((card) => (
-          <EventCard key={card.title} {...card} />
+        {displayedCards.map(card => (
+          <EventCard
+            key={card.title}
+            {...card}
+            handleEventClose={() => handleEventClose(card.title)}
+          />
         ))}
-        {cards.length > 3 && (
+        {displayedCards.length > 3 && (
           <a href="/event" className={style.ellipsis}>
             <Ellipsis size={100} />
           </a>

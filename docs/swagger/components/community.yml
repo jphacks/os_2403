@@ -1,0 +1,61 @@
+CommunityUUIDRequest:
+    name: uuid
+    in: path
+    required: true
+    description: "コミュニティのID"
+    schema:
+      type: string
+
+Community:
+  type: object
+  properties:
+    uuid:
+      type: string
+      format: string
+      description: "コミュニティのuuid"
+      example: "ffafafafffafaf"
+    name:
+      type: string
+      format: string
+      description: ”コミュニティ名"
+      example: "RCC"
+    email:
+      type: string
+      format: string
+      description: "メールアドレス"
+      example: "email"
+    password:
+      type: string
+      format: string
+      description: "パスワード"
+      example: "hogehoge"
+    img:
+      type: string
+      format: string
+      description: "イメージのs3パス"
+      example: "hogehoge.jpeg"
+    self:
+      type: string
+      format: string
+      description: "自己紹介"
+      example: "hogehoge"
+    mem1:
+      type: string
+      format: string
+      description: "所属1"
+      example: "A univ."
+    mem2:
+      type: string
+      format: string
+      description: "所属２"
+      example: "B Club"
+    mem3:
+      type: string
+      format: string
+      description: "所属3"
+      example: ""
+  required:
+    - uuid
+    - name
+    - email
+    - password
