@@ -81,18 +81,18 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID
 		return nil, err
 	}
 
-	unreadcount, err := u.messageRepo.GetCountByStatus(UserUUID, scoutlists[0].Status)
-	if err != nil {
-		return nil, err
-	}
-
-	var responses []models.ScoutListResponse
+	responses := make([]models.ScoutListResponse, 0, len(scoutlists))
 	for _, scoutlist := range scoutlists {
+		unreadcount, err := u.messageRepo.GetCountByStatus(scoutlist.User_UUID.String(), scoutlist.Status)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get unread count for user %s: %w", scoutlist.User_UUID.String(), err)
+		}
+
 		response := models.ScoutListResponse{
 			ID:          scoutlist.ID,
 			Status:      scoutlist.Status,
 			UUID:        scoutlist.Community_UUID,
-			UnreadCount: unreadcount,
+			UnreadCount: unreadcount, // 各ユーザーごとの未読数を設定
 			DetailInfo: models.DetailInfo{
 				Name: detail.Name,
 				Img:  detail.Img,
@@ -105,28 +105,27 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID
 }
 
 func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, communityUUID string, status uint) ([]models.ScoutListResponse, error) {
-
 	scoutlists, err := u.scoutListRepo.GetByCommunityUUID(ctx, communityUUID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get scout lists: %w", err)
+	}
+
+	if len(scoutlists) == 0 {
+		return []models.ScoutListResponse{}, nil
 	}
 
 	detail, err := u.communityRepo.FindByID(ctx, communityUUID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to find community details: %w", err)
 	}
 
-	// TODO: 未読数を取得する実装をforで回す
-	unreadcount, err := u.messageRepo.GetCountByStatus(scoutlists[0].User_UUID.String(), status)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(scoutlists[0].Status)
-
-	fmt.Println(len(scoutlists))
-
-	var responses []models.ScoutListResponse
+	responses := make([]models.ScoutListResponse, 0, len(scoutlists))
 	for _, scoutlist := range scoutlists {
+		unreadcount, err := u.messageRepo.GetCountByStatus(scoutlist.User_UUID.String(), scoutlist.Status)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get unread count for user %s: %w", scoutlist.User_UUID.String(), err)
+		}
+
 		response := models.ScoutListResponse{
 			ID:          scoutlist.ID,
 			Status:      scoutlist.Status,
@@ -139,7 +138,6 @@ func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, communityUUID 
 		}
 		responses = append(responses, response)
 	}
-	fmt.Println(responses)
 
 	return responses, nil
 }
