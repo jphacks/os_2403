@@ -3,28 +3,22 @@
 import CardTag from "@/components/tags/card-tag";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { TagType } from "@/domain/tag";
 import { Heart, SquareX } from "lucide-react";
 import type { ReactElement } from "react";
 import { useState } from "react";
 import style from "./style.module.scss";
 
-type TagVariant = "red" | "blue" | "green" | "gray";
-
-interface Tag {
-  id: string;
-  label: string;
-  variant?: TagVariant;
-}
-
-interface EventCardProps {
+type EventCardProps = {
   title: string;
   publisher: string;
   publisherIcon: string;
   datetime: string;
-  tags: Tag[];
+  tags: TagType[];
   imageUrl: string;
   liked?: boolean;
-}
+  handleEventClose: () => void;
+};
 
 export function EventCard({
   title,
@@ -34,6 +28,7 @@ export function EventCard({
   tags,
   imageUrl = "https://github.com/shadcn.png",
   liked = false,
+  handleEventClose,
 }: EventCardProps): ReactElement {
   const [isLiked, setIsLiked] = useState(liked);
 
@@ -43,14 +38,14 @@ export function EventCard({
         <div className={style.tagWrapper}>
           <div className={style.tags}>
             {tags.map(tag => (
-              <CardTag key={tag.id} variant={tag.variant ?? "red"}>
-                {tag.label}
+              <CardTag key={tag.name} variant={"red"}>
+                {tag.name}
               </CardTag>
             ))}
           </div>
         </div>
         <div className={style.closeButton}>
-          <SquareX size={24} stroke="#434141" onClick={() => console.log("delete")} />
+          <SquareX size={24} stroke="#434141" onClick={handleEventClose} />
         </div>
       </CardHeader>
 

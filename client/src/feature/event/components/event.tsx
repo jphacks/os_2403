@@ -23,13 +23,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { createEvent } from "@/feature/event/hooks/event";
-import { cn } from "@/lib/utils";
+import { communityAtom } from "@/domain/community";
+import { accountTypeAtom } from "@/domain/general";
+import { cn, uploadImageToS3 } from "@/lib/utils";
+import { apiClient } from "@/utils/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import { useAtom } from "jotai/index";
 import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { yellow } from "next/dist/lib/picocolors";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React from "react";
 import { UseFormReturn, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import style from "./style.module.scss";
 
@@ -79,11 +86,17 @@ export const EventSettingSchema = z.object({
 
 export type EventSettingRequest = z.infer<typeof EventSettingSchema>;
 
-export const DatePickerField = () => {
-  const form = useForm<z.infer<typeof EventSettingSchema>>({
+export const EventSetting = () => {
+  const [currentCommunity] = useAtom(communityAtom);
+  const [currentAccountType] = useAtom(accountTypeAtom);
+  const [previewImg, setPreviewImg] = React.useState("");
+
+  const router = useRouter();
+
+  const form = useForm<EventSettingRequest>({
     resolver: zodResolver(EventSettingSchema),
     defaultValues: {
-      community_uuid: "eae7583a-77d3-422a-8399-1f3f9b0d7d08",
+      community_uuid: currentCommunity?.uuid,
       title: "",
       img: "",
       date: undefined,
@@ -92,11 +105,30 @@ export const DatePickerField = () => {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof EventSettingSchema>) => {
-    const response = await createEvent(data);
-    console.log(data);
+  const onImgChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    const imgFile = event.target.files?.[0];
+    if (imgFile) {
+      const imgURL = await uploadImageToS3(imgFile);
+      if (imgURL) {
+        form.setValue("img", imgURL);
+        toast("イメージをアップロードしました");
+        setPreviewImg(imgURL);
+      }
+    }
   };
 
+  const onSubmit = async (event: EventSettingRequest): Promise<void> => {
+    apiClient.post("/createdevent", event).then(() => {
+      router.push("/event");
+      toast("イベントを作成しました");
+    });
+  };
+
+  React.useEffect((): void => {
+    if (!currentCommunity?.uuid || currentAccountType === "not" || currentAccountType === "user") {
+      router.push("/signin/community");
+    }
+  });
   return (
     <div className={style.all}>
       <h1 className={style.heading}>イベント作成</h1>
@@ -117,19 +149,36 @@ export const DatePickerField = () => {
             )}
           />
           <br />
+
           <FormField
             control={form.control}
             name="img"
-            render={({ field }) => (
+            render={({ field: { onChange, value, ...field } }) => (
               <FormItem className={style.form}>
                 <FormLabel className={style.label}>画像</FormLabel>
                 <FormControl>
-                  <Input placeholder="Text" {...field} className={style.form} />
+                  <Input
+                    type="file"
+                    placeholder="Text"
+                    onChange={onImgChange}
+                    {...field}
+                    className={style.form}
+                  />
                 </FormControl>
                 <FormMessage className={style.errorMessage} />
               </FormItem>
             )}
           />
+          <div>
+            {previewImg ? (
+              <img src={previewImg} alt="" className={style.img} />
+            ) : (
+              <div>
+                {/*空やばいので修正要*/}
+                <img src={""} alt="" />
+              </div>
+            )}
+          </div>
           <br />
 
           <FormField
@@ -141,11 +190,7 @@ export const DatePickerField = () => {
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
-                      <Button
-                        variant="outline"
-                        // role="combobox"
-                        className={style.button}
-                      >
+                      <Button variant="outline" className={style.button}>
                         {field.value?.length > 0
                           ? `${field.value.length}個のタグを選択中`
                           : "タグを選択"}

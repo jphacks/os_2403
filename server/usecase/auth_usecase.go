@@ -27,7 +27,7 @@ type InputSignIn struct {
 }
 
 type IAuthUsecase interface {
-	SignUp(ctx context.Context, input InputSignUp) error
+	SignUp(ctx context.Context, input InputSignUp) (uuid.UUID, error)
 	SignIn(ctx context.Context, input InputSignIn) (uuid.UUID, error)
 }
 
@@ -47,7 +47,7 @@ func NewAuthUserUseCase(userRepo repositories.IUserRepository, sessionRepo repos
 	}
 }
 
-func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) error {
+func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) (uuid.UUID, error) {
 	fmt.Println("usecase")
 	fmt.Println(input)
 	var user *models.User
@@ -72,7 +72,7 @@ func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) error {
 	// パスワードをハッシュ化
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return fmt.Errorf("failed to hash password: %v", err)
+		return uuid.Nil, fmt.Errorf("failed to hash password: %v", err)
 	}
 
 	// 新規ユーザーの作成
@@ -91,10 +91,10 @@ func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) error {
 	fmt.Println(user)
 
 	if err := u.userRepo.Create(ctx, user); err != nil {
-		return err
+		return uuid.Nil, err
 	}
 
-	return nil
+	return user.UUID, nil
 }
 
 func (u *authUsecase) SignIn(ctx context.Context, input InputSignIn) (uuid.UUID, error) {

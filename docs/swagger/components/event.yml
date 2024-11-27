@@ -1,0 +1,29 @@
+Event:
+  type: object
+  properties:
+    community_uuid:
+      type: string
+      format: string
+      description: コミュニティのuuid
+      example: "lksahkhakhkfahkl"
+    title:
+      type: string
+      format: string
+      description: イベントタイトル
+      exmple: "学祭"
+    img:
+      type: string
+      format: string
+      description: イベント画像
+      example: "/hogehoge.ping"
+    detailed:
+      type: string
+      format: string
+      description: "RCC学祭について..."
+      date: "11月10日"
+      tag: [1,2]
+  required:
+    - community_uuid
+    - title
+    - img
+    - detailed

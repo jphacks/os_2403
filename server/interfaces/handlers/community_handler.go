@@ -36,12 +36,23 @@ func (h *icommunityHandler) FindById(ctx *gin.Context) {
 	}
 
 	community, err := h.communityUsecase.FindByID(ctx, request)
+	res := gin.H{
+		"uuid":  community.UUID,
+		"name":  community.Name,
+		"email": community.Email,
+		"img":   community.Img,
+		"self":  community.Self,
+		"mem1":  community.Mem1,
+		"mem2":  community.Mem2,
+		"mem3":  community.Mem3,
+		"tags":  community.Tags,
+	}
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, community)
+	ctx.JSON(http.StatusOK, res)
 
 }
 

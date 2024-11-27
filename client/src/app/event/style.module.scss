@@ -79,5 +79,10 @@
   .cardWrapper {
     display: flex;
     flex-wrap: wrap;
+    margin-left: 10px;
     gap: 10px;
+  }
+
+  .tagSkeleton {
+    margin: 16px 0;
   }

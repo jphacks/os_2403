@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Community, communityAtom } from "@/domain/community";
 import { accountTypeAtom } from "@/domain/general";
-import { LoginForm, LoginFormSchema, User, userAtom } from "@/domain/user";
+import { User, userAtom } from "@/domain/user";
 import { apiClient } from "@/utils/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai/index";
@@ -39,6 +39,13 @@ type LoginCardProps = {
   // title: string;
   type: "user" | "community";
 };
+
+const LoginFormSchema = z.object({
+  email: z.string().min(1, { message: "入力必須な項目です。" }),
+  password: z.string().min(1, { message: "入力必須な項目です。" }),
+});
+
+type LoginForm = z.infer<typeof LoginFormSchema>;
 
 export const SignInDialog = (props: LoginCardProps) => {
   const [currentUser, setCurrentUser] = useAtom(userAtom);
@@ -58,7 +65,7 @@ export const SignInDialog = (props: LoginCardProps) => {
   let signup_url = "";
   let link = "";
   if (props.type === "user") {
-    title = "利用者ログイン";
+    title = "ユーザーログイン";
     alternative = "イベント・サークル運営者の方はこちら";
     get_base_url = "/user";
     signin_url = "/user/signin";
@@ -66,14 +73,14 @@ export const SignInDialog = (props: LoginCardProps) => {
     link = "/signin/community";
   } else if (props.type === "community") {
     title = "イベント・サークル運営者ログイン";
-    alternative = "利用者の方はこちら";
+    alternative = "ユーザーの方はこちら";
     get_base_url = "/community";
     signin_url = "/community/signin";
     signup_url = "/signup/community";
     link = "/signin/user";
   }
 
-  const form = useForm<z.infer<typeof LoginFormSchema>>({
+  const form = useForm<LoginForm>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
       email: "",
@@ -81,10 +88,10 @@ export const SignInDialog = (props: LoginCardProps) => {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof LoginFormSchema>) => {
+  const onSubmit = async (loginData: LoginForm) => {
     try {
       // await apiClient.post(api_url, data);
-      const signInResponse = await apiClient.post(signin_url, data);
+      const signInResponse = await apiClient.post(signin_url, loginData);
 
       if (props.type === "user") {
         setCurrentAccountType("user");
@@ -92,9 +99,10 @@ export const SignInDialog = (props: LoginCardProps) => {
         const response = await apiClient.get(`${get_base_url}/${uuid}`);
         console.log(response);
         const user: User = {
-          uuid: response.data.user.uuid,
-          name: response.data.user.name,
-          img: response.data.user.img,
+          uuid: response.data.uuid,
+          name: response.data.name,
+          email: response.data.email,
+          img: response.data.img,
         };
         setCurrentUser(user);
       } else if (props.type === "community") {
@@ -105,10 +113,10 @@ export const SignInDialog = (props: LoginCardProps) => {
         const community: Community = {
           uuid: response.data.uuid,
           name: response.data.name,
+          email: response.data.email,
           img: response.data.img,
         };
         setCurrentCommunity(community);
-        // setCurrentStatus("community");
       }
 
       router.push("/event");
@@ -157,6 +165,7 @@ export const SignInDialog = (props: LoginCardProps) => {
                     <FormLabel>パスワード</FormLabel>
                     <FormControl>
                       <Input
+                        type="password"
                         placeholder="パスワードを入力してください"
                         {...field}
                         className={style.input}

@@ -71,24 +71,68 @@
   display: block;
 }
 
+//ProfileSettings
 .profile_card {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  height: 60%;
+  width: 1000px;
+  height: 500px;
+  position: relative;
+  display: flex; //titleとselfを横並びにするのに使った
 
-  display: grid;
-  grid-template-rows: 1fr auto;
-
-  .button {
-    //display: flex;
-    //justify-content: flex-end;
-    margin-right: 20px;
-
-    grid-row: 2;
-    place-self: end right;
+  .setting_button {
+    position: absolute;
+    right: 20px;
+    bottom: 10px;
   }
 
+  .avatar {
+    position: absolute;
+    right: 0;
+    top: -100px;
+    width: 180px;
+    height: 180px;
+    border: 5px solid #000000;
+    overflow: hidden;
+  }
+
+  .profile_word_container {
+    margin: 0 auto;
+  }
+
+  .profile_title {
+    border-bottom: 1px solid theme.$gray;
+    width: 600px;
+    display: flex;
+    position: relative;
+
+    .profile_mem {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      position: absolute;
+      left: 300px;
+      color: #000000;
+      font-size: 20px;
+      bottom: 0;
+    }
+  }
 }
+
+.profile_name {
+  font-family: MOBO;
+  font-style: normal;
+  font-weight: 600;
+  color: black;
+  font-size: 53px;
+}
+
+.profile_self {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  width: 400px;
+  border-bottom: 1px solid theme.$gray;
+}
+
+
+
+

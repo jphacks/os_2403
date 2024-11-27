@@ -17,3 +17,5 @@ paths:
     $ref: "./paths/auth.yml#/community_signup"
   /community/signin:
     $ref: "./paths/auth.yml#/community_signin"
+  /createEvent:
+    $ref: "./paths/event.yml#/createEvent"

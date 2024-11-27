@@ -1,6 +1,22 @@
 @use "../../styles/theme";
 
 .all {
-  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: theme.$black;
+  height: 90vh;
+}
+
+.profile {
+  position: absolute;
+  left: 5%;
+  top: 15%;
+  font-family: 'MOBO';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 38px;
+  line-height: 100%;
+  color: white;
+  border-bottom: 1px solid theme.$wheat;
 }

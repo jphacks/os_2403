@@ -15,12 +15,13 @@ import {
 import { communityAtom } from "@/domain/community";
 import { accountTypeAtom } from "@/domain/general";
 import { userAtom } from "@/domain/user";
+import { useAuth } from "@/feature/menubar/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useAtom } from "jotai/index";
-import { CreditCard, LogOut, Settings, User } from "lucide-react";
+import { Calendar, CreditCard, LogOut, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { MailIcon } from "./components/mail";
@@ -47,6 +48,11 @@ export const Menubar = () => {
   let accountName = "";
   let accountIcon = "https://github.com/shadcn.png";
   let settingURI = "";
+  const { checkSession, signout } = useAuth();
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
+
   const [currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
   const [currentUser, setCurrentUser] = useAtom(userAtom);
   const [currentCommunity, setCurrentCommunity] = useAtom(communityAtom);
@@ -55,17 +61,18 @@ export const Menubar = () => {
     if (currentUser?.img) {
       accountIcon = currentUser?.img;
     }
-    accountName = currentUser?.name;
+    accountName = currentUser?.name || "";
     settingURI = "/profile/setting/user";
   } else {
     if (currentCommunity?.img) {
       accountIcon = currentCommunity?.img;
     }
-    accountName = currentCommunity?.name;
+    accountName = currentCommunity?.name || "";
     settingURI = "/profile/setting/community";
   }
 
   const onClickSignout = () => {
+    signout();
     setCurrentUser(undefined);
     setCurrentCommunity(undefined);
     setCurrentAccountType("not");
@@ -97,11 +104,17 @@ export const Menubar = () => {
                 <span>setting</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/signin/user" onClick={onClickSignout}>
-                <LogOut />
-                <span>signout</span>
-              </Link>
+            {currentAccountType === "community" && (
+              <DropdownMenuItem asChild>
+                <Link href="/event/setting">
+                  <Calendar />
+                  イベント設定
+                </Link>
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem onClick={onClickSignout}>
+              <LogOut />
+              <span>signout</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -94,7 +94,7 @@ func (h *eventHandler) CreateEvent(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Status(http.StatusNoContent)
+	ctx.Status(http.StatusCreated)
 }
 
 func (h *eventHandler) UpdateEvent(ctx *gin.Context) {

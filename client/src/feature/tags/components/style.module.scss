@@ -1,0 +1,80 @@
+@use "@/styles/theme";
+
+.register_tag {
+  box-shadow: 0 0 8px theme.$gray;
+  width: 1305px;
+  height: 600px;
+}
+
+.header {
+  text-align: center;
+
+}
+
+.title {
+  font-family: 'MOBO';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 50px;
+}
+
+.description {
+  color: theme.$gray;
+  font-family: 'Calibri';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.tag1 {
+  width: 206px;
+  height: 72px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 39px;
+  line-height: 48px;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.tag2 {
+  width: 412px;
+  height: 72px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 39px;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.tag3 {
+  width: 309px;
+  height: 72px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 39px;
+  line-height: 48px;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.footer {
+  justify-content: center;
+}
+
+.button {
+  width: 477px;
+  height: 75px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 100%;
+}

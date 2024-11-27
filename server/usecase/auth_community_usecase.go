@@ -28,7 +28,7 @@ type InputCommunitySignIn struct {
 }
 
 type IAuthCommunityUsecase interface {
-	SignUp(ctx context.Context, input InputCommunitySignUp) error
+	SignUp(ctx context.Context, input InputCommunitySignUp) (uuid.UUID, error)
 	SignIn(ctx context.Context, input InputCommunitySignIn) (uuid.UUID, error)
 }
 
@@ -48,7 +48,7 @@ func NewAuthCommunityUseCase(community repositories.ICommunityRepository, sessio
 	}
 }
 
-func (u *authCommunityUsecase) SignUp(ctx context.Context, input InputCommunitySignUp) error {
+func (u *authCommunityUsecase) SignUp(ctx context.Context, input InputCommunitySignUp) (uuid.UUID, error) {
 	fmt.Println("usecase")
 	fmt.Println(input)
 
@@ -74,7 +74,7 @@ func (u *authCommunityUsecase) SignUp(ctx context.Context, input InputCommunityS
 	// パスワードをハッシュ化
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return fmt.Errorf("failed to hash password: %v", err)
+		return uuid.Nil, fmt.Errorf("failed to hash password: %v", err)
 	}
 
 	fmt.Println(input.Range)
@@ -96,10 +96,10 @@ func (u *authCommunityUsecase) SignUp(ctx context.Context, input InputCommunityS
 	fmt.Println(community)
 
 	if err := u.communityRepo.Create(ctx, community); err != nil {
-		return err
+		return uuid.Nil, err
 	}
 
-	return nil
+	return community.UUID, nil
 }
 
 func (u *authCommunityUsecase) SignIn(ctx context.Context, input InputCommunitySignIn) (uuid.UUID, error) {

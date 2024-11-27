@@ -1,57 +1,59 @@
 "use client";
 
+import { getTags } from "@/components/tags/hooks/get-tags";
 import TagButton from "@/components/tags/tag-button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EventType } from "@/domain/event";
+import { TagType } from "@/domain/tag";
 import { EventCard } from "@/feature/event";
+import { getEvents } from "@/feature/event/hooks/get-events";
 import { Popup } from "@/feature/popup";
 import { AuthProvider } from "@/lib/provider";
-import axios from "axios";
+import { set } from "date-fns";
 import React, { useState, useEffect } from "react";
 import InviteCheck from "../../../public/invite-check";
 import LikeSearch from "../../../public/like-search";
 import styles from "./style.module.scss";
 
-interface Tag {
-  id: string;
-  name: string;
-}
-
-const mockTags: Tag[] = [
-  { id: "1", name: "tag1" },
-  { id: "2", name: "tag2" },
-  { id: "3", name: "tag3" },
-  { id: "4", name: "tag4" },
-  { id: "5", name: "tag5" },
-];
-
 const EventPage = () => {
-  const [tags, setTags] = useState<Tag[]>([]);
+  const [tags, setTags] = useState<TagType[]>([]);
+  const [events, setEvents] = useState<EventType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
     const fetchTags = async () => {
-      setLoading(true);
       try {
-        const response = await axios.get("http://haveme.xyz/tag");
-        const data = response.data;
-        if (data.tags) {
-          setTags(data.tags);
-        } else {
-          setError("No tags data found");
-        }
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          setError(`Failed to fetch tags: ${err.message}`);
-        } else {
-          setError("An unexpected error occurred");
-        }
+        const response = await getTags();
+        setTags(response);
+        console.log("Fetched tags:", response);
+      } catch (error) {
+        console.error("Failed to fetch tags:", error);
+      }
+    };
+
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const fetchedEvents = await getEvents();
+        setEvents(fetchedEvents);
+        console.log("Fetched events:", fetchedEvents);
+      } catch (error) {
+        console.error("Failed to fetch events:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchTags();
+    fetchEvents();
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  const handleEventClose = () => {
+    console.log("Event closed");
+  };
 
   return (
     <>
@@ -77,19 +79,43 @@ const EventPage = () => {
           </div>
 
           <div className={styles.tagWrapper}>
-            <div className={styles.tagsContainer}>
-              {mockTags.map(tag => (
-                <TagButton key={tag.id} variant="red">
-                  {tag.name}
-                </TagButton>
-              ))}
-            </div>
+            {tags?.length > 0 ? (
+              <div className={styles.tagsContainer}>
+                {tags.map(tag => (
+                  <TagButton key={tag.name} variant="red">
+                    {tag.name}
+                  </TagButton>
+                ))}
+              </div>
+            ) : (
+              <Skeleton className={"w-full h-[40px] rounded-lg"} />
+            )}
           </div>
         </div>
 
-        <div className={styles.cardWrapper}>{/* ここにcard */}</div>
+        <div className={styles.cardWrapper}>
+          {loading ? (
+            <div>Loading...</div>
+          ) : (
+            events.map(event => (
+              <EventCard
+                key={event.community_uuid}
+                title={event.title}
+                publisher={event.community_info.name}
+                publisherIcon={event.community_info.img}
+                datetime={event.date}
+                tags={event.tag.map(tag => ({
+                  name: tag.toString(),
+                }))}
+                imageUrl={event.img}
+                handleEventClose={handleEventClose}
+              />
+            ))
+          )}
+        </div>
       </AuthProvider>
     </>
   );
 };
+
 export default EventPage;

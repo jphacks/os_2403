@@ -101,13 +101,14 @@ export const ProfileSetting = (props: PrpfileSettingProps) => {
       const setUser: User = {
         uuid: currentUser?.uuid,
         name: data?.name,
+        email: data?.email,
         img: data?.img,
       };
       setCurrentUser(setUser);
       router.push("/event");
     } else if (props.type === "community" && currentCommunity?.uuid !== "") {
       const community: Community = {
-        uuid: currentCommunity?.uuid,
+        uuid: currentCommunity?.uuid || "",
         name: data?.name,
         mem1: data?.mem1,
         mem2: data?.mem2,
@@ -121,8 +122,9 @@ export const ProfileSetting = (props: PrpfileSettingProps) => {
 
       //扱うのはuuidとnameとimgのみ
       const setCommunity: Community = {
-        uuid: currentCommunity?.uuid,
+        uuid: currentCommunity?.uuid || "",
         name: data?.name,
+        email: data?.email,
         img: data?.img,
       };
       setCurrentCommunity(setCommunity);
@@ -133,17 +135,17 @@ export const ProfileSetting = (props: PrpfileSettingProps) => {
   React.useEffect(() => {
     if (props.type === "user" && currentUser?.uuid) {
       apiClient.get(`/user/${currentUser?.uuid}`).then(res => {
-        // console.log(res.data);
+        console.log(res.data);
         form.reset({
-          name: res.data.user.name,
-          mem1: res.data.user.mem1,
-          mem2: res.data.user.mem2,
-          mem3: res.data.user.mem3,
-          img: res.data.user.img,
-          email: res.data.user.email,
-          self: res.data.user.self,
+          name: res.data.name,
+          mem1: res.data.mem1,
+          mem2: res.data.mem2,
+          mem3: res.data.mem3,
+          img: res.data.img,
+          email: res.data.email,
+          self: res.data.self,
         });
-        setPreview(res.data.user.img);
+        setPreview(res.data.img);
       });
     } else if (props.type === "community" && currentCommunity?.uuid) {
       apiClient.get(`/community/${currentCommunity?.uuid}`).then(res => {

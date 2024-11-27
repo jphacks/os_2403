@@ -1,11 +1,6 @@
 @use "@/styles/theme";
 @use "@/styles/utils";
 
-.dateDisplay {
-  display: flex;
-  font-size: 0.875rem;
-  color: #666666;
-}
 
 .icons {
   display: flex;
@@ -41,6 +36,7 @@
   align-items: center;
   overflow-x: auto;
   scrollbar-width: none;
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -114,5 +110,5 @@
 
 .dateDisplay {
   font-size: 0.875rem;
-  color: theme.$black ;
+  color: theme.$black;
 }

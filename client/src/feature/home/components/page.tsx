@@ -1,6 +1,6 @@
 "use client";
 import { Community } from "@/domain/community";
-import { accountTypeAtom, statusAtom } from "@/domain/general";
+import { accountTypeAtom } from "@/domain/general";
 import { userAtom } from "@/domain/user";
 import { useAtom } from "jotai/index";
 import { useRouter } from "next/navigation";

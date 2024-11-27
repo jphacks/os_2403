@@ -26,9 +26,22 @@ type InputCommunityFindByID struct {
 	UUID uuid.UUID
 }
 
+type CommunityResponse struct {
+	UUID     uuid.UUID
+	Name     string
+	Email    string
+	Password []byte
+	Img      string
+	Self     string
+	Mem1     string
+	Mem2     string
+	Mem3     string
+	Tags     []int `json:"tag"`
+}
+
 type ICommunityUsecase interface {
 	Update(ctx context.Context, input InputCommunityUpdate) error
-	FindByID(ctx context.Context, input InputCommunityFindByID) (*models.Community, error)
+	FindByID(ctx context.Context, input InputCommunityFindByID) (*CommunityResponse, error)
 }
 
 type communityUsecase struct {
@@ -95,10 +108,27 @@ func (u *communityUsecase) Update(ctx context.Context, input InputCommunityUpdat
 	return nil
 }
 
-func (u *communityUsecase) FindByID(ctx context.Context, input InputCommunityFindByID) (*models.Community, error) {
+func (u *communityUsecase) FindByID(ctx context.Context, input InputCommunityFindByID) (*CommunityResponse, error) {
 	community, err := u.communityRepo.FindByID(ctx, input.UUID.String())
 	if err != nil {
 		return nil, err
 	}
-	return community, nil
+
+	mem1, _ := u.memberRepo.FindByID(ctx, community.Mem1)
+	mem2, _ := u.memberRepo.FindByID(ctx, community.Mem2)
+	mem3, _ := u.memberRepo.FindByID(ctx, community.Mem3)
+
+	communityRes := &CommunityResponse{
+		UUID:     community.UUID,
+		Name:     community.Name,
+		Email:    community.Email,
+		Password: community.Password,
+		Img:      community.Img,
+		Self:     community.Self,
+		Mem1:     mem1.Name,
+		Mem2:     mem2.Name,
+		Mem3:     mem3.Name,
+		Tags:     community.Tags,
+	}
+	return communityRes, nil
 }

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import style from "./style.module.scss";
 
-import { DatePickerField } from "@/feature/event/components/event";
+import { EventSetting } from "@/feature/event/components/event";
 
 const EventSettingSchema = z.object({
   // eventName: z.string().min(1, { message: "入力必須です。" }),
@@ -14,7 +14,7 @@ const EventSettingSchema = z.object({
 const EventSettingPage = () => {
   return (
     <div className={style.background}>
-      <DatePickerField />
+      <EventSetting />
     </div>
   );
 };

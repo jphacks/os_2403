@@ -34,3 +34,11 @@ func (r *memberRepository) Create(ctx context.Context, member *models.Member) (u
 	}
 	return member.ID, nil // 作成されたメンバーのIDを返す
 }
+
+func (r *memberRepository) FindByID(ctx context.Context, id uint) (*models.Member, error) {
+	var member models.Member
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&member).Error; err != nil {
+		return nil, err
+	}
+	return &member, nil
+}

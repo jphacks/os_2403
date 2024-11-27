@@ -2,9 +2,11 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 	"github.com/jphacks/os_2403/infrastructure/dao"
@@ -29,6 +31,8 @@ func main() {
 	fmt.Println(db)
 
 	// 初期化はinfra(persistence)->domain/service->usecase->handlerの順番で行うようにしよう
+	godotenv.Load()
+	gob.Register(uuid.UUID{})
 
 	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
@@ -69,34 +73,41 @@ func main() {
 	//authMiddleware := middleware.NewAuthMiddleware(store)
 	router.Use(middleware.CORS())
 
-	router.GET("/health", health)
+	router.GET("/api/health", health)
 
-	router.POST("/user/signin", authUserHandler.SignIn)
-	router.POST("/user/signup", authUserHandler.SignUp)
+	router.POST("/api/user/signin", authUserHandler.SignIn)
+	router.POST("/api/user/signup", authUserHandler.SignUp)
 
-	router.GET("/user/:uuid", userHandler.FindByID)
-	router.PUT("/user/:uuid", userHandler.Update)
+	router.GET("/api/session", authUserHandler.CheckSession)
+	router.GET("/api/signout", authUserHandler.SignOut)
 
-	router.POST("/community/signin", authCommunityHandler.SignIn)
-	router.POST("/community/signup", authCommunityHandler.SignUp)
+	router.GET("/api/user/:uuid", userHandler.FindByID)
+	router.PUT("/api/user/:uuid", userHandler.Update)
 
-	router.GET("/community/:uuid", communityHandler.FindById)
-	router.PUT("/community/:uuid", communityHandler.Update)
+	router.POST("/api/community/signin", authCommunityHandler.SignIn)
+	router.POST("/api/community/signup", authCommunityHandler.SignUp)
 
-	router.GET("/tag", tagHandler.GetRandom)
+	router.GET("/api/community/:uuid", communityHandler.FindById)
+	router.PUT("/api/community/:uuid", communityHandler.Update)
 
-	router.GET("/getscoutcommunitydetail", scoutListHandler.GetCommunityDetailByScoutList)
-	router.GET("/getscoutuserdetail", scoutListHandler.GetUserDetailByScoutList)
-	router.POST("/createscout", scoutListHandler.CreateScouts)
-	router.PUT("/changescoutstatus", scoutListHandler.ChangeStatus)
-	router.GET("/getmessageuser", scoutListHandler.GetMessageUser)
+	router.GET("/api/tag", tagHandler.GetRandom)
+	router.GET("/api/scoutlist/getcommunitydetail", scoutListHandler.GetCommunityDetailByScoutList)
+	router.GET("/api/scoutlist/getuserdetail", scoutListHandler.GetUserDetailByScoutList)
+	router.POST("/api/scoutlist/create", scoutListHandler.CreateScouts)
+	router.PUT("/api/scoutlist/updatestatus", scoutListHandler.ChangeStatus)
+	router.GET("/api/scoutlist/getmessage", scoutListHandler.GetMessageUser)
 
-	router.GET("/getevent", eventHandler.GetAllEvents)
-	router.POST("/createdevent", eventHandler.CreateEvent)
-	router.PUT("/updataevent", eventHandler.UpdateEvent)
+	router.GET("/api/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
+	router.POST("/api/createscout", scoutListHandler.CreateScouts)
+	router.PUT("/api/changescoutstatus", scoutListHandler.ChangeStatus)
+	router.GET("/api/getmessageuser", scoutListHandler.GetMessageUser)
 
-	router.GET("/ws/chat/:room_id", chatHandler.HandleWebSocket)
-	router.GET("/messages/:room_id", chatHandler.GetMessages) // チャット履歴取得用
+	router.GET("/api/getevent", eventHandler.GetAllEvents)
+	router.POST("/api/createdevent", eventHandler.CreateEvent)
+	router.PUT("/api/updataevent", eventHandler.UpdateEvent)
+
+	router.GET("/api/ws/chat/:room_id", chatHandler.HandleWebSocket)
+	router.GET("/api/messages/:room_id", chatHandler.GetMessages) // チャット履歴取得用
 
 	log.Fatal(http.ListenAndServe(":80", router))
 }

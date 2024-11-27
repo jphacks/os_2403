@@ -1,6 +1,6 @@
 "use client";
 import { Community, communityAtom } from "@/domain/community";
-import { accountTypeAtom, statusAtom } from "@/domain/general";
+import { accountTypeAtom } from "@/domain/general";
 import { User, userAtom } from "@/domain/user";
 import { apiClient } from "@/utils/client";
 import { useAtom } from "jotai/index";
@@ -14,7 +14,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   React.useEffect(() => {
-    if (!currentAccountType || (currentAccountType === "user" && !currentUser)) {
+    if (currentAccountType === "not" || (currentAccountType === "user" && !currentUser)) {
       router.push("/signin/user");
     } else if (currentAccountType === "community" && !currentCommunity) {
       router.push("/signin/community");
