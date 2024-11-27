@@ -85,7 +85,8 @@ func main() {
 
 	router.GET("/tag", tagHandler.GetRandom)
 
-	router.GET("/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
+	router.GET("/getscoutcommunitydetail", scoutListHandler.GetCommunityDetailByScoutList)
+	router.GET("/getscoutuserdetail", scoutListHandler.GetUserDetailByScoutList)
 	router.POST("/createscout", scoutListHandler.CreateScouts)
 	router.PUT("/changescoutstatus", scoutListHandler.ChangeStatus)
 	router.GET("/getmessageuser", scoutListHandler.GetMessageUser)

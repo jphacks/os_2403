@@ -25,6 +25,7 @@ func NewScoutListHandler(usecase usecase.IScoutListUsecase, userUsecase usecase.
 
 type IScoutListHandler interface {
 	GetCommunityDetailByScoutList(ctx *gin.Context)
+	GetUserDetailByScoutList(ctx *gin.Context)
 	CreateScout(ctx *gin.Context)
 	ChangeStatus(ctx *gin.Context)
 	CreateScouts(ctx *gin.Context)
@@ -46,20 +47,25 @@ type changeStatusRequest struct {
 }
 
 func (h *ScoutHandler) GetCommunityDetailByScoutList(ctx *gin.Context) {
-	userUUIDStr := ctx.Query("user_uuid")
-	userUUID, err := uuid.Parse(userUUIDStr)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID format"})
-		return
-	}
-
-	scouts, err := h.scoutUsecase.GetWithCommunityDetails(ctx.Request.Context(), userUUID)
+	userUUID := ctx.Query("user_uuid")
+	scoutlist, err := h.scoutUsecase.GetWithCommunityDetails(ctx.Request.Context(), userUUID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, scouts)
+	ctx.JSON(http.StatusOK, scoutlist)
+}
+
+func (h *ScoutHandler) GetUserDetailByScoutList(ctx *gin.Context) {
+	userUUID := ctx.Query("user_uuid")
+	scoutlist, err := h.scoutUsecase.GetWithUserDetail(ctx.Request.Context(), userUUID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, scoutlist)
 }
 
 func (h *ScoutHandler) CreateScout(ctx *gin.Context) {
