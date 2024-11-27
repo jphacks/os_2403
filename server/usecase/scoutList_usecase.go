@@ -90,11 +90,6 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, communit
 			DetailInfo: models.DetailInfo{
 				Name: detail.Name,
 				Img:  detail.Img,
-				Self: detail.Self,
-				Mem1: detail.Mem1,
-				Mem2: detail.Mem2,
-				Mem3: detail.Mem3,
-				Tags: detail.Tags,
 			},
 		}
 		responses = append(responses, response)
@@ -124,11 +119,6 @@ func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, userUUID strin
 			DetailInfo: models.DetailInfo{
 				Name: detail.Name,
 				Img:  detail.Img,
-				Self: detail.Self,
-				Mem1: detail.Mem1,
-				Mem2: detail.Mem2,
-				Mem3: detail.Mem3,
-				Tags: detail.Tags,
 			},
 		}
 		responses = append(responses, response)

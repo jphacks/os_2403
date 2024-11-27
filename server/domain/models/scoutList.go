@@ -33,11 +33,6 @@ type ScoutListUserResponse struct {
 type DetailInfo struct {
 	Name string `json:"name"`
 	Img  string `json:"img"`
-	Self string `json:"self"`
-	Mem1 uint   `json:"mem1"`
-	Mem2 uint   `json:"mem2"`
-	Mem3 uint   `json:"mem3"`
-	Tags []int  `json:"tags"`
 }
 
 type MessageCommunity struct {
