@@ -8,6 +8,7 @@ import (
 	"github.com/jphacks/os_2403/domain/models"
 	"github.com/jphacks/os_2403/usecase"
 	"net/http"
+	"strconv"
 )
 
 type ScoutHandler struct {
@@ -28,8 +29,6 @@ type IScoutListHandler interface {
 	GetUserDetailByScoutList(ctx *gin.Context)
 	CreateScout(ctx *gin.Context)
 	ChangeStatus(ctx *gin.Context)
-	CreateScouts(ctx *gin.Context)
-	GetMessageUser(ctx *gin.Context)
 }
 
 type createScoutRequest struct {
@@ -47,9 +46,19 @@ type changeStatusRequest struct {
 }
 
 func (h *ScoutHandler) GetCommunityDetailByScoutList(ctx *gin.Context) {
-	communityUUID := ctx.Query("community_uuid")
+	userUUID := ctx.Query("user_uuid") // 変数名を意図に合わせて変更
 
-	scoutlist, err := h.scoutUsecase.GetWithCommunityDetails(ctx.Request.Context(), communityUUID)
+	status, err := strconv.ParseUint(ctx.Query("status"), 10, 32)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid status value"})
+		return
+	}
+
+	scoutlist, err := h.scoutUsecase.GetWithCommunityDetails(
+		ctx.Request.Context(),
+		userUUID,
+		uint(status),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -59,9 +68,17 @@ func (h *ScoutHandler) GetCommunityDetailByScoutList(ctx *gin.Context) {
 }
 
 func (h *ScoutHandler) GetUserDetailByScoutList(ctx *gin.Context) {
-	userUUID := ctx.Query("user_uuid")
+	userUUID := ctx.Query("community_uuid")
+
+	// statusを数値に変換
+	status, err := strconv.ParseUint(ctx.Query("status"), 10, 32)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid status value"})
+		return
+	}
+
 	fmt.Println(userUUID)
-	scoutlist, err := h.scoutUsecase.GetWithUserDetail(ctx.Request.Context(), userUUID)
+	scoutlist, err := h.scoutUsecase.GetWithUserDetail(ctx.Request.Context(), userUUID, uint(status))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -152,12 +169,9 @@ func (h *ScoutHandler) CreateScouts(ctx *gin.Context) {
 
 		scoutDetail := &models.ScoutList{
 			User_UUID:      userUUID,
-			Status:         0, // 最初は未読(0)で登録
+			Status:         0, // 最初は未承認(0)で登録
 			Community_UUID: communityUUID,
 		}
-
-		fmt.Println("hogehoeghegohgoe")
-		fmt.Println(scoutDetail.User_UUID)
 
 		if err := h.scoutUsecase.Create(ctx.Request.Context(), scoutDetail); err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -166,56 +180,4 @@ func (h *ScoutHandler) CreateScouts(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusCreated)
-}
-
-func (h *ScoutHandler) GetMessageUser(ctx *gin.Context) {
-	var req struct {
-		IsUser bool   `json:"isUser"`
-		UUID   string `json:"uuid"`
-	}
-
-	if err := json.NewDecoder(ctx.Request.Body).Decode(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Failed to decode request body"})
-		return
-	}
-
-	uuidParsed, err := uuid.Parse(req.UUID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID format"})
-		return
-	}
-
-	var result []interface{}
-
-	if req.IsUser {
-		users, err := h.scoutUsecase.GetUsersWithStatus(ctx.Request.Context(), uuidParsed, 3)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		for _, user := range users {
-			result = append(result, map[string]interface{}{
-				"uuid": user.UserUUID,
-				"name": user.Name,
-				"img":  user.Img,
-			})
-		}
-	} else {
-		communities, err := h.scoutUsecase.GetCommunitiesWithStatus(ctx.Request.Context(), uuidParsed, 3)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		for _, community := range communities {
-			result = append(result, map[string]interface{}{
-				"uuid": community.CommunityUUID,
-				"name": community.Name,
-				"img":  community.Img,
-			})
-		}
-	}
-
-	ctx.JSON(http.StatusOK, result)
 }

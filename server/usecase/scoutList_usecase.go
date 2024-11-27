@@ -13,16 +13,15 @@ import (
 type IScoutListUsecase interface {
 	Create(ctx context.Context, scoutList *models.ScoutList) error
 	ChangeStatus(ctx context.Context, userUUID uuid.UUID, status uint) error
-	GetWithCommunityDetails(ctx context.Context, userUUID string) ([]models.ScoutListCommunityResponse, error)
-	GetWithUserDetail(ctx context.Context, userUUID string) ([]models.ScoutListUserResponse, error)
-	GetUsersWithStatus(ctx context.Context, userUUID uuid.UUID, status uint) ([]models.MessageUser, error)
-	GetCommunitiesWithStatus(ctx context.Context, communityUUID uuid.UUID, status uint) ([]models.MessageCommunity, error)
+	GetWithCommunityDetails(ctx context.Context, userUUID string, status uint) ([]models.ScoutListResponse, error)
+	GetWithUserDetail(ctx context.Context, communityUUID string, status uint) ([]models.ScoutListResponse, error)
 }
 
 type scoutListUsecase struct {
 	scoutListRepo repositories.IScoutListRepository
 	userRepo      repositories.IUserRepository
 	communityRepo repositories.ICommunityRepository
+	messageRepo   repositories.MessageRepository
 }
 
 type CreateScoutsRequest struct {
@@ -30,11 +29,12 @@ type CreateScoutsRequest struct {
 	CommunityUUID string `json:"community_uuid"`
 }
 
-func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo repositories.IUserRepository, communityRepo repositories.ICommunityRepository) IScoutListUsecase {
+func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo repositories.IUserRepository, communityRepo repositories.ICommunityRepository, messageRepo repositories.MessageRepository) IScoutListUsecase {
 	return &scoutListUsecase{
 		scoutListRepo: repo,
 		userRepo:      userRepo,
 		communityRepo: communityRepo,
+		messageRepo:   messageRepo,
 	}
 }
 
@@ -69,24 +69,30 @@ func (u *scoutListUsecase) ChangeStatus(ctx context.Context, userUUID uuid.UUID,
 	return u.scoutListRepo.ChangeStatus(ctx, userUUID, status)
 }
 
-func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, communityUUID string) ([]models.ScoutListCommunityResponse, error) {
+func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID string, status uint) ([]models.ScoutListResponse, error) {
 
-	scoutlists, err := u.scoutListRepo.GetByCommunityUUID(ctx, communityUUID)
+	scoutlists, err := u.scoutListRepo.GetByUserUUID(ctx, UserUUID)
 	if err != nil {
 		return nil, err
 	}
 
-	detail, err := u.communityRepo.FindByID(ctx, communityUUID)
+	detail, err := u.userRepo.FindByID(ctx, UserUUID)
 	if err != nil {
 		return nil, err
 	}
 
-	var responses []models.ScoutListCommunityResponse
+	unreadcount, err := u.messageRepo.GetCountByStatus(UserUUID, scoutlists[0].Status)
+	if err != nil {
+		return nil, err
+	}
+
+	var responses []models.ScoutListResponse
 	for _, scoutlist := range scoutlists {
-		response := models.ScoutListCommunityResponse{
-			ID:             scoutlist.ID,
-			Status:         scoutlist.Status,
-			Community_UUID: scoutlist.Community_UUID,
+		response := models.ScoutListResponse{
+			ID:          scoutlist.ID,
+			Status:      scoutlist.Status,
+			UUID:        scoutlist.Community_UUID,
+			UnreadCount: unreadcount,
 			DetailInfo: models.DetailInfo{
 				Name: detail.Name,
 				Img:  detail.Img,
@@ -98,26 +104,34 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, communit
 	return responses, nil
 }
 
-func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, userUUID string) ([]models.ScoutListUserResponse, error) {
+func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, communityUUID string, status uint) ([]models.ScoutListResponse, error) {
 
-	fmt.Println(userUUID)
-	scoutlists, err := u.scoutListRepo.GetByUserUUID(ctx, userUUID)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(scoutlists)
-
-	detail, err := u.userRepo.FindByID(ctx, userUUID)
+	scoutlists, err := u.scoutListRepo.GetByCommunityUUID(ctx, communityUUID)
 	if err != nil {
 		return nil, err
 	}
 
-	var responses []models.ScoutListUserResponse
+	detail, err := u.communityRepo.FindByID(ctx, communityUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: 未読数を取得する実装をforで回す
+	unreadcount, err := u.messageRepo.GetCountByStatus(scoutlists[0].User_UUID.String(), status)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(scoutlists[0].Status)
+
+	fmt.Println(len(scoutlists))
+
+	var responses []models.ScoutListResponse
 	for _, scoutlist := range scoutlists {
-		response := models.ScoutListUserResponse{
-			ID:        scoutlist.ID,
-			Status:    scoutlist.Status,
-			User_UUID: scoutlist.Community_UUID,
+		response := models.ScoutListResponse{
+			ID:          scoutlist.ID,
+			Status:      scoutlist.Status,
+			UUID:        scoutlist.User_UUID,
+			UnreadCount: unreadcount,
 			DetailInfo: models.DetailInfo{
 				Name: detail.Name,
 				Img:  detail.Img,
@@ -125,6 +139,7 @@ func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, userUUID strin
 		}
 		responses = append(responses, response)
 	}
+	fmt.Println(responses)
 
 	return responses, nil
 }
@@ -162,12 +177,4 @@ func sendEmail(recipients []string, publisher string) error {
 	}
 
 	return nil
-}
-
-func (u *scoutListUsecase) GetUsersWithStatus(ctx context.Context, userUUID uuid.UUID, status uint) ([]models.MessageUser, error) {
-	return u.scoutListRepo.GetUsersWithStatus(ctx, userUUID, status)
-}
-
-func (u *scoutListUsecase) GetCommunitiesWithStatus(ctx context.Context, communityUUID uuid.UUID, status uint) ([]models.MessageCommunity, error) {
-	return u.scoutListRepo.GetCommunitiesWithStatus(ctx, communityUUID, status)
 }
