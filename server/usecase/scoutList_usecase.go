@@ -100,10 +100,12 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, communit
 
 func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, userUUID string) ([]models.ScoutListUserResponse, error) {
 
+	fmt.Println(userUUID)
 	scoutlists, err := u.scoutListRepo.GetByUserUUID(ctx, userUUID)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(scoutlists)
 
 	detail, err := u.userRepo.FindByID(ctx, userUUID)
 	if err != nil {

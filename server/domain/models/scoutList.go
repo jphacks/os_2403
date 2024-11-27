@@ -7,7 +7,7 @@ import (
 
 type ScoutList struct {
 	ID             uint       `gorm:"primarykey"`
-	User_UUID      uuid.UUID  `gorm:"type:varchar(36)"`
+	User_UUID      uuid.UUID  `gorm:"type:varchar(36);column:user_uuid"` // タグを1つに統合
 	Status         uint       `gorm:"type:int unsigned"`
 	Community_UUID uuid.UUID  `gorm:"type:varchar(36)"`
 	CreatedAt      time.Time  `gorm:"type:timestamp"`

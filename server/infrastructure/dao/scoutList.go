@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/jphacks/os_2403/domain/models"
 	"gorm.io/gorm"
@@ -17,19 +18,34 @@ func NewscoutListRepository(db *gorm.DB) *scoutListRepository {
 
 func (r *scoutListRepository) GetByCommunityUUID(ctx context.Context, communityUUID string) ([]models.ScoutList, error) {
 	var scoutlist []models.ScoutList
-	err := r.db.WithContext(ctx).Where("community_uuid = ?", communityUUID).Find(&scoutlist).Error
+	parsedUUID, err := uuid.Parse(communityUUID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid UUID format: %v", err)
 	}
+
+	db := r.db.WithContext(ctx).Debug()
+	result := db.Where("community_uuid = ?", parsedUUID).Find(&scoutlist)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
 	return scoutlist, nil
 }
 
 func (r *scoutListRepository) GetByUserUUID(ctx context.Context, userUUID string) ([]models.ScoutList, error) {
 	var scoutlist []models.ScoutList
-	err := r.db.WithContext(ctx).Where("user_uuid = ?", userUUID).Find(&scoutlist).Error
+
+	parsedUUID, err := uuid.Parse(userUUID)
+	if err != nil {
+		return nil, fmt.Errorf("invalid UUID format: %v", err)
+	}
+
+	err = r.db.WithContext(ctx).Where("user_uuid = ?", parsedUUID).Find(&scoutlist).Error
 	if err != nil {
 		return nil, err
 	}
+
 	return scoutlist, nil
 }
 

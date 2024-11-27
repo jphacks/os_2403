@@ -47,8 +47,9 @@ type changeStatusRequest struct {
 }
 
 func (h *ScoutHandler) GetCommunityDetailByScoutList(ctx *gin.Context) {
-	userUUID := ctx.Query("user_uuid")
-	scoutlist, err := h.scoutUsecase.GetWithCommunityDetails(ctx.Request.Context(), userUUID)
+	communityUUID := ctx.Query("community_uuid")
+
+	scoutlist, err := h.scoutUsecase.GetWithCommunityDetails(ctx.Request.Context(), communityUUID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -59,6 +60,7 @@ func (h *ScoutHandler) GetCommunityDetailByScoutList(ctx *gin.Context) {
 
 func (h *ScoutHandler) GetUserDetailByScoutList(ctx *gin.Context) {
 	userUUID := ctx.Query("user_uuid")
+	fmt.Println(userUUID)
 	scoutlist, err := h.scoutUsecase.GetWithUserDetail(ctx.Request.Context(), userUUID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
