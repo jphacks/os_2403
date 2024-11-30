@@ -1,5 +1,7 @@
 "use client";
 
+import InviteCheck from "@/../public/invite-check";
+import LikeSearch from "@/../public/like-search";
 import { getTags } from "@/components/tags/hooks/get-tags";
 import TagButton from "@/components/tags/tag-button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,8 +12,6 @@ import { Popup } from "@/features/popup";
 import { TagType } from "@/features/tags/types/tag";
 import { AuthProvider } from "@/lib/provider";
 import { useEffect, useState } from "react";
-import InviteCheck from "../../../public/invite-check";
-import LikeSearch from "../../../public/like-search";
 import styles from "./style.module.scss";
 
 const EventPage = () => {
