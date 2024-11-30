@@ -1,25 +1,16 @@
 "use client";
 
-import { TagType } from "@/domain/tag";
 import { Ellipsis, SquareX } from "lucide-react";
 import React, { useState } from "react";
 import InviteForYou from "../../../public/invite-for-you";
 import Letter from "../../../public/letter";
 import { EventCard } from "../event";
 import style from "./index.module.scss";
-
-type CardType = {
-  title: string;
-  publisher: string;
-  publisherIcon: string;
-  datetime: string;
-  tags: TagType[];
-  imageUrl: string;
-  liked?: boolean;
-};
+import { TagType } from "@/domain/tag";
+import { EventType } from "@/domain/event";
 
 interface PopupProps {
-  cards: CardType[];
+  cards: EventType[];
 }
 
 export const Popup: React.FC<PopupProps> = ({ cards }) => {
@@ -36,6 +27,9 @@ export const Popup: React.FC<PopupProps> = ({ cards }) => {
     setDisplayedCards(displayedCards.filter(card => card.title !== cardTitle));
   };
 
+  // 最初の3つのカードのみを表示
+  const visibleCards = displayedCards.slice(0, 3);
+
   return (
     <div className={style.popup}>
       <div className={style.closeButton}>
@@ -50,10 +44,18 @@ export const Popup: React.FC<PopupProps> = ({ cards }) => {
       </div>
 
       <div className={style.cardWrapper}>
-        {displayedCards.map(card => (
+        {visibleCards.map((card, index) => (
           <EventCard
-            key={card.title}
-            {...card}
+          key={`${card.community_uuid}-${index}`}
+            title={card.title}
+            publisher={card.community_info.name}
+            publisherIcon={card.community_info.img}
+            datetime={card.date}
+            tags={card.tag.map(tag => ({
+              name: tag.toString(),
+            }))}
+            imageUrl={card.img}
+            liked={false}
             handleEventClose={() => handleEventClose(card.title)}
           />
         ))}

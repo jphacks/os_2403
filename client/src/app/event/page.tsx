@@ -1,32 +1,35 @@
 "use client";
 
-import { getTags } from "@/components/tags/hooks/get-tags";
 import TagButton from "@/components/tags/tag-button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { EventType } from "@/domain/event";
-import { TagType } from "@/domain/tag";
 import { EventCard } from "@/feature/event";
-import { getEvents } from "@/feature/event/hooks/get-events";
 import { Popup } from "@/feature/popup";
 import { AuthProvider } from "@/lib/provider";
-import { set } from "date-fns";
 import React, { useState, useEffect } from "react";
 import InviteCheck from "../../../public/invite-check";
 import LikeSearch from "../../../public/like-search";
 import styles from "./style.module.scss";
+import { TagType } from "@/domain/tag";
+import { EventType } from "@/domain/event";
+import { getEvents } from "@/feature/event/hooks/get-events";
+import { getTags } from "@/components/tags/hooks/get-tags";
+import { Skeleton } from "@/components/ui/skeleton";
+import { set } from "date-fns";
 
 const EventPage = () => {
   const [tags, setTags] = useState<TagType[]>([]);
   const [events, setEvents] = useState<EventType[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [invitedEvents, setInvitedEvents] = useState<EventType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
 
   useEffect(() => {
     let mounted = true;
     const fetchTags = async () => {
       try {
         const response = await getTags();
-        setTags(response);
-        console.log("Fetched tags:", response);
+        if (mounted) {
+          setTags(response);
+        }
       } catch (error) {
         console.error("Failed to fetch tags:", error);
       }
@@ -34,14 +37,22 @@ const EventPage = () => {
 
     const fetchEvents = async () => {
       try {
-        setLoading(true);
         const fetchedEvents = await getEvents();
-        setEvents(fetchedEvents);
-        console.log("Fetched events:", fetchedEvents);
+        if (mounted) {
+          setEvents(fetchedEvents);
+          setInvitedEvents(fetchedEvents);
+          //本来は以下のようにして招待されたイベントのみを取得する
+          //setInvitedEvents(fetchedEvents.filter((event) => event.invited));
+          if (invitedEvents.length > 0) {
+            setShowPopup(true);
+          }
+        }
       } catch (error) {
         console.error("Failed to fetch events:", error);
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
     fetchTags();
@@ -53,23 +64,13 @@ const EventPage = () => {
 
   const handleEventClose = () => {
     console.log("Event closed");
-  };
+  }
 
   return (
     <>
       <AuthProvider>
-        <Popup
-          cards={[
-            {
-              title: "タイトル",
-              publisher: "発行者",
-              publisherIcon: "https://github.com/shadcn.png",
-              datetime: "aaa",
-              tags: [],
-              imageUrl: "https://github.com/shadcn.png",
-            },
-          ]}
-        />
+        {!loading && events.length > 0 && showPopup && <Popup cards={events} />}
+
         <div className={styles.inviteCheck}>
           <InviteCheck size={500} />
         </div>
@@ -81,14 +82,14 @@ const EventPage = () => {
           <div className={styles.tagWrapper}>
             {tags?.length > 0 ? (
               <div className={styles.tagsContainer}>
-                {tags.map(tag => (
+                {tags.map((tag) => (
                   <TagButton key={tag.name} variant="red">
                     {tag.name}
                   </TagButton>
                 ))}
               </div>
             ) : (
-              <Skeleton className={"w-full h-[40px] rounded-lg"} />
+              <Skeleton className="w-full h-[40px] rounded-lg" />
             )}
           </div>
         </div>
@@ -97,17 +98,18 @@ const EventPage = () => {
           {loading ? (
             <div>Loading...</div>
           ) : (
-            events.map(event => (
+            events.map((event, index) => (
               <EventCard
-                key={event.community_uuid}
+                key={`${event.community_uuid}-${index}`}
                 title={event.title}
                 publisher={event.community_info.name}
                 publisherIcon={event.community_info.img}
                 datetime={event.date}
-                tags={event.tag.map(tag => ({
+                tags={event.tag.map((tag) => ({
                   name: tag.toString(),
                 }))}
                 imageUrl={event.img}
+                liked={false}
                 handleEventClose={handleEventClose}
               />
             ))
