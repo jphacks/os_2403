@@ -1,5 +1,3 @@
-import { Property } from "csstype";
-import Page = Property.Page;
 import { SignUpDialog } from "@/features/signup/components/signup";
 import style from "./style.module.scss";
 

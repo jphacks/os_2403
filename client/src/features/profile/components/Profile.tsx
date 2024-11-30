@@ -10,7 +10,7 @@ import { apiClient } from "@/utils/client";
 import { useAtom } from "jotai/index";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import react, { useState } from "react";
+import react from "react";
 import React from "react";
 import z from "zod";
 

@@ -1,4 +1,3 @@
-import { Card, CardHeader } from "@/components/ui/card";
 import { ProfileCard } from "@/features/profile/components/Profile";
 import style from "./style.module.scss";
 

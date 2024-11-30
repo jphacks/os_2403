@@ -12,14 +12,12 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { accountTypeAtom, communityAtom, userAtom } from "@/features/account/stores";
 import { Community } from "@/features/account/types/community";
 import { User } from "@/features/account/types/user";
@@ -29,7 +27,7 @@ import { useAtom } from "jotai/index";
 import { CircleChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import react, { useState } from "react";
+import react from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";

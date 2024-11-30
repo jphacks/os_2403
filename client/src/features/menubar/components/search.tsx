@@ -8,7 +8,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import style from "./search.module.scss";
 
 interface Datatype {

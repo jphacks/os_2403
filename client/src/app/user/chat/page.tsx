@@ -3,7 +3,7 @@
 import ChatRooms from "@/features/chat/components/chat-rooms";
 import ChatWindow from "@/features/chat/components/chat-window";
 import { Room } from "@/features/chat/types/types";
-import React, { useState } from "react";
+import { useState } from "react";
 import "./Page.scss";
 
 const ChatPage = () => {

@@ -1,7 +1,6 @@
 "use client";
 
 import { EventType } from "@/features/event/types/event";
-import { TagType } from "@/features/tags/types/tag";
 import { Ellipsis, SquareX } from "lucide-react";
 import React, { useState } from "react";
 import InviteForYou from "../../../public/invite-for-you";

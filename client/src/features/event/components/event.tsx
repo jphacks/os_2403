@@ -1,6 +1,4 @@
 "use client";
-
-import TagButton from "@/components/tags/tag-button";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -14,7 +12,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,17 +21,15 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { accountTypeAtom, communityAtom } from "@/features/account/stores";
-import { cn, uploadImageToS3 } from "@/lib/utils";
+import { uploadImageToS3 } from "@/lib/utils";
 import { apiClient } from "@/utils/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { useAtom } from "jotai/index";
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
-import { yellow } from "next/dist/lib/picocolors";
-import Image from "next/image";
+import { ChevronsUpDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { UseFormReturn, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import style from "./style.module.scss";

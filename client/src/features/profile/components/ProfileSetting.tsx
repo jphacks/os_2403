@@ -5,7 +5,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,7 +24,6 @@ import { User } from "@/features/account/types/user";
 import { uploadImageToS3 } from "@/lib/utils";
 import { apiClient } from "@/utils/client";
 import { useAtom } from "jotai/index";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";

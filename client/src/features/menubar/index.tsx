@@ -1,15 +1,12 @@
 "use client";
 import Invite from "@/../public/invite";
 import Logo from "@/../public/logo";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -18,11 +15,9 @@ import { accountTypeAtom, communityAtom, userAtom } from "@/features/account/sto
 import { useAuth } from "@/features/menubar/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useAtom } from "jotai/index";
-import { Calendar, CreditCard, LogOut, Settings, User } from "lucide-react";
+import { LogOut, Settings, User } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { MailIcon } from "./components/mail";
 import Search from "./components/search";

@@ -1,5 +1,5 @@
 "use client";
-import { PutObjectCommand, PutObjectRequest, S3, S3Client } from "@aws-sdk/client-s3";
+import { PutObjectCommand, PutObjectRequest, S3Client } from "@aws-sdk/client-s3";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { Mail, MailOpen } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface MailIconProps {
   count: number;

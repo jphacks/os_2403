@@ -4,23 +4,18 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { userAtom } from "@/features/account/stores";
 import { apiClient } from "@/utils/client";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai/index";
 import { CircleChevronRight } from "lucide-react";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
-import react, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import style from "./style.module.scss";

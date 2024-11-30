@@ -11,8 +11,7 @@ import { EventType } from "@/features/event/types/event";
 import { Popup } from "@/features/popup";
 import { TagType } from "@/features/tags/types/tag";
 import { AuthProvider } from "@/lib/provider";
-import { set } from "date-fns";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 
 const EventPage = () => {
