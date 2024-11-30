@@ -1,11 +1,9 @@
 "use client";
-import { Community, communityAtom } from "@/domain/community";
-import { accountTypeAtom } from "@/domain/general";
-import { User, userAtom } from "@/domain/user";
-import { apiClient } from "@/utils/client";
+
+import { accountTypeAtom, communityAtom, userAtom } from "@/features/account/stores";
 import { useAtom } from "jotai/index";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useAtom(userAtom);

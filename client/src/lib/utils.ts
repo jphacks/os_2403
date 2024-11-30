@@ -1,11 +1,6 @@
 "use client";
-import { Community } from "@/domain/community";
-import { userAtom } from "@/domain/user";
 import { PutObjectCommand, PutObjectRequest, S3, S3Client } from "@aws-sdk/client-s3";
 import { type ClassValue, clsx } from "clsx";
-import { useAtom } from "jotai/index";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
