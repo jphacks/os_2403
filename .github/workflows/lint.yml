@@ -31,6 +31,7 @@ jobs:
       - name: biome-lint
         uses: mongolyy/reviewdog-action-biome@v1
         with:
+          workdir: client
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
           fail_on_error: true
