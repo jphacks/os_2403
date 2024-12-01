@@ -27,6 +27,7 @@
         "useImportType": "off"
       },
       "correctness": {
+        "noUnusedVariables": "error",
         "noUnusedImports": "error"
       }
     }
