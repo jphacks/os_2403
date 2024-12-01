@@ -28,12 +28,24 @@ jobs:
       - name: install stylelint
         working-directory: client
         run: npm install stylelint stylelint-config-standard-scss --legacy-peer-deps
-      - name: lint
-        working-directory: client
-        run: make lint
-        continue-on-error: true
-      - name: fix lint
-        uses: dev-hato/actions-diff-pr-management@v1
+      - name: biome-lint
+        uses: mongolyy/reviewdog-action-biome@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          branch-name-prefix: 'fix-lint'
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          fail_on_error: true
+      - name: stylelint
+        uses: reviewdog/action-stylelint@v1
+        with:
+          reporter: github-pr-review # Change reporter.
+          stylelint_input: '**/*.scss'
+#      - name: lint
+#        working-directory: client
+#        run: make lint
+#        continue-on-error: true
+
+#      - name: fix lint
+#        uses: dev-hato/actions-diff-pr-management@v1
+#        with:
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
+#          branch-name-prefix: 'fix-lint'
