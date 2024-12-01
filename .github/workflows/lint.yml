@@ -25,14 +25,14 @@ jobs:
         uses: actions/setup-node@v4.1.0
         with:
           node-version: "20"
-#      - name: install stylelint
-#        working-directory: client
-#        run: npm install stylelint stylelint-config-standard-scss --legacy-peer-deps
+      - name: install stylelint
+        working-directory: client
+        run: npm install stylelint stylelint-config-standard-scss --legacy-peer-deps
       - name: biome-lint
         uses: mongolyy/reviewdog-action-biome@v1
         with:
           workdir: client
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
       - name: stylelint
         uses: reviewdog/action-stylelint@v1
