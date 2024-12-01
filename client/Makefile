@@ -1,3 +1,3 @@
 lint:
-	npx biome check --write ./src
-	npx stylelint --fix "**/*.scss" --fix
+	yarn biome check --write ./src
+	yarn stylelint --fix "**/*.scss" --fix
