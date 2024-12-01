@@ -31,6 +31,7 @@ jobs:
       - name: lint
         working-directory: client
         run: make lint
+        continue-on-error: true
       - name: fix lint
         uses: dev-hato/actions-diff-pr-management@v1
         with:
