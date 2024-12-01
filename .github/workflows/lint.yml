@@ -34,8 +34,8 @@ jobs:
           workdir: client
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
-          filter_mode: 'nofilter'
-#          biome_flags: '--config-path=./biome.json'
+          filter_mode: 'added'
+#          biome_flags: '--config-path=./biome.json'sa
       - name: stylelint
         uses: reviewdog/action-stylelint@v1
         with:
