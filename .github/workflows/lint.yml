@@ -34,6 +34,7 @@ jobs:
           workdir: client
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
+          biome_flags: '--config ./client/biome.json'
       - name: stylelint
         uses: reviewdog/action-stylelint@v1
         with:
