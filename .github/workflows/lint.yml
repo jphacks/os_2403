@@ -24,7 +24,7 @@ jobs:
       - name: set up node
         uses: actions/setup-node@v4.1.0
       - name: install stylelint
-        working-directory: clinet
+        working-directory: client
         run: npm install --save-dev stylelint stylelint-config-standard-scss
       - name: lint
         working-directory: client
