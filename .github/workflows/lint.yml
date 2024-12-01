@@ -28,8 +28,14 @@ jobs:
       - name: install stylelint
         working-directory: client
         run: npm install stylelint stylelint-config-standard-scss --legacy-peer-deps
-      - name: List files
-        run: ls -la ./client
+      - name: Validate biome.json format
+        run: |
+          if jq . ./client/biome.json > /dev/null 2>&1; then
+            echo "biome.json is valid JSON."
+          else
+            echo "Error: biome.json is not valid JSON."
+            exit 1
+          fi
       - name: biome-lint
         uses: mongolyy/reviewdog-action-biome@v1
         with:
