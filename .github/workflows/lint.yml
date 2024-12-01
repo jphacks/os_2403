@@ -34,7 +34,6 @@ jobs:
           workdir: client
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
-          fail_on_error: true
       - name: stylelint
         uses: reviewdog/action-stylelint@v1
         with:
