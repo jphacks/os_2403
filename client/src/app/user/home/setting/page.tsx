@@ -1,15 +1,14 @@
-import { z } from "zod";
 import style from "./style.module.scss";
 
 import { EventSetting } from "@/features/event/components/event";
 
-const EventSettingSchema = z.object({
-  // eventName: z.string().min(1, { message: "入力必須です。" }),
-  // img: z.string().min(1, { message: "入力必須です。" }),
-  eventDay: z.date(),
-  // tag: z.string().array(),
-  // detail: z.string(),
-});
+// const EventSettingSchema = z.object({
+//   // eventName: z.string().min(1, { message: "入力必須です。" }),
+//   // img: z.string().min(1, { message: "入力必須です。" }),
+//   eventDay: z.date(),
+//   // tag: z.string().array(),
+//   // detail: z.string(),
+// });
 
 const EventSettingPage = () => {
   return (

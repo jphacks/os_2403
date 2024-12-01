@@ -59,7 +59,7 @@ const EventPage = () => {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [invitedEvents]);
 
   const handleEventClose = () => {
     console.log("Event closed");
