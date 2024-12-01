@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-node@v4.1.0
         with:
           node-version: "20"
-      - name: install stylelint
+      - name: install stylelint #依存関係周りでエラー出るのでここに書いた
         working-directory: client
         run: npm install stylelint stylelint-config-standard-scss --legacy-peer-deps
       - name: biome-lint
@@ -34,7 +34,7 @@ jobs:
           workdir: client
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
-          filter_mode: 'added'
+          filter_mode: 'file'
       - name: stylelint
         uses: reviewdog/action-stylelint@v1
         with:
