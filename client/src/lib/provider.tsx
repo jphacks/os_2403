@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [currentUser, setCurrentUser] = useAtom(userAtom);
-  const [currentCommunity, setCurrentCommunity] = useAtom(communityAtom);
+  const [currentUser] = useAtom(userAtom);
+  const [currentCommunity] = useAtom(communityAtom);
   const [currentAccountType] = useAtom(accountTypeAtom);
   const router = useRouter();
 

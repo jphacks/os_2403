@@ -11,9 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { userAtom } from "@/features/account/stores";
 import { apiClient } from "@/utils/client";
-import { useAtom } from "jotai/index";
 import { CircleChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -38,7 +36,6 @@ const SignupFormSchema = z.object({
 type SignupForm = z.infer<typeof SignupFormSchema>;
 
 export const SignUpDialog = (props: SignUpProps) => {
-  const [currentUser, setCurrentUser] = useAtom(userAtom);
   const router = useRouter();
 
   let name = "";

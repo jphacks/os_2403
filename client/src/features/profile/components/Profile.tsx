@@ -9,7 +9,6 @@ import style from "@/features/profile/components/style.module.scss";
 import { apiClient } from "@/utils/client";
 import { useAtom } from "jotai/index";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import react from "react";
 import React from "react";
 import z from "zod";
@@ -29,7 +28,6 @@ export const ProfileCard = () => {
   const [currentCommunity] = useAtom(communityAtom);
   const [currentAccountType] = useAtom(accountTypeAtom);
   const [currentProfile, setCurrentProfile] = React.useState<Profile>();
-  const router = useRouter();
   const settingURI = `${useSetBaseAccountType(currentAccountType)}/profile/setting`;
 
   react.useEffect(() => {
