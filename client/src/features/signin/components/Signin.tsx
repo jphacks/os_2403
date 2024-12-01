@@ -48,7 +48,7 @@ type LoginForm = z.infer<typeof LoginFormSchema>;
 export const SignInDialog = (props: LoginCardProps) => {
   const [currentUser, setCurrentUser] = useAtom(userAtom);
   const [currentCommunity, setCurrentCommunity] = useAtom(communityAtom);
-  const [_currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
+  const [currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
   const router = useRouter();
 
   react.useEffect(() => {
