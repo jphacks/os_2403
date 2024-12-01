@@ -1,0 +1,27 @@
+name: lint
+
+on:
+  pull_request:
+    - develop
+
+jobs:
+  lint:
+    name: lint
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4.2.2
+      - name: set up node
+        uses: actions/setup-node@v4.1.0
+      - name: lint
+        working-directory: client
+        run: make lint
+      - name: fix lint
+        uses: dev-hato/actions-diff-pr-management@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          branch-name-prefix: 'fix-lint'
