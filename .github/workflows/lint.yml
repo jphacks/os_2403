@@ -27,7 +27,7 @@ jobs:
           node-version: "20"
       - name: install stylelint
         working-directory: client
-        run: npm install stylelint stylelint-config-standard-scss
+        run: npm install stylelint stylelint-config-standard-scss --legacy-peer-deps
       - name: lint
         working-directory: client
         run: make lint
