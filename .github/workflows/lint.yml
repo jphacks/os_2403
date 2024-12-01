@@ -28,14 +28,6 @@ jobs:
       - name: install stylelint
         working-directory: client
         run: npm install stylelint stylelint-config-standard-scss --legacy-peer-deps
-      - name: Validate biome.json format
-        run: |
-          if jq . ./client/biome.json > /dev/null 2>&1; then
-            echo "biome.json is valid JSON."
-          else
-            echo "Error: biome.json is not valid JSON."
-            exit 1
-          fi
       - name: biome-lint
         uses: mongolyy/reviewdog-action-biome@v1
         with:
@@ -43,20 +35,10 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
           filter_mode: 'nofilter'
-          biome_flags: '--config-path=./client'
+          biome_flags: '--config-path=./'
       - name: stylelint
         uses: reviewdog/action-stylelint@v1
         with:
           workdir: client
           reporter: github-pr-review # Change reporter.
           stylelint_input: '**/*.scss'
-#      - name: lint
-#        working-directory: client
-#        run: make lint
-#        continue-on-error: true
-
-#      - name: fix lint
-#        uses: dev-hato/actions-diff-pr-management@v1
-#        with:
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#          branch-name-prefix: 'fix-lint'
