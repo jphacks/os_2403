@@ -43,12 +43,13 @@ func main() {
 	communityRepo := dao.NewCommunityRepository(db)
 	scoutListRepo := dao.NewscoutListRepository(db)
 	eventRepo := dao.NewEventRepository(db)
+	messageRepo := dao.NewMessageRepository(db)
 
 	authUserUsecase := usecase.NewAuthUserUseCase(userRepo, sessionRepo, memberRepo, tagRepo)
 	authcommunityUsecase := usecase.NewAuthCommunityUseCase(communityRepo, sessionRepo, memberRepo, tagRepo)
 	userUsecase := usecase.NewUserUseCase(userRepo, memberRepo, tagRepo)
 	communityUsecase := usecase.NewCommunityUseCase(communityRepo, memberRepo, tagRepo)
-	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo, userRepo, communityRepo)
+	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo, userRepo, communityRepo, messageRepo)
 	eventUsecase := usecase.NewEventUsecase(eventRepo)
 	tagUsecase := usecase.NewTagUseCase(tagRepo)
 
@@ -62,7 +63,6 @@ func main() {
 
 	// WebSocketの初期化
 	wsService := middleware.NewWebSocketService()
-	messageRepo := dao.NewMessageRepository(db)
 	chatUsecase := usecase.NewChatUseCase(messageRepo, wsService)
 	chatHandler := handlers.NewChatHandler(chatUsecase, wsService) // 他の初期化ここに書いてね
 
@@ -91,11 +91,10 @@ func main() {
 	router.PUT("/api/community/:uuid", communityHandler.Update)
 
 	router.GET("/api/tag", tagHandler.GetRandom)
-
-	router.GET("/api/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
-	router.POST("/api/createscout", scoutListHandler.CreateScouts)
-	router.PUT("/api/changescoutstatus", scoutListHandler.ChangeStatus)
-	router.GET("/api/getmessageuser", scoutListHandler.GetMessageUser)
+	router.GET("/api/scoutlist/getcommunitydetail", scoutListHandler.GetCommunityDetailByScoutList)
+	router.GET("/api/scoutlist/getuserdetail", scoutListHandler.GetUserDetailByScoutList)
+	router.POST("/api/scoutlist/create", scoutListHandler.CreateScouts)
+	router.PUT("/api/scoutlist/updatestatus", scoutListHandler.ChangeStatus)
 
 	router.GET("/api/getevent", eventHandler.GetAllEvents)
 	router.POST("/api/createdevent", eventHandler.CreateEvent)
