@@ -77,6 +77,7 @@
   height: 500px;
   position: relative;
   display: flex; //titleとselfを横並びにするのに使った
+  border: 3px solid theme.$black;
 
   .setting_button {
     position: absolute;

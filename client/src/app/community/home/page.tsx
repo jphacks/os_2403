@@ -1,13 +1,15 @@
+"use client";
+
 import { ProfileCard } from "@/features/profile/components/Profile";
 import style from "./style.module.scss";
 
-const ProfilePage = () => {
+const CommunityHome = () => {
   return (
-    <div className={style.all}>
-      <p className={style.profile}>団体概要</p>
+    <div className={style.profile_card}>
+      <h1>団体概要</h1>
       <ProfileCard />
     </div>
   );
 };
 
-export default ProfilePage;
+export default CommunityHome;
