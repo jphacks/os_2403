@@ -1,0 +1,48 @@
+@use "../../../styles/theme";
+
+.mobo {
+  font-family: MOBO;
+  text-align: center;
+}
+
+.card {
+  font-family: Calibri;
+  position: absolute;
+  display: block;
+  width: 60%;
+  margin: 50px auto 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px theme.$black;
+  background-color: theme.$background;
+
+  .label {
+    color: #878383;
+
+    .span {
+      color: theme.$red
+    }
+  }
+
+  .form {
+    width: 60%;
+    margin: auto;
+  }
+
+  .input::placeholder { //placeholderの中を灰色に
+    color: theme.$gray;
+
+  }
+
+  .cardFooter {
+    width: 100%;
+    place-content: center; //親要素で設定
+
+    .button {
+      width: 30%;
+    }
+  }
+
+
+}
