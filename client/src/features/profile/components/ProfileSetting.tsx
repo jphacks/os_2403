@@ -105,7 +105,7 @@ export const ProfileSetting = (props: PrpfileSettingProps) => {
         img: data?.img,
       };
       setCurrentUser(setUser);
-      router.push("/event");
+      router.push("/user/profile");
     } else if (props.type === "community" && currentCommunity?.uuid !== "") {
       const community: Community = {
         uuid: currentCommunity?.uuid || "",
