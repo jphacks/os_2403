@@ -89,6 +89,7 @@ func (h *ScoutHandler) ChangeStatus(ctx *gin.Context) {
 }
 
 func (h *ScoutHandler) CreateScouts(ctx *gin.Context) {
+	communityUUID := ctx.Query("community_uuid")
 
 	// TODO: クエリパラメータでCommunity_UUIDを受け取り，TagではなくUser_UUID[]を受け取るように変更，POSTにしてリクエストボディ
 

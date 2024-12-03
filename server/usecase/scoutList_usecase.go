@@ -25,8 +25,7 @@ type scoutListUsecase struct {
 }
 
 type CreateScoutsRequest struct {
-	Tags          int    `json:"tags"`
-	CommunityUUID string `json:"community_uuid"`
+	UserUUID string `json:"user_uuid"`
 }
 
 func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo repositories.IUserRepository, communityRepo repositories.ICommunityRepository, messageRepo repositories.MessageRepository) IScoutListUsecase {
