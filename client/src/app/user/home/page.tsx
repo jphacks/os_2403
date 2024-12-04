@@ -1,5 +1,6 @@
 "use client";
 
+import { Menubar } from "@/features/menubar";
 import InviteCheck from "@/../public/invite-check";
 import LikeSearch from "@/../public/like-search";
 import { getTags } from "@/components/tags/hooks/get-tags";
@@ -65,7 +66,7 @@ const EventPage = () => {
     <>
       <AuthProvider>
         {!loading && events.length > 0 && showPopup && <Popup cards={events} />}
-
+        <Menubar/>
         <div className={styles.inviteCheck}>
           <InviteCheck size={500} />
         </div>

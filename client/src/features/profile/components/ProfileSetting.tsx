@@ -128,7 +128,7 @@ export const ProfileSetting = (props: PrpfileSettingProps) => {
         img: data?.img,
       };
       setCurrentCommunity(setCommunity);
-      router.push("/event");
+      router.push("/community/profile");
     }
   };
 
