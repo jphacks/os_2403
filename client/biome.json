@@ -7,17 +7,15 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": []
+    "ignore": ["components/ui/**", "yarn.lock", ".next/**", "public/**"]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "lineWidth": 100,
-    "ignore": ["components/ui/**"]
+    "lineWidth": 100
   },
   "organizeImports": {
-    "enabled": true,
-    "ignore": ["components/ui/**"]
+    "enabled": true
   },
   "linter": {
     "enabled": true,
@@ -25,6 +23,10 @@
       "recommended": true,
       "style": {
         "useImportType": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error"
       }
     }
   },

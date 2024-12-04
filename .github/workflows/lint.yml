@@ -1,0 +1,43 @@
+name: lint
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
+    branches:
+      - develop
+
+jobs:
+  lint:
+    name: lint
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4.2.2
+      - name: set up node
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: "20"
+      - name: install stylelint #依存関係周りでエラー出るのでここに書いた
+        working-directory: client
+        run: npm install stylelint stylelint-config-standard-scss --legacy-peer-deps
+      - name: biome-lint
+        uses: mongolyy/reviewdog-action-biome@v1
+        with:
+          workdir: client
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          filter_mode: 'file'
+      - name: stylelint
+        uses: reviewdog/action-stylelint@v1
+        with:
+          workdir: client
+          reporter: github-pr-review # Change reporter.
+          stylelint_input: '**/*.scss'

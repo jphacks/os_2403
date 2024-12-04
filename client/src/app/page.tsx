@@ -1,4 +1,4 @@
-import { HomeComponent } from "@/feature/home/components/page";
+import { HomeComponent } from "@/features/home/components/page";
 
 const Home = () => {
   return <HomeComponent />;

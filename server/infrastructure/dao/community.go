@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/jphacks/os_2403/domain/models"
 	"gorm.io/gorm"
@@ -29,7 +30,6 @@ func (r *communityRepository) Update(ctx context.Context, community *models.Comm
 
 func (r *communityRepository) FindByEmail(ctx context.Context, email string) (*models.Community, error) {
 	var community *models.Community
-	fmt.Println(email)
 	if err := r.db.WithContext(ctx).Where("email = ?", email).Find(&community).Error; err != nil {
 		fmt.Println("err")
 		return nil, err
@@ -38,9 +38,13 @@ func (r *communityRepository) FindByEmail(ctx context.Context, email string) (*m
 }
 
 func (r *communityRepository) FindByID(ctx context.Context, uuid string) (*models.Community, error) {
-	var community *models.Community
-	if err := r.db.WithContext(ctx).Where("uuid = ?", uuid).Find(&community).Error; err != nil {
-		return nil, err
+	community := &models.Community{}
+	result := r.db.WithContext(ctx).Where("uuid = ?", uuid).First(community)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, result.Error
 	}
 	return community, nil
 }
