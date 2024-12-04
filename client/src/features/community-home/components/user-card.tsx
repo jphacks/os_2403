@@ -25,26 +25,23 @@ export function UserCard({
       <div className={styles.cardContent}>
         <div className={styles.leftContent}>
           <div className={styles.avatarWrapper}>
-          <Avatar className={styles.avatar}>
-              <AvatarImage src={icon} />
-              <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+            <Avatar className={styles.avatar}>
+                <AvatarImage src={icon} />
+                <AvatarFallback>{username}</AvatarFallback>
+            </Avatar>
           </div>
         </div>
 
         <div className={styles.mainContent}>
           <div className={styles.tagsContainer}>
-            {tags.map((tag) => (
+            {tags.map(tag => (
               <Badge key={`tag-${tag}`} variant="secondary" className={styles.tag}>
                 {tag}
               </Badge>
             ))}
           </div>
-
           <h2 className={styles.username}>{username}</h2>
-          <div className={styles.details}>
-            {detail}
-          </div>
+          <div className={styles.details}>{detail}</div>
         </div>
 
         <div className={styles.rightContent}>
@@ -54,7 +51,5 @@ export function UserCard({
         </div>
       </div>
     </Card>
-  )
+  );
 }
-
-export default UserCard;

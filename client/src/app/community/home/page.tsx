@@ -1,6 +1,5 @@
-
 import { AuthProvider } from "@/lib/provider";
-import UserCard from "@/features/community-home/components/user-card";
+import { UserCard } from "@/features/community-home/components/user-card";
 
 export default function Home() {
   const mockData = {
@@ -8,12 +7,12 @@ export default function Home() {
     icon: "/default-icon.png",
     tags: ["プログラミング", "デザイン", "Web開発", "UI/UX"],
     detail: "コンピュータサイエンス専攻",
-    university: "立命館大学"
+    university: "立命館大学",
   };
 
   return (
-      <AuthProvider>
-        <UserCard
+    <AuthProvider>
+      <UserCard
         username={mockData.username}
         icon={mockData.icon}
         tags={mockData.tags}
@@ -21,5 +20,5 @@ export default function Home() {
         university={mockData.university}
       />
     </AuthProvider >
-  )
+  );
 }
