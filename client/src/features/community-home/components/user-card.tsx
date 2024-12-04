@@ -1,5 +1,4 @@
-'use client';
-
+"use client";
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,23 +10,19 @@ type ProfileCardProps = {
   tags: string[];
   detail: string;
   university: string;
-}
+};
 
-export function UserCard({
-  username,
-  tags,
-  icon,
-  detail,
-  university
-}: ProfileCardProps) {
+export function UserCard({ username,
+  tags, icon, detail, university }:
+  ProfileCardProps) {
   return (
     <Card className={styles.profileCard}>
       <div className={styles.cardContent}>
         <div className={styles.leftContent}>
           <div className={styles.avatarWrapper}>
             <Avatar className={styles.avatar}>
-                <AvatarImage src={icon} />
-                <AvatarFallback>{username}</AvatarFallback>
+              <AvatarImage src={icon} />
+              <AvatarFallback>{username}</AvatarFallback>
             </Avatar>
           </div>
         </div>
