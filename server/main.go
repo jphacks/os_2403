@@ -21,21 +21,32 @@ import (
 )
 
 func main() {
+	env := os.Getenv("ENV")
+	if env == "staging" {
+		fmt.Println("environment: staging")
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println("Error loading .env file")
+		}
+	} else if env == "local" {
+		fmt.Println("environment: local")
+	} else if env == "production" {
+		fmt.Println("environment: production")
+	} else {
+		fmt.Println("Error loading .env file")
+	}
+
 	// データベース接続の初期化
 	db, err := initDB()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// 一旦使ったことにする
-	fmt.Println(db)
-
-	// 初期化はinfra(persistence)->domain/service->usecase->handlerの順番で行うようにしよう
-	godotenv.Load()
 	gob.Register(uuid.UUID{})
 
 	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
+	// 初期化はinfra(persistence)->domain/service->usecase->handlerの順番で行うようにしよう
 	userRepo := dao.NewUserRepository(db)
 	tagRepo := dao.NewTagRepository(db)
 	memberRepo := dao.NewMemberRepository(db)
