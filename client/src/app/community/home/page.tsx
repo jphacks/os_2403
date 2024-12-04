@@ -1,5 +1,5 @@
-import { AuthProvider } from "@/lib/provider";
 import { UserCard } from "@/features/community-home/components/user-card";
+import { AuthProvider } from "@/lib/provider";
 
 export default function Home() {
   const mockData = {
@@ -19,6 +19,6 @@ export default function Home() {
         detail={mockData.detail}
         university={mockData.university}
       />
-    </AuthProvider >
+    </AuthProvider>
   );
 }
