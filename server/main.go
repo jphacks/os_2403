@@ -21,21 +21,32 @@ import (
 )
 
 func main() {
+	env := os.Getenv("ENV")
+	if env == "staging" {
+		fmt.Println("environment: staging")
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println("Error loading .env file")
+		}
+	} else if env == "local" {
+		fmt.Println("environment: local")
+	} else if env == "production" {
+		fmt.Println("environment: production")
+	} else {
+		fmt.Println("Error loading .env file")
+	}
+
 	// データベース接続の初期化
 	db, err := initDB()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// 一旦使ったことにする
-	fmt.Println(db)
-
-	// 初期化はinfra(persistence)->domain/service->usecase->handlerの順番で行うようにしよう
-	godotenv.Load()
 	gob.Register(uuid.UUID{})
 
 	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
+	// 初期化はinfra(persistence)->domain/service->usecase->handlerの順番で行うようにしよう
 	userRepo := dao.NewUserRepository(db)
 	tagRepo := dao.NewTagRepository(db)
 	memberRepo := dao.NewMemberRepository(db)
@@ -43,12 +54,13 @@ func main() {
 	communityRepo := dao.NewCommunityRepository(db)
 	scoutListRepo := dao.NewscoutListRepository(db)
 	eventRepo := dao.NewEventRepository(db)
+	messageRepo := dao.NewMessageRepository(db)
 
 	authUserUsecase := usecase.NewAuthUserUseCase(userRepo, sessionRepo, memberRepo, tagRepo)
 	authcommunityUsecase := usecase.NewAuthCommunityUseCase(communityRepo, sessionRepo, memberRepo, tagRepo)
 	userUsecase := usecase.NewUserUseCase(userRepo, memberRepo, tagRepo)
 	communityUsecase := usecase.NewCommunityUseCase(communityRepo, memberRepo, tagRepo)
-	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo, userRepo, communityRepo)
+	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo, userRepo, communityRepo, messageRepo)
 	eventUsecase := usecase.NewEventUsecase(eventRepo)
 	tagUsecase := usecase.NewTagUseCase(tagRepo)
 
@@ -62,7 +74,6 @@ func main() {
 
 	// WebSocketの初期化
 	wsService := middleware.NewWebSocketService()
-	messageRepo := dao.NewMessageRepository(db)
 	chatUsecase := usecase.NewChatUseCase(messageRepo, wsService)
 	chatHandler := handlers.NewChatHandler(chatUsecase, wsService) // 他の初期化ここに書いてね
 
@@ -71,7 +82,7 @@ func main() {
 
 	// ミドルウェアの初期化
 	//authMiddleware := middleware.NewAuthMiddleware(store)
-	router.Use(middleware.CORS())
+	router.Use(middleware.CORS(os.Getenv("FRONTEND_HOSTNAME")))
 
 	router.GET("/api/health", health)
 
@@ -91,11 +102,10 @@ func main() {
 	router.PUT("/api/community/:uuid", communityHandler.Update)
 
 	router.GET("/api/tag", tagHandler.GetRandom)
-
-	router.GET("/api/getscoutdetail", scoutListHandler.GetCommunityDetailByScoutList)
-	router.POST("/api/createscout", scoutListHandler.CreateScouts)
-	router.PUT("/api/changescoutstatus", scoutListHandler.ChangeStatus)
-	router.GET("/api/getmessageuser", scoutListHandler.GetMessageUser)
+	router.GET("/api/scoutlist/getcommunitydetail", scoutListHandler.GetCommunityDetailByScoutList)
+	router.GET("/api/scoutlist/getuserdetail", scoutListHandler.GetUserDetailByScoutList)
+	router.POST("/api/scoutlist/create", scoutListHandler.CreateScouts)
+	router.PUT("/api/scoutlist/updatestatus", scoutListHandler.ChangeStatus)
 
 	router.GET("/api/getevent", eventHandler.GetAllEvents)
 	router.POST("/api/createdevent", eventHandler.CreateEvent)

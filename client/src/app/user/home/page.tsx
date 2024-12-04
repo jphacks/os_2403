@@ -18,7 +18,6 @@ import styles from "./style.module.scss";
 const EventPage = () => {
   const [tags, setTags] = useState<TagType[]>([]);
   const [events, setEvents] = useState<EventType[]>([]);
-  const [invitedEvents, setInvitedEvents] = useState<EventType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
@@ -40,10 +39,7 @@ const EventPage = () => {
         const fetchedEvents = await getEvents();
         if (mounted) {
           setEvents(fetchedEvents);
-          setInvitedEvents(fetchedEvents);
-          //本来は以下のようにして招待されたイベントのみを取得する
-          //setInvitedEvents(fetchedEvents.filter((home) => home.invited));
-          if (invitedEvents.length > 0) {
+          if (fetchedEvents.length > 0) {
             setShowPopup(true);
           }
         }
@@ -60,7 +56,7 @@ const EventPage = () => {
     return () => {
       mounted = false;
     };
-  }, [invitedEvents]);
+  }, []);
 
   const handleEventClose = () => {
     console.log("Event closed");

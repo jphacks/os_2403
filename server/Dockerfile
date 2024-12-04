@@ -1,5 +1,5 @@
 # ビルドステージ
-FROM --platform=linux/amd64 golang:1.23-alpine AS builder
+FROM --platform=linux/arm64 golang:1.23-alpine AS builder
 
 WORKDIR /app
 
@@ -14,10 +14,10 @@ RUN go mod download
 
 # ソースコードをコピーしてビルド
 COPY . .
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o main
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=arm64 go build -o main
 
 # 実行ステージ
-FROM --platform=linux/amd64 alpine:3.19
+FROM --platform=linux/arm64 alpine:3.19
 
 WORKDIR /app
 

@@ -57,7 +57,7 @@
 }
 
 .word {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid theme.$black;
 }
 
 .h1 {
@@ -75,7 +75,8 @@
   height: 500px;
   margin: 0,10rem;
   position: relative;
-  display: flex;
+  display: flex; //titleとselfを横並びにするのに使った
+  border: 3px solid theme.$black;
 
   .setting_button {
     position: absolute;

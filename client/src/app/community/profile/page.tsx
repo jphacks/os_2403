@@ -7,7 +7,7 @@ const ProfilePage = () => {
     <>
     <Menubar />
     <div className={style.all}>
-      <p className={style.profile}>プロフィール</p>
+      <p className={style.profile}>団体概要</p>
       <ProfileCard />
     </div>
     </>

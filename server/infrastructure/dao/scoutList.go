@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/jphacks/os_2403/domain/models"
 	"gorm.io/gorm"
@@ -15,85 +16,37 @@ func NewscoutListRepository(db *gorm.DB) *scoutListRepository {
 	return &scoutListRepository{db: db}
 }
 
-func (r *scoutListRepository) Get(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error) {
-	var scoutLists []models.ScoutList
-
-	// Update query to include Community relationship
-	if err := r.db.WithContext(ctx).
-		Preload("Community"). // Preload community data
-		Where("user_uuid = ?", userUUID).
-		Find(&scoutLists).Error; err != nil {
-		return nil, err
+func (r *scoutListRepository) GetByCommunityUUID(ctx context.Context, communityUUID string) ([]models.ScoutList, error) {
+	var scoutlist []models.ScoutList
+	parsedUUID, err := uuid.Parse(communityUUID)
+	if err != nil {
+		return nil, fmt.Errorf("invalid UUID format: %v", err)
 	}
 
-	var responses []models.ScoutListResponse
-	for _, scout := range scoutLists {
-		responses = append(responses, models.ScoutListResponse{
-			ID:             scout.ID,
-			Status:         scout.Status,
-			Community_UUID: scout.Community_UUID,
-			CommunityInfo: models.CommunityInfo{
-				Name: scout.Community.Name,
-				Img:  scout.Community.Img,
-				Self: scout.Community.Self,
-				Mem1: scout.Community.Mem1,
-				Mem2: scout.Community.Mem2,
-				Mem3: scout.Community.Mem3,
-				Tags: scout.Community.Tags,
-			},
-		})
+	db := r.db.WithContext(ctx).Debug()
+	result := db.Where("community_uuid = ?", parsedUUID).Find(&scoutlist)
+
+	if result.Error != nil {
+		return nil, result.Error
 	}
-	return responses, nil
+
+	return scoutlist, nil
 }
 
-// Add new method to get scout list with detailed community information
-func (r *scoutListRepository) GetWithCommunityDetails(ctx context.Context, userUUID uuid.UUID) ([]models.ScoutListResponse, error) {
-	var results []struct {
-		models.ScoutList
-		CommunityName string `gorm:"column:community_name"`
-		CommunityImg  string `gorm:"column:community_img"`
-		CommunitySelf string `gorm:"column:community_self"`
-		CommunityMem1 uint   `gorm:"column:community_mem1"`
-		CommunityMem2 uint   `gorm:"column:community_mem2"`
-		CommunityMem3 uint   `gorm:"column:community_mem3"`
-		CommunityTags []int  `gorm:"column:community_tags"`
+func (r *scoutListRepository) GetByUserUUID(ctx context.Context, userUUID string) ([]models.ScoutList, error) {
+	var scoutlist []models.ScoutList
+
+	parsedUUID, err := uuid.Parse(userUUID)
+	if err != nil {
+		return nil, fmt.Errorf("invalid UUID format: %v", err)
 	}
 
-	query := r.db.WithContext(ctx).
-		Table("scout_lists").
-		Select("scout_lists.*, "+
-			"communities.name AS community_name, "+
-			"communities.img as community_img, "+
-			"communities.self as community_self, "+
-			"communities.mem1 as community_mem1, "+
-			"communities.mem2 as community_mem2, "+
-			"communities.mem3 as community_mem3, "+
-			"communities.tags as community_tags").
-		Joins("LEFT JOIN communities ON scout_lists.community_uuid = communities.uuid").
-		Where("scout_lists.user_uuid = ?", userUUID)
-
-	if err := query.Find(&results).Error; err != nil {
+	err = r.db.WithContext(ctx).Where("user_uuid = ?", parsedUUID).Find(&scoutlist).Error
+	if err != nil {
 		return nil, err
 	}
 
-	var responses []models.ScoutListResponse
-	for _, result := range results {
-		responses = append(responses, models.ScoutListResponse{
-			Status:         result.Status,
-			Community_UUID: result.Community_UUID,
-			CommunityInfo: models.CommunityInfo{
-				Name: result.CommunityName,
-				Img:  result.CommunityImg,
-				Self: result.CommunitySelf,
-				Mem1: result.CommunityMem1,
-				Mem2: result.CommunityMem2,
-				Mem3: result.CommunityMem3,
-				Tags: result.CommunityTags,
-			},
-		})
-	}
-
-	return responses, nil
+	return scoutlist, nil
 }
 
 func (r *scoutListRepository) Create(ctx context.Context, scoutList *models.ScoutList) error {
