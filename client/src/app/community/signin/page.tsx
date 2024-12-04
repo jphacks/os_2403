@@ -1,7 +1,12 @@
 import { SignInDialog } from "@/features/signin/components/Signin";
+import style from "./style.module.scss";
 
 const SignInPage = () => {
-  return <SignInDialog type={"community"} />;
+  return (
+    <div className={style.all}>
+      <SignInDialog type={"community"} />
+    </div>
+  );
 };
 
 export default SignInPage;

@@ -19,7 +19,7 @@ type TagCardProps = {
 export const TagCard = ({ className }: TagCardProps) => {
   const router = useRouter();
   const onClick = () => {
-    router.push("/event");
+    router.push("/user/signin");
   };
   return (
     <Card className={`${style.register_tag} ${className ? className : ""}`}>

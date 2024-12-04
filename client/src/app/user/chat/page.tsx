@@ -1,5 +1,6 @@
 "use client";
 
+import { Menubar } from "@/features/menubar";
 import ChatRooms from "@/features/chat/components/chat-rooms";
 import ChatWindow from "@/features/chat/components/chat-window";
 import { Room } from "@/features/chat/types/types";
@@ -27,6 +28,7 @@ const ChatPage = () => {
 
   return (
     <div className="chat-page-container">
+      <Menubar/>
       <ChatRooms rooms={rooms} onSelectRoom={room => setSelectedRoom(room)} />
       <ChatWindow room={selectedRoom} />
     </div>

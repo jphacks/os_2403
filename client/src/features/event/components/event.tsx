@@ -113,14 +113,14 @@ export const EventSetting = () => {
 
   const onSubmit = async (event: EventSettingRequest): Promise<void> => {
     apiClient.post("/createdevent", event).then(() => {
-      router.push("/event");
+      router.push("/user/event");
       toast("イベントを作成しました");
     });
   };
 
   React.useEffect((): void => {
     if (!currentCommunity?.uuid || currentAccountType === "not" || currentAccountType === "user") {
-      router.push("/signin/community");
+      router.push("community/signin");
     }
   });
   return (
