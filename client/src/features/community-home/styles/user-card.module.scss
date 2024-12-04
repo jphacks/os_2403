@@ -1,0 +1,109 @@
+// components/ProfileCard.module.scss
+.profileCard {
+    width: 100%;
+    max-width: 800px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e1e1e1;
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+
+  .cardContent {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .leftContent {
+    flex-shrink: 0;
+  }
+
+  .avatarWrapper {
+    width: 120px;
+    height: 120px;
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .mainContent {
+    flex-grow: 1;
+  }
+
+  .tagsContainer {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.8rem;
+    padding: 0.25rem 1rem;
+  }
+
+  .username {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .details {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .detail {
+    margin: 0.25rem 0;
+  }
+
+  .rightContent {
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .university {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .moreButton {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      color: #333;
+    }
+  }
+
+  .arrow {
+    font-size: 1.2rem;
+  }
+
+  // レスポンシブ対応
+  @media (max-width: 640px) {
+    .cardContent {
+      flex-direction: column;
+    }
+
+    .rightContent {
+      text-align: left;
+    }
+
+    .iconWrapper {
+      width: 80px;
+      height: 80px;
+    }
+  }
