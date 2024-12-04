@@ -10,6 +10,7 @@ services:
       DB_USER: test_user
       DB_PASSWORD: test_password
       DB_NAME: test_db
+      FRONTEND_HOSTNAME: https://localhost:3000
 
   db:
     image: mysql:8.0

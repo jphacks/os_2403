@@ -82,7 +82,7 @@ func main() {
 
 	// ミドルウェアの初期化
 	//authMiddleware := middleware.NewAuthMiddleware(store)
-	router.Use(middleware.CORS())
+	router.Use(middleware.CORS(os.Getenv("FRONTEND_HOSTNAME")))
 
 	router.GET("/api/health", health)
 
