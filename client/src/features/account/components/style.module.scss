@@ -1,0 +1,12 @@
+@use "@/styles/theme";
+
+.user_theme {
+  background-color: theme.$wheat;
+  height: 100vh;
+}
+
+
+.community_theme {
+  background-color: theme.$black;
+  height: 100vh;
+}
