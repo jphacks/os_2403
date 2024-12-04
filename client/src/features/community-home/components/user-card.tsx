@@ -2,7 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import styles from '../styles/user-card.module.scss';
+import styles from "../styles/user-card.module.scss";
 
 type ProfileCardProps = {
   username: string;
@@ -12,7 +12,7 @@ type ProfileCardProps = {
   university: string;
 };
 
-export function UserCard({ username,tags, icon, detail, university}: ProfileCardProps) {
+export function UserCard({ username, tags, icon, detail, university }: ProfileCardProps) {
   return (
     <Card className={styles.profileCard}>
       <div className={styles.cardContent}>
