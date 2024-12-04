@@ -9,7 +9,8 @@
 .card {
   background: theme.$black;
   width: 80%;
-  margin: auto;
+  margin: 2rem auto;
+  padding: 1.5rem;
   color: theme.$wheat;
 
   .avatorPreview {
@@ -21,14 +22,12 @@
   .avatorForm {
     display: flex;
     gap: 10px;
-
   }
 
   .avatorFormControl {
     margin-top: 10px;
     width: 100%
   }
-
 
   .span {
     color: theme.$red;
@@ -38,7 +37,7 @@
     color: theme.$black;
   }
 
-  .input::placeholder { //placeholderの中を灰色に
+  .input::placeholder {
     color: theme.$gray;
   }
 
@@ -55,11 +54,10 @@
       width: 30%;
     }
   }
-
 }
 
 .word {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid theme.$black;
 }
 
 .h1 {
@@ -75,6 +73,7 @@
 .profile_card {
   width: 1000px;
   height: 500px;
+  margin: 0,10rem;
   position: relative;
   display: flex; //titleとselfを横並びにするのに使った
   border: 3px solid theme.$black;
@@ -133,7 +132,3 @@
   width: 400px;
   border-bottom: 1px solid theme.$gray;
 }
-
-
-
-

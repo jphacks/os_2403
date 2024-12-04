@@ -1,5 +1,8 @@
 @use "../../../styles/theme";
 
+.body {
+  background-color: theme.$gray;
+}
 .mobo {
   font-family: MOBO;
   text-align: center;
@@ -46,3 +49,4 @@
 
 
 }
+

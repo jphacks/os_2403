@@ -1,4 +1,3 @@
-import { Menubar } from "@/features/menubar";
 import type { Metadata } from "next";
 import "@/styles/globals.scss";
 import { Toaster } from "@/components/ui/sonner";
@@ -16,7 +15,6 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className="flex flex-col min-h-screen">
-        <Menubar />
         <main className="flex-grow">{children}</main>
         <Toaster />
       </body>
