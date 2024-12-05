@@ -1,3 +1,4 @@
+import { Menubar } from "@/features/menubar";
 import { UserCard } from "@/features/community-home/components/user-card";
 import { AuthProvider } from "@/lib/provider";
 
@@ -11,14 +12,17 @@ export default function Home() {
   };
 
   return (
-    <AuthProvider>
-      <UserCard
-        username={mockData.username}
-        icon={mockData.icon}
-        tags={mockData.tags}
-        detail={mockData.detail}
-        university={mockData.university}
-      />
-    </AuthProvider>
+    <>
+      <Menubar />
+      <AuthProvider>
+        <UserCard
+          username={mockData.username}
+          icon={mockData.icon}
+          tags={mockData.tags}
+          detail={mockData.detail}
+          university={mockData.university}
+        />
+      </AuthProvider>
+    </>
   );
 }

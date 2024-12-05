@@ -11,11 +11,14 @@ const ChatPage = () => {
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 
   return (
+    <>
+    <Menubar/>
     <div className="chat-page-container">
       <Menubar />
       <ChatRooms onSelectRoom={room => setSelectedRoom(room)} />
       <ChatWindow room={selectedRoom} />
     </div>
+    </>
   );
 };
 
