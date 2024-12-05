@@ -1,12 +1,15 @@
 @use "@/styles/theme";
 
-.user_theme {
+.not_theme {
   background-color: theme.$wheat;
+}
+
+.user_theme {
+  background-color: theme.$theme-user;
   height: 100vh;
 }
 
-
 .community_theme {
-  background-color: theme.$black;
+  background-color: theme.$theme-community;
   height: 100vh;
 }

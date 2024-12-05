@@ -116,7 +116,7 @@ export const SignInDialog = (props: LoginCardProps) => {
           img: response.data.img,
         };
         setCurrentCommunity(community);
-        router.push("/community/home");
+        router.push("/user/home");
       }
 
       toast("サインインしました。");

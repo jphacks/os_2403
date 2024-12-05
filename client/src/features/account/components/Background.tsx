@@ -8,7 +8,7 @@ import style from "./style.module.scss";
 export const BackGroundColor: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentAccountType] = useAtom(accountTypeAtom);
   return (
-    <div className={currentAccountType === "community" ? style.community_theme : style.user_theme}>
+    <div className={currentAccountType === "user" ? style.user_theme : style.community_theme}>
       {children}
     </div>
   );

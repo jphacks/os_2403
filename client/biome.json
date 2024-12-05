@@ -25,6 +25,7 @@
         "useImportType": "off"
       },
       "correctness": {
+        "useExhaustiveDependencies": "off",
         "noUnusedVariables": "error",
         "noUnusedImports": "error"
       }
