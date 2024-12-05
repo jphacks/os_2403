@@ -57,9 +57,8 @@ func (h *ChatHandler) HandleWebSocket(c *gin.Context) {
 	for {
 		// メッセージ内容を取り出すための構造体
 		var msgData struct {
-			Content     string `json:"content"`
-			MessageFrom string `json:"messagefrom"`
-			UserID      string `json:"user_id"`
+			Content string `json:"content"`
+			UserID  string `json:"user_id"`
 		}
 
 		// WebSocketで受信したメッセージをJSONとして読み取り
