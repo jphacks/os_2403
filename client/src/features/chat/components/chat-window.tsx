@@ -2,8 +2,12 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import React, { useState, useEffect, useRef } from "react";
 import { Message, Room, SendMessage } from "../types/types";
 import "./ChatWindow.scss";
-
-const myUserID = "uuiduuiduuid";
+import axios from 'axios';
+import {apiClient} from "@/utils/client";
+import {useAtom} from "jotai/index";
+import {userAtom} from "@/features/account/stores";
+import {communityAtom} from "@/features/account/stores";
+import {accountTypeAtom} from "@/features/account/stores"; // axiosをインポート
 
 interface ChatWindowProps {
   room: Room | null;
@@ -12,14 +16,42 @@ interface ChatWindowProps {
 const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [current, setCurrent] = useState<string>("");
+  const [accountType] =useAtom(accountTypeAtom)
+  const [currentUser] = useAtom(userAtom);
+  const [currentCommunity] = useAtom(communityAtom);
   const ws = useRef<WebSocket | null>(null);
+
+  // メッセージ履歴を取得する関数
+  const fetchMessageHistory = async (roomId: number) => {
+    try {
+      const response = await apiClient.get(`messages/${roomId}`);
+      // 日付の降順でソートされているため、そのまま設定
+      setMessages(response.data);
+    } catch (error) {
+      console.error("メッセージ履歴の取得に失敗:", error);
+    }
+  };
 
   useEffect(() => {
     if (!room) {
       return;
     }
 
-    ws.current = new WebSocket(`wss://hubme.xyz/ws/chat/${room.id}`);
+
+    let account
+    if (accountType === "community") {
+      account = currentCommunity?.uuid || "gg"
+    } else if (accountType === "user") {
+      account = currentUser?.uuid || "gg"
+    }
+    setCurrent(account || "")
+
+
+    // メッセージ履歴を取得
+    fetchMessageHistory(room.id);
+
+    ws.current = new WebSocket(`ws://localhost:8080/api/ws/chat/` + room.id);
 
     ws.current.onopen = () => {
       console.log("WebSocket connection established");
@@ -37,7 +69,17 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
         UpdatedAt: data.UpdatedAt,
         DeletedAt: data.DeletedAt,
       };
-      setMessages(prevMessages => [...prevMessages, receivedMessage]);
+
+      // 重複チェックを追加
+      setMessages(prevMessages => {
+        // 既に同じIDのメッセージが存在しないか確認
+        const messageExists = prevMessages.some(msg => msg.id === receivedMessage.id);
+
+        // 重複していない場合のみ追加
+        return messageExists
+            ? prevMessages
+            : [receivedMessage, ...prevMessages];
+      });
     };
 
     ws.current.onerror = error => {
@@ -67,24 +109,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
 
     const message: SendMessage = {
       content: newMessage,
-      messagefrom: myUserID,
-      user_id: room.uuid,
+      user_id: current,
     };
 
     ws.current.send(JSON.stringify(message));
-
-    const newMessageObject: Message = {
-      id: Date.now(),
-      Message: newMessage,
-      UserID: myUserID,
-      RoomID: room.id,
-      Looked: 0,
-      CreatedAt: new Date().toISOString(),
-      UpdatedAt: new Date().toISOString(),
-      DeletedAt: null,
-    };
-
-    setMessages(prevMessages => [...prevMessages, newMessageObject]);
     setNewMessage("");
   };
 
@@ -99,26 +127,28 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
   return (
     <div className="chat-window-container">
       <div className="chat-window-header">
-        <h2 className="chat-window-title">{room.name}</h2>
+        <h2 className="chat-window-title">{room.detail_info.name}</h2>
       </div>
       <ScrollArea className="chat-window-scroll-area">
         <div className="chat-window-messages">
-          {messages.map(message => (
-            <div
-              key={message.id}
-              className={`chat-message ${
-                message.UserID === myUserID ? "my-message" : "other-message"
-              }`}
-            >
-              <div className="chat-message-content">
-                <div className="chat-message-bubble">
-                  <p>{message.Message}</p>
+          {messages
+            .sort((a, b) => new Date(a.CreatedAt).getTime() - new Date(b.CreatedAt).getTime())
+            .map(message => (
+              <div
+                key={message.id}
+                className={`${
+                  message.UserID === current ? "my-message" : "other-message"
+                }`}
+              >
+                <div className="chat-message-content">
+                  <div className="chat-message-bubble">
+                    <p>{message.Message}</p>
+                  </div>
+                  <span className="chat-message-timestamp">
+                    {new Date(message.CreatedAt).toLocaleTimeString()}
+                  </span>
                 </div>
-                <span className="chat-message-timestamp">
-                  {new Date(message.CreatedAt).toLocaleTimeString()}
-                </span>
               </div>
-            </div>
           ))}
         </div>
         <ScrollBar className="chat-window-scroll-bar" />

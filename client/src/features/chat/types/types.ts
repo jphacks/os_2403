@@ -1,12 +1,17 @@
-// type.ts
+// types.ts
 
 export interface Room {
-  uuid: string;
   id: number;
+  status: number;
+  unreadCount: number;
+  uuid: string;
+  detail_info: DetailInfo;
+}
+
+export interface DetailInfo{
   name: string;
   img: string;
 }
-
 export interface Message {
   id: number;
   Message: string;
@@ -20,6 +25,5 @@ export interface Message {
 
 export interface SendMessage {
   content: string;
-  messagefrom: string;
   user_id: string;
 }
