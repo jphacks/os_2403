@@ -27,11 +27,13 @@ const ChatPage = () => {
   ];
 
   return (
+    <>
+    <Menubar/>
     <div className="chat-page-container">
-      <Menubar/>
       <ChatRooms rooms={rooms} onSelectRoom={room => setSelectedRoom(room)} />
       <ChatWindow room={selectedRoom} />
     </div>
+    </>
   );
 };
 
