@@ -14,7 +14,6 @@ const ChatPage = () => {
     <>
     <Menubar/>
     <div className="chat-page-container">
-      <Menubar />
       <ChatRooms onSelectRoom={room => setSelectedRoom(room)} />
       <ChatWindow room={selectedRoom} />
     </div>
