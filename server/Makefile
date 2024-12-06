@@ -11,6 +11,11 @@ run-local-build:
 	docker-compose -f docker-compose.yml -f docker-compose.local.yml up --build
 
 # ステージング環境の実行とビルド
+.PHONY: run-staging
+run-staging:
+	docker-compose -f docker-compose.yml -f docker-compose.staging.yml up
+
+# ステージング環境の実行とビルド
 .PHONY: run-staging-build
 run-staging-build:
 	docker-compose -f docker-compose.yml -f docker-compose.staging.yml up　--build
