@@ -5,6 +5,8 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-migrate/migrate/v4"
+	migrate_mysql "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
@@ -13,25 +15,27 @@ import (
 	"github.com/jphacks/os_2403/infrastructure/middleware"
 	"github.com/jphacks/os_2403/interfaces/handlers"
 	"github.com/jphacks/os_2403/usecase"
+	"github.com/rollbar/rollbar-go"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 	"net/http"
 	"os"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading .env file")
+	}
 	env := os.Getenv("ENV")
 	if env == "staging" {
 		fmt.Println("environment: staging")
-		err := godotenv.Load()
-		if err != nil {
-			fmt.Println("Error loading .env file")
-		}
 	} else if env == "local" {
 		fmt.Println("environment: local")
-	} else if env == "production" {
-		fmt.Println("environment: production")
+	} else if env == "production-migrating" {
+		fmt.Println("environment: production-migrating")
 	} else {
 		fmt.Println("Error loading .env file")
 	}
@@ -40,6 +44,11 @@ func main() {
 	db, err := initDB()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if env == "production-migrating" {
+		fmt.Println("OS Exit")
+		os.Exit(0)
 	}
 
 	gob.Register(uuid.UUID{})
@@ -125,11 +134,24 @@ func initDB() (*gorm.DB, error) {
 	}
 
 	// 環境変数から接続情報を取得
+	var dbName string
+	env := os.Getenv("ENV")
+	switch env {
+	case "staging":
+		dbName = os.Getenv("DB_NAME_STAGING")
+	case "production-migrating":
+		dbName = os.Getenv("DB_NAME_PRODUCTION")
+	default:
+		dbName = os.Getenv("DB_NAME")
+	}
+	if dbName == "" {
+		return nil, fmt.Errorf("DB_NAME is not set")
+	}
+
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
-	dbName := os.Getenv("DB_NAME")
 
 	// 接続文字列の構築
 	//dsn := fmt.Sprintf(
@@ -143,28 +165,30 @@ func initDB() (*gorm.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect database: %w", err)
 	}
-	//
-	//sqlDB, err := db.DB()
-	//if err != nil {
-	//	rollbar.Error(err)
-	//	panic(err)
-	//}
-	//dbDriver, err := migrate_mysql.WithInstance(sqlDB, &migrate_mysql.Config{})
-	//if err != nil {
-	//	rollbar.Error(err)
-	//	panic(err)
-	//}
-	//m, err := migrate.NewWithDatabaseInstance("file://db/migrations", "mysql", dbDriver)
-	//if err != nil {
-	//	rollbar.Error(err)
-	//	panic(err)
-	//}
-	//if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-	//	rollbar.Error(err)
-	//	panic(err)
-	//}
-	//
-	//db.Logger = db.Logger.LogMode(logger.Info)
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		rollbar.Error(err)
+		panic(err)
+	}
+	dbDriver, err := migrate_mysql.WithInstance(sqlDB, &migrate_mysql.Config{})
+	if err != nil {
+		rollbar.Error(err)
+		panic(err)
+	}
+	m, err := migrate.NewWithDatabaseInstance("file://db/migrations", "mysql", dbDriver)
+	if err != nil {
+		rollbar.Error(err)
+		panic(err)
+	}
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		rollbar.Error(err)
+		panic(err)
+	}
+
+	db.Logger = db.Logger.LogMode(logger.Info)
+
+	fmt.Println("DB migrated")
 
 	return db, nil
 }

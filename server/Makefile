@@ -10,15 +10,15 @@ run-local:
 run-local-build:
 	docker-compose -f docker-compose.yml -f docker-compose.local.yml up --build
 
-# ステージング環境の実行
-.PHONY: run-staging
-run-staging:
-	docker-compose -f docker-compose.yml -f docker-compose.staging.yml up
-
 # ステージング環境の実行とビルド
 .PHONY: run-staging-build
 run-staging-build:
 	docker-compose -f docker-compose.yml -f docker-compose.staging.yml up　--build
+
+# 本番環境の実行とビルドとマイグレート
+.PHONY: run-production-migrate
+run-production-migrate:
+	docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build
 
 # マイグレーションファイルの生成
 .PHONY: migrate-create
