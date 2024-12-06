@@ -10,7 +10,7 @@ export const UserSchema = z.object({
   mem1: z.string().optional(),
   mem2: z.string().optional(),
   mem3: z.string().optional(),
-  // tags: number[];
+  tags: z.number().array().optional(),
 });
 
 export type User = z.infer<typeof UserSchema>;

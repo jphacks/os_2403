@@ -132,3 +132,79 @@
   width: 400px;
   border-bottom: 1px solid theme.$gray;
 }
+
+//profile_detail_card
+
+.profile_detail_card {
+  width: 80vh;
+  height: 70vh;
+  border: solid theme.$black;
+  overflow: hidden;
+}
+
+.profile_detail_tags {
+  width: 90%;
+  margin: 0 auto;
+  border-bottom: solid theme.$gray
+}
+
+.profile_property_container {
+  border-bottom: solid theme.$gray;
+  height: 40%;
+  width: 90%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.profile_detail_name {
+  font-family: MOBO;
+  position: relative;
+  top: 30px;
+  left: 40px;
+  //margin: auto 0;
+  font-style: normal;
+  font-weight: 600;
+  color: black;
+  font-size: 45px;
+}
+
+.profile_detail_avatar_card {
+  //position: absolute;
+  //position: relative;
+  //right: 10px;
+  top: -40px;
+  width: 206px;
+  height: 206px;
+  border: 5px solid #000000;
+  overflow: hidden;
+  //margin: auto 0 0 auto;
+  float: right;
+}
+
+.profile_detail_mem1 {
+  position: relative;
+  top: 100px;
+  left: 40px;
+  font-weight: 600;
+  font-size: 20px;
+  color: theme.$blue;
+}
+
+.profile_detail_self_container {
+
+  width: 90%;
+  margin: 0 auto;
+  height: auto;
+  overflow-y: hidden;
+}
+
+.profile_detail_self {
+  //width: 90%;
+  margin: 0 auto;
+  height: 300px;
+  border-bottom: solid theme.$gray;
+}
+
+
+
+

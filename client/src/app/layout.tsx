@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/globals.scss";
 import { Toaster } from "@/components/ui/sonner";
+import { BackGroundColor } from "@/features/account/components/Background";
 
 export const metadata: Metadata = {
   title: "HubMe",
@@ -14,9 +15,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className="flex flex-col min-h-screen">
-        <main className="flex-grow">{children}</main>
-        <Toaster />
+      <body className="min-h-screen">
+        <BackGroundColor>
+          <Menubar />
+          <main className="flex-grow">{children}</main>
+          <Toaster />
+        </BackGroundColor>
       </body>
     </html>
   );
