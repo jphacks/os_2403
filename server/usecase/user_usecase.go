@@ -54,7 +54,6 @@ type IUesrUsecase interface {
 	Update(ctx context.Context, input InputUserUpdate) error
 	GetAll(ctx context.Context) ([]*GetAllUserResponse, error)
 	FindByID(ctx context.Context, input InputUserFindByID) (*UserResponse, error)
-	FindByTags(ctx context.Context, input CreateScoutsRequest) ([]*UserResponse, error)
 }
 
 type userUsecase struct {
@@ -223,46 +222,3 @@ func (u *userUsecase) FindByID(ctx context.Context, input InputUserFindByID) (*U
 	return &res, nil
 }
 
-func (u *userUsecase) FindByTags(ctx context.Context, input CreateScoutsRequest) ([]*UserResponse, error) {
-	users, err := u.userRepo.FindByTag(ctx, input.Tags)
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to get user: %w", err)
-	}
-
-	var responses []*UserResponse
-	for _, user := range users {
-		// Find members by ID
-		mem1, _ := u.memberRepo.FindByID(ctx, user.Mem1)
-		mem2, _ := u.memberRepo.FindByID(ctx, user.Mem2)
-		mem3, _ := u.memberRepo.FindByID(ctx, user.Mem3)
-
-		// Find tags by ID and collect their names
-		tagNames := make([]string, 0, len(user.Tags))
-		for _, tagID := range user.Tags {
-			tag, err := u.tagRepo.FindTagByID(ctx, tagID)
-			if err != nil {
-				return nil, fmt.Errorf("failed to find tag by ID (%d): %w", tagID, err)
-			}
-			tagNames = append(tagNames, tag.Name)
-		}
-
-		// Create the user response
-		res := &UserResponse{
-			UUID:     user.UUID,
-			Name:     user.Name,
-			Email:    user.Email,
-			Password: user.Password,
-			Img:      user.Img,
-			Self:     user.Self,
-			Mem1:     mem1.Name,
-			Mem2:     mem2.Name,
-			Mem3:     mem3.Name,
-			Tags:     tagNames,
-		}
-		// Append to the response list
-		responses = append(responses, res)
-	}
-
-	return responses, nil
-}
