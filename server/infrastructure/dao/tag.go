@@ -42,3 +42,11 @@ func (r *tagRepository) GetRandomTags(ctx context.Context, limit int) ([]*models
 	}
 	return tags, nil
 }
+
+func (r *tagRepository) FindTagByID(ctx context.Context, tagID int) (*models.Tag, error) {
+	var tag models.Tag
+	if err := r.db.WithContext(ctx).First(&tag, tagID).Error; err != nil {
+		return nil, err
+	}
+	return &tag, nil
+}

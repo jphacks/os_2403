@@ -18,7 +18,7 @@ type InputSignUp struct {
 	Mem1     string
 	Mem2     string
 	Mem3     string
-	Text     string
+	Tag      []string
 }
 
 type InputSignIn struct {
@@ -67,7 +67,16 @@ func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) (uuid.UUID,
 	}
 	mem3ID, _ := u.memberRepo.Create(ctx, mem3)
 
-	fmt.Println(mem3ID)
+	var tags []int
+
+	for _, t := range input.Tag {
+		tag := &models.Tag{
+			Name: t,
+		}
+		tag_num, _ := u.tagRepo.Create(ctx, tag)
+
+		tags = append(tags, tag_num) // tagsにtag_numを追加
+	}
 
 	// パスワードをハッシュ化
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
@@ -86,6 +95,7 @@ func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) (uuid.UUID,
 		Mem1:     mem1ID,
 		Mem2:     mem2ID,
 		Mem3:     mem3ID,
+		Tags:     tags,
 	}
 
 	fmt.Println(user)
