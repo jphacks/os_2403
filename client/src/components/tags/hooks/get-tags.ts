@@ -1,4 +1,4 @@
-import { TagType } from "@/domain/tag";
+import { TagType } from "@/features/tags/types/tag";
 import { apiClient } from "@/utils/client"; // axios clientをインポート
 
 export const getTags = async (): Promise<TagType[]> => {

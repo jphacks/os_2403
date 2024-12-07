@@ -18,7 +18,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: successful get user by id
+                  user:
+                    $ref: '#/components/schemas/User'
         '400':
           description: Failed to find user data by uuid
     put:
@@ -241,7 +247,7 @@ components:
         - email
         - password
     UserWithoutPassword:
-      type: object
+      tupe: object
       properties:
         name:
           type: string

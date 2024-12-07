@@ -1,0 +1,29 @@
+name: swagger.yml
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
+    branches:
+      - develop
+
+jobs:
+  swagger:
+    name: swagger bundle
+    permissions:
+      contents: write
+      pull-requests: write
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4.2.2
+      - name: swagger bundle
+        run: make docker/swagger/bundle
+      - name: fix swagger
+        uses: dev-hato/actions-diff-pr-management@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          branch-name-prefix: 'fix-swagger'

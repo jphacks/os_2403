@@ -6,12 +6,12 @@ import (
 )
 
 // CORSミドルウェア
-func CORS() gin.HandlerFunc {
+func CORS(AllowOrigin string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "*") // すべてのオリジンを許可
+		c.Header("Access-Control-Allow-Origin", AllowOrigin)
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS")
 		c.Header("Access-Control-Allow-Headers", "Content-Type, Accept")
-		// c.Header("Access-Control-Allow-Credentials", "true") // ワイルドカード使用時はコメントアウト
+		c.Header("Access-Control-Allow-Credentials", "true") // ワイルドカード使用時はコメントアウト
 		c.Header("Access-Control-Expose-Headers", "Set-Cookie")
 		c.Header("Access-Control-Max-Age", "100")
 

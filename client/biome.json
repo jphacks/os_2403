@@ -7,24 +7,28 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": []
+    "ignore": ["components/ui/**", "yarn.lock", ".next/**", "public/**"]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "lineWidth": 100,
-    "ignore": ["components/ui/**"]
+    "lineWidth": 100
   },
   "organizeImports": {
-    "enabled": true,
-    "ignore": ["components/ui/**"]
+    "enabled": true
   },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
       "style": {
-        "useImportType": "off"
+        "useImportType": "off",
+        "useBlockStatements": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off",
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error"
       }
     }
   },

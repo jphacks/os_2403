@@ -1,0 +1,88 @@
+@use "@/styles/theme";
+
+.inviteCheck {
+  position: absolute;
+  top: 36px;
+  left: 100px;
+  z-index: 1;
+}
+
+.header {
+    position: relative;
+    background: white;
+    height: 80px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    margin-left: 2px;
+    z-index: 0;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10;
+    width: 150px;
+    height: 90px;
+    background: white;
+    border-radius: 0 30px 0 0;
+    border-top: 2px solid theme.$black;
+    border-left: 2px solid theme.$black;
+    border-bottom: 2px solid theme.$black;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 150px;
+    height: 45%;
+    border-right: 2px solid theme.$gray;
+}
+}
+
+.titleWrapper {
+  position: absolute;
+  top: 25px;
+  left: 20px;
+}
+.tagWrapper {
+    position: absolute;
+    width: 85%;
+    top: 35px;
+    left: 170px;
+    border-top: 2px solid theme.$black;
+    border-bottom: 2px solid theme.$black;
+    border-right: 2px solid theme.$black;
+    padding: 6px 20px;
+    z-index: 2; // z-indexを追加
+    background: white; // 背景色を追加して重なりを防ぐ
+}
+
+.tagsContainer {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    position: relative;
+    z-index: 2;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+  .cardWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 10px;
+    gap: 10px;
+  }
+
+  .tagSkeleton {
+    margin: 16px 0;
+  }
