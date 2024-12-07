@@ -43,30 +43,50 @@ export const TagCard = ({ className, mockData }: TagCardProps) => {
   const router = useRouter();
   const [tags, setTags] = useState<TagType[]>([]);
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const response = await getTags();
-        if (response && response.length > 0) {
-          setTags(response);
-        } else if (mockData) {
-          // APIレスポンスが空の場合はモックデータを使用
-          setTags(convertMockToTagType(mockData.tags));
-        }
-      } catch (error) {
-        console.error("Failed to fetch tags:", error);
-        // APIエラーの場合もモックデータを使用
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchTags = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getTags();
+      if (response && response.length > 0) {
+        setTags(response);
+      }
+      else {
+        // APIレスポンスが空の場合はモックデータを使用
         if (mockData) {
           setTags(convertMockToTagType(mockData.tags));
         }
       }
-    };
+      setError(null);
+    } catch (error) {
+      console.error("Failed to fetch tags:", error);
+      setError("Failed to load tags");
+      // APIエラーの場合もモックデータを使用
+      if (mockData) {
+        setTags(convertMockToTagType(mockData.tags));
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTags();
-  }, [mockData]);
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Or a loading spinner
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   const onClick = () => {
     router.push("/user/signin");
+    // ここにPOSTの関数
   };
 
   // モックデータを12個に複製する
