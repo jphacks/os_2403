@@ -102,6 +102,7 @@ func main() {
 	router.GET("/api/signout", authUserHandler.SignOut)
 
 	router.GET("/api/user/:uuid", userHandler.FindByID)
+	router.GET("/api/users", userHandler.GetAll)
 	router.PUT("/api/user/:uuid", userHandler.Update)
 
 	router.POST("/api/community/signin", authCommunityHandler.SignIn)
