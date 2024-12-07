@@ -14,6 +14,7 @@ type userHandler struct {
 
 type IUserHandler interface {
 	Update(ctx *gin.Context)
+	GetAll(ctx *gin.Context)
 	FindByID(ctx *gin.Context)
 }
 
@@ -77,4 +78,13 @@ func (h *userHandler) FindByID(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *userHandler) GetAll(ctx *gin.Context) {
+	users, err := h.userUsecase.GetAll(ctx)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+	}
+
+	ctx.JSON(http.StatusOK, users)
 }

@@ -28,6 +28,15 @@ func (r *userRepository) Update(ctx context.Context, user *models.User) error {
 		Updates(user).Error
 }
 
+func (r *userRepository) GetAll(ctx context.Context) ([]*models.User, error) {
+	var users []*models.User
+	err := r.db.WithContext(ctx).Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
 func (r *userRepository) FindByEmail(ctx context.Context, email string) (*models.User, error) {
 	var user *models.User
 	fmt.Println(email)
