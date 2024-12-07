@@ -13,6 +13,7 @@ type icommunityHandler struct {
 
 type ICommunityHandler interface {
 	FindById(ctx *gin.Context)
+	GetAll(ctx *gin.Context)
 	Update(ctx *gin.Context)
 }
 
@@ -54,6 +55,14 @@ func (h *icommunityHandler) FindById(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, res)
 
+}
+
+func (h *icommunityHandler) GetAll(ctx *gin.Context) {
+	communities, err := h.communityUsecase.GetAll(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	ctx.JSON(http.StatusOK, communities)
 }
 
 func (h *icommunityHandler) Update(ctx *gin.Context) {

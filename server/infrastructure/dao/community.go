@@ -48,3 +48,12 @@ func (r *communityRepository) FindByID(ctx context.Context, uuid string) (*model
 	}
 	return community, nil
 }
+
+func (r *communityRepository) GetAll(ctx context.Context) ([]*models.Community, error) {
+	var communities []*models.Community
+	err := r.db.WithContext(ctx).Find(&communities).Error
+	if err != nil {
+		return nil, err
+	}
+	return communities, nil
+}
