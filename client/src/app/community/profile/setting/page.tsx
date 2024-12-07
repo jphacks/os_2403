@@ -4,8 +4,8 @@ import { ProfileSetting } from "@/features/profile/components/ProfileSetting";
 const ProfileSettingPage = () => {
   return (
     <>
-    <Menubar />
-    <ProfileSetting type="community" />
+      <Menubar />
+      <ProfileSetting type="community" />
     </>
   );
 };
