@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import styles from "./style.module.scss";
 
-type ButtonVariant = "red" | "blue" | "green" | "gray";
+type ButtonVariant = "red" | "blue" | "green" | "gray" | "purple";
 
 interface CardTagProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
