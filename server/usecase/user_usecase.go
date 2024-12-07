@@ -43,7 +43,6 @@ type UserResponse struct {
 type IUesrUsecase interface {
 	Update(ctx context.Context, input InputUserUpdate) error
 	FindByID(ctx context.Context, input InputUserFindByID) (*UserResponse, error)
-	FindByTags(ctx context.Context, input CreateScoutsRequest) ([]*models.User, error)
 }
 
 type userUsecase struct {
@@ -145,13 +144,4 @@ func (u *userUsecase) FindByID(ctx context.Context, input InputUserFindByID) (*U
 		Tags:     user.Tags,
 	}
 	return &res, nil
-}
-
-func (u *userUsecase) FindByTags(ctx context.Context, input CreateScoutsRequest) ([]*models.User, error) {
-	user, err := u.userRepo.FindByTag(ctx, input.Tags)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get user: %w", err)
-	}
-
-	return user, nil
 }

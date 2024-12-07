@@ -8,10 +8,11 @@ import (
 	"github.com/jphacks/os_2403/domain/models"
 	"github.com/jphacks/os_2403/domain/repositories"
 	"gopkg.in/gomail.v2"
+	"os"
 )
 
 type IScoutListUsecase interface {
-	Create(ctx context.Context, scoutList *models.ScoutList) error
+	Create(ctx context.Context, scoutList *models.ScoutList, context string) error
 	ChangeStatus(ctx context.Context, userUUID uuid.UUID, status uint) error
 	GetWithCommunityDetails(ctx context.Context, userUUID string) ([]models.ScoutListResponse, error)
 	GetWithUserDetail(ctx context.Context, communityUUID string) ([]models.ScoutListResponse, error)
@@ -24,10 +25,6 @@ type scoutListUsecase struct {
 	messageRepo   repositories.MessageRepository
 }
 
-type CreateScoutsRequest struct {
-	UserUUID string `json:"user_uuid"`
-}
-
 func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo repositories.IUserRepository, communityRepo repositories.ICommunityRepository, messageRepo repositories.MessageRepository) IScoutListUsecase {
 	return &scoutListUsecase{
 		scoutListRepo: repo,
@@ -37,9 +34,8 @@ func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo reposi
 	}
 }
 
-func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.ScoutList) error {
+func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.ScoutList, context string) error {
 	// メール送信
-	var recipients []string
 	var user *models.User
 	var community *models.Community
 
@@ -48,14 +44,11 @@ func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.S
 		return err
 	}
 
-	recipients = append(recipients, user.Email)
-	community, err = u.communityRepo.FindByID(ctx, scoutDetailList.Community_UUID.String())
-
 	community, err = u.communityRepo.FindByID(ctx, scoutDetailList.Community_UUID.String())
 	if err != nil {
 		return err
 	}
-	err = sendEmail(recipients, community.Name)
+	err = sendEmail(context, user, community)
 	if err != nil {
 		return err
 	}
@@ -136,29 +129,25 @@ func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, communityUUID 
 	return responses, nil
 }
 
-func sendEmail(recipients []string, publisher string) error {
-	fmt.Println("hogehoge")
+func sendEmail(content string, user *models.User, community *models.Community) error {
 
 	m := gomail.NewMessage()
 
 	// 送信元
 	m.SetHeader("From", "tarakokko3233@gmail.com")
 
-	// 送信先（自分のメールアドレス）
-	m.SetHeader("To", "tarakokko3233@gmail.com")
-
-	// BCCに受信者を追加
-	m.SetHeader("Bcc", recipients...)
+	// 送信先
+	m.SetHeader("To", user.Email)
 
 	// 件名
 	m.SetHeader("Subject", "[hubme]コミュニティからのスカウト")
 
 	// メール本文にpublisherを追加
-	body := publisher + " このコミュニティに参加してみませんか？" + "\n" + "https://hubme.link"
+	body := community.Name + "community.Email" + " このコミュニティに参加してみませんか？" + "\n" + "https://hubme.click" + "\n" + content
 	m.SetBody("text/plain", body)
 
 	// ダイヤラの設定
-	d := gomail.NewDialer("smtp.gmail.com", 587, "tarakokko3233@gmail.com", "njee ivlt vsah hruy")
+	d := gomail.NewDialer("smtp.gmail.com", 587, "tarakokko3233@gmail.com", os.Getenv("GOOGLE_ACCOUNT_TOKEN"))
 
 	// GmailはTLS接続を要求
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
