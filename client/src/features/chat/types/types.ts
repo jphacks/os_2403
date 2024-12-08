@@ -8,7 +8,7 @@ export interface Room {
   detail_info: DetailInfo;
 }
 
-export interface DetailInfo{
+export interface DetailInfo {
   name: string;
   img: string;
 }

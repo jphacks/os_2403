@@ -2,12 +2,11 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import React, { useState, useEffect, useRef } from "react";
 import { Message, Room, SendMessage } from "../types/types";
 import "./ChatWindow.scss";
-import axios from 'axios';
-import {apiClient} from "@/utils/client";
-import {useAtom} from "jotai/index";
-import {userAtom} from "@/features/account/stores";
-import {communityAtom} from "@/features/account/stores";
-import {accountTypeAtom} from "@/features/account/stores"; // axiosをインポート
+import { userAtom } from "@/features/account/stores";
+import { communityAtom } from "@/features/account/stores";
+import { accountTypeAtom } from "@/features/account/stores"; // axiosをインポート
+import { apiClient } from "@/utils/client";
+import { useAtom } from "jotai/index";
 
 interface ChatWindowProps {
   room: Room | null;
@@ -17,7 +16,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [current, setCurrent] = useState<string>("");
-  const [accountType] =useAtom(accountTypeAtom)
+  const [accountType] = useAtom(accountTypeAtom);
   const [currentUser] = useAtom(userAtom);
   const [currentCommunity] = useAtom(communityAtom);
   const ws = useRef<WebSocket | null>(null);
@@ -38,15 +37,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
       return;
     }
 
-
-    let account
+    let account;
     if (accountType === "community") {
-      account = currentCommunity?.uuid || "gg"
+      account = currentCommunity?.uuid || "gg";
     } else if (accountType === "user") {
-      account = currentUser?.uuid || "gg"
+      account = currentUser?.uuid || "gg";
     }
-    setCurrent(account || "")
-
+    setCurrent(account || "");
 
     // メッセージ履歴を取得
     fetchMessageHistory(room.id);
@@ -76,9 +73,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
         const messageExists = prevMessages.some(msg => msg.id === receivedMessage.id);
 
         // 重複していない場合のみ追加
-        return messageExists
-            ? prevMessages
-            : [receivedMessage, ...prevMessages];
+        return messageExists ? prevMessages : [receivedMessage, ...prevMessages];
       });
     };
 
@@ -136,9 +131,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
             .map(message => (
               <div
                 key={message.id}
-                className={`${
-                  message.UserID === current ? "my-message" : "other-message"
-                }`}
+                className={`${message.UserID === current ? "my-message" : "other-message"}`}
               >
                 <div className="chat-message-content">
                   <div className="chat-message-bubble">
@@ -149,7 +142,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
                   </span>
                 </div>
               </div>
-          ))}
+            ))}
         </div>
         <ScrollBar className="chat-window-scroll-bar" />
       </ScrollArea>

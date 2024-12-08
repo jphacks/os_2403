@@ -5,11 +5,11 @@ import style from "./style.module.scss";
 const ProfilePage = () => {
   return (
     <>
-    <Menubar />
-    <div className={style.all}>
-      <p className={style.profile}>プロフィール</p>
-      <ProfileCard />
-    </div>
+      <Menubar />
+      <div className={style.all}>
+        <p className={style.profile}>プロフィール</p>
+        <ProfileCard />
+      </div>
     </>
   );
 };
