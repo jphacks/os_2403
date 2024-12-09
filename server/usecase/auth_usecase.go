@@ -70,9 +70,7 @@ func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) (uuid.UUID,
 	var tags []int
 
 	for _, t := range input.Tag {
-		tag := &models.Tag{
-			Name: t,
-		}
+		tag := models.NewTag(t)
 		tag_num, _ := u.tagRepo.Create(ctx, tag)
 
 		tags = append(tags, tag_num) // tagsにtag_numを追加
