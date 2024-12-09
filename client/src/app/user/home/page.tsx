@@ -63,6 +63,7 @@ const EventPage = () => {
 
   return (
     <>
+
       {/*<AuthProvider>*/}
       {!loading && events.length > 0 && showPopup && <Popup cards={events} />}
       <Menubar />

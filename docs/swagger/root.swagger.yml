@@ -19,3 +19,7 @@ paths:
     $ref: "./paths/auth.yml#/community_signin"
   /createEvent:
     $ref: "./paths/event.yml#/createEvent"
+  /getCommunityscoutdetail:
+    $ref: "./paths/scout.yml#/get_community_scout_list"
+  /changescoutstatus:
+    $ref: "./paths/scout.yml#/change_scout_status"
