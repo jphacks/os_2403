@@ -7,6 +7,7 @@ import (
 	"github.com/jphacks/os_2403/domain/models"
 	"github.com/jphacks/os_2403/usecase"
 	"net/http"
+	"time"
 )
 
 type ScoutHandler struct {
@@ -120,6 +121,7 @@ func (h *ScoutHandler) CreateScouts(ctx *gin.Context) {
 		scoutDetail := &models.ScoutList{
 			User_UUID:      userUUID,
 			Status:         0, // 未承認(0)
+			Scoutdate:      time.Now(),
 			Community_UUID: communityUUID,
 		}
 

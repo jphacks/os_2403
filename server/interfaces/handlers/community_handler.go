@@ -75,5 +75,5 @@ func (h *icommunityHandler) Update(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "community status change successful"})
 }

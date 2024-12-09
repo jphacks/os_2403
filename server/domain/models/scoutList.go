@@ -10,6 +10,7 @@ type ScoutList struct {
 	User_UUID      uuid.UUID  `gorm:"type:varchar(36);column:user_uuid"`
 	Status         uint       `gorm:"type:int unsigned"`
 	Community_UUID uuid.UUID  `gorm:"type:varchar(36)"`
+	Scoutdate      time.Time  `gorm:"type:timestamp"`
 	CreatedAt      time.Time  `gorm:"type:timestamp"`
 	UpdatedAt      time.Time  `gorm:"type:timestamp"`
 	DeletedAt      *time.Time `gorm:"type:timestamp"`
