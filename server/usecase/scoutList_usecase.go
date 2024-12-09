@@ -21,16 +21,20 @@ type IScoutListUsecase interface {
 type scoutListUsecase struct {
 	scoutListRepo repositories.IScoutListRepository
 	userRepo      repositories.IUserRepository
+	tagRepo       repositories.ITagRepository
+	memberRepo    repositories.IMemberRepository
 	communityRepo repositories.ICommunityRepository
 	messageRepo   repositories.MessageRepository
 }
 
-func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo repositories.IUserRepository, communityRepo repositories.ICommunityRepository, messageRepo repositories.MessageRepository) IScoutListUsecase {
+func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo repositories.IUserRepository, communityRepo repositories.ICommunityRepository, messageRepo repositories.MessageRepository, tagRepo repositories.ITagRepository, memberRepo repositories.IMemberRepository) IScoutListUsecase {
 	return &scoutListUsecase{
 		scoutListRepo: repo,
 		userRepo:      userRepo,
 		communityRepo: communityRepo,
 		messageRepo:   messageRepo,
+		tagRepo:       tagRepo,
+		memberRepo:    memberRepo,
 	}
 }
 
@@ -76,6 +80,22 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID
 			return nil, fmt.Errorf("failed to get unread count for user %s: %w", scoutlist.User_UUID.String(), err)
 		}
 
+		// Mem1 の取得
+		mem1, err := u.memberRepo.FindByID(ctx, detail.Mem1)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get unread member1 %s: %w", detail.Mem1, err)
+		}
+
+		// Tags の取得
+		tagNames := make([]string, 0, len(detail.Tags))
+		for _, tagID := range detail.Tags {
+			tag, err := u.tagRepo.FindTagByID(ctx, tagID)
+			if err != nil {
+				return nil, fmt.Errorf("failed to find tag by ID (%d): %w", tagID, err)
+			}
+			tagNames = append(tagNames, tag.Name)
+		}
+
 		response := models.ScoutListResponse{
 			ID:          scoutlist.ID,
 			Status:      scoutlist.Status,
@@ -84,6 +104,8 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID
 			DetailInfo: models.DetailInfo{
 				Name: detail.Name,
 				Img:  detail.Img,
+				Mem1: mem1.Name,
+				Tags: tagNames,
 			},
 		}
 		responses = append(responses, response)
