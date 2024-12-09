@@ -64,6 +64,8 @@ func main() {
 	scoutListRepo := dao.NewscoutListRepository(db)
 	eventRepo := dao.NewEventRepository(db)
 	messageRepo := dao.NewMessageRepository(db)
+	threadRepo := dao.NewThreadRepository(db)
+	tagClickHistoryRepo := dao.NewTagClickHistory(db)
 
 	authUserUsecase := usecase.NewAuthUserUseCase(userRepo, sessionRepo, memberRepo, tagRepo)
 	authcommunityUsecase := usecase.NewAuthCommunityUseCase(communityRepo, sessionRepo, memberRepo, tagRepo)
@@ -72,6 +74,7 @@ func main() {
 	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo, userRepo, communityRepo, messageRepo, tagRepo, memberRepo)
 	eventUsecase := usecase.NewEventUsecase(eventRepo)
 	tagUsecase := usecase.NewTagUseCase(tagRepo)
+	tagClickHistoryUsecase := usecase.NewTagClickHistoryUsecase(tagClickHistoryRepo)
 
 	authUserHandler := handlers.NewAuthUserHandler(authUserUsecase, store)
 	authCommunityHandler := handlers.NewAuthCommunityHandler(authcommunityUsecase, store)
@@ -85,6 +88,9 @@ func main() {
 	wsService := middleware.NewWebSocketService()
 	chatUsecase := usecase.NewChatUseCase(messageRepo, wsService)
 	chatHandler := handlers.NewChatHandler(chatUsecase, wsService) // 他の初期化ここに書いてね
+
+	threadUsecase := usecase.NewThreadUsecase(threadRepo, wsService)
+	threadHandler := handlers.NewThreadHandler(threadUsecase, wsService, tagUsecase, tagClickHistoryUsecase)
 
 	// ルーティング
 	router := gin.Default()
@@ -124,6 +130,9 @@ func main() {
 
 	router.GET("/api/ws/chat/:room_id", chatHandler.HandleWebSocket)
 	router.GET("/api/messages/:room_id", chatHandler.GetMessages) // チャット履歴取得用
+
+	router.GET("/api/thread", threadHandler.CreateThread)
+	router.GET("/api/ws/tag_recommend", threadHandler.ThreadMessage)
 
 	log.Fatal(http.ListenAndServe(":80", router))
 }
