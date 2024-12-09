@@ -156,9 +156,7 @@ func (u *userUsecase) Update(ctx context.Context, input InputUserUpdate) error {
 	// Tags の更新
 	var tags []int
 	for _, t := range input.Tags {
-		tag := &models.Tag{
-			Name: t,
-		}
+		tag := models.NewTag(t)
 		tagID, _ := u.tagRepo.Create(ctx, tag)
 		tags = append(tags, tagID)
 	}
@@ -221,4 +219,3 @@ func (u *userUsecase) FindByID(ctx context.Context, input InputUserFindByID) (*U
 	}
 	return &res, nil
 }
-
