@@ -39,7 +39,6 @@ func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo reposi
 }
 
 func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.ScoutList, context string) error {
-	// メール送信
 	var user *models.User
 	var community *models.Community
 
@@ -52,6 +51,8 @@ func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.S
 	if err != nil {
 		return err
 	}
+
+	// メール送信
 	err = sendEmail(context, user, community)
 	if err != nil {
 		return err

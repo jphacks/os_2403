@@ -48,7 +48,7 @@ func (h *userHandler) Update(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "user status change successful"})
 }
 
 func (h *userHandler) FindByID(ctx *gin.Context) {
