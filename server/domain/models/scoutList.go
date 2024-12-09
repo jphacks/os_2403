@@ -24,8 +24,10 @@ type ScoutListResponse struct {
 }
 
 type DetailInfo struct {
-	Name string `json:"name"`
-	Img  string `json:"img"`
+	Name string   `json:"name"`
+	Img  string   `json:"img"`
+	Mem1 string   `json:"mem1"`
+	Tags []string `json:"tags"`
 }
 
 type MessageCommunity struct {
