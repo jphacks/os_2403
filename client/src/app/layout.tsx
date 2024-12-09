@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "@/styles/globals.scss";
 import { Toaster } from "@/components/ui/sonner";
 import { BackGroundColor } from "@/features/account/components/Background";
-import { Menubar } from "@/features/menubar";
+import { Menubar } from "@/features/menubar/components/Menubar";
 
 export const metadata: Metadata = {
   title: "HubMe",

@@ -9,7 +9,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useEffect, useState } from "react";
-import style from "./search.module.scss";
+import style from "../styles/search.module.scss";
 
 interface Datatype {
   label: string;

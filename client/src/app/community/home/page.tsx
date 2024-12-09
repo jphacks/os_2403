@@ -1,5 +1,4 @@
 import { UserCard } from "@/features/community-home/components/user-card";
-import { Menubar } from "@/features/menubar";
 
 
 export default function Home() {
@@ -13,7 +12,6 @@ export default function Home() {
 
   return (
     <>
-      <Menubar />
       {/*<AuthProvider>*/}
       <UserCard
         username={mockData.username}

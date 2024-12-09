@@ -1,6 +1,4 @@
 "use client";
-import Invite from "@/../public/invite";
-import Logo from "@/../public/logo";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +7,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Invite from "../../../../public/invite";
+import Logo from "../../../../public/logo";
 
 import { useSetBaseAccountType } from "@/features/account/hooks";
 import { accountTypeAtom, communityAtom, userAtom } from "@/features/account/stores";
@@ -19,9 +19,9 @@ import { LogOut, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { MailIcon } from "./components/mail";
-import Search from "./components/search";
-import style from "./index.module.scss";
+import style from "../styles/menubar.module.scss";
+import { MailIcon } from "./mail";
+import Search from "./search";
 
 const mockData = [
   { label: "東京大学" },
@@ -75,6 +75,7 @@ export const Menubar = () => {
     toast("サインアウトしました");
   };
 
+  if (currentAccountType === "not") return null;
   return (
     <div className={style.header}>
       <div className={style.icons}>
@@ -127,9 +128,13 @@ export const Menubar = () => {
           <Logo size={50} />
         </Link>
       </div>
-      <div className={style.search}>
-        <Search data={mockData} />
-      </div>
+      {currentAccountType === "user" ? (
+        <div className={style.search}>
+          <Search data={mockData} />
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
