@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EventCard } from "@/features/event";
 import { getEvents } from "@/features/event/hooks/get-events";
 import { EventType } from "@/features/event/types/event";
-import { Menubar } from "@/features/menubar";
+import { Menubar } from "@/features/menubar/components/Menubar";
 import { Popup } from "@/features/popup";
 import { TagType } from "@/features/tags/types/tag";
 import { useEffect, useState } from "react";
