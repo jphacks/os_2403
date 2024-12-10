@@ -79,6 +79,9 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID
 
 	responses := make([]models.ScoutListResponse, 0, len(scoutlists))
 	for _, scoutlist := range scoutlists {
+		if scoutlist.Status == models.Approve || scoutlist.Status == models.Reject {
+			continue
+		}
 		detail, err := u.communityRepo.FindByID(ctx, scoutlist.Community_UUID.String())
 		if err != nil {
 			return nil, err

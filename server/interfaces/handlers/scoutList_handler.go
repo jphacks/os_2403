@@ -26,7 +26,7 @@ func NewScoutListHandler(usecase usecase.IScoutListUsecase, userUsecase usecase.
 
 type IScoutListHandler interface {
 	GetCommunityDetailByScoutList(ctx *gin.Context)
-	GetUserDetailByScoutList(ctx *gin.Context)
+	//GetUserDetailByScoutList(ctx *gin.Context)
 	CreateScouts(ctx *gin.Context)
 	ChangeStatus(ctx *gin.Context)
 }
@@ -58,17 +58,17 @@ func (h *ScoutHandler) GetCommunityDetailByScoutList(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, scoutlist)
 }
 
-func (h *ScoutHandler) GetUserDetailByScoutList(ctx *gin.Context) {
-	userUUID := ctx.Query("community_uuid")
-
-	scoutlist, err := h.scoutUsecase.GetWithUserDetail(ctx.Request.Context(), userUUID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, scoutlist)
-}
+//func (h *ScoutHandler) GetUserDetailByScoutList(ctx *gin.Context) {
+//	userUUID := ctx.Query("community_uuid")
+//
+//	scoutlist, err := h.scoutUsecase.GetWithUserDetail(ctx.Request.Context(), userUUID)
+//	if err != nil {
+//		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+//		return
+//	}
+//
+//	ctx.JSON(http.StatusOK, scoutlist)
+//}
 
 func (h *ScoutHandler) ChangeStatus(ctx *gin.Context) {
 	var req changeStatusRequest
