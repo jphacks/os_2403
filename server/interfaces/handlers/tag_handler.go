@@ -32,5 +32,5 @@ func (h *tagHandler) GetRandom(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful", "tags": tags})
+	ctx.JSON(http.StatusOK, gin.H{"message": "get tag random done", "tags": tags})
 }

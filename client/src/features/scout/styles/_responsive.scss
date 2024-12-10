@@ -1,0 +1,14 @@
+@media (max-width: 640px) {
+  .cardContent {
+    flex-direction: column;
+  }
+
+  .rightContent {
+    text-align: left;
+  }
+
+  .iconWrapper {
+    width: 80px;
+    height: 80px;
+  }
+}

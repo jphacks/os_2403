@@ -115,9 +115,7 @@ func (u *communityUsecase) Update(ctx context.Context, input InputCommunityUpdat
 	// Tags の更新
 	var tags []int
 	for _, t := range input.Tags {
-		tag := &models.Tag{
-			Name: t,
-		}
+		tag := models.NewTag(t)
 		tagID, _ := u.tagRepo.Create(ctx, tag)
 		tags = append(tags, tagID)
 	}

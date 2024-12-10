@@ -69,7 +69,7 @@ func main() {
 	authcommunityUsecase := usecase.NewAuthCommunityUseCase(communityRepo, sessionRepo, memberRepo, tagRepo)
 	userUsecase := usecase.NewUserUseCase(userRepo, memberRepo, tagRepo)
 	communityUsecase := usecase.NewCommunityUseCase(communityRepo, memberRepo, tagRepo)
-	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo, userRepo, communityRepo, messageRepo)
+	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo, userRepo, communityRepo, messageRepo, tagRepo, memberRepo)
 	eventUsecase := usecase.NewEventUsecase(eventRepo)
 	tagUsecase := usecase.NewTagUseCase(tagRepo)
 

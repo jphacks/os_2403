@@ -1,0 +1,30 @@
+get_community_scout_list:
+  get:
+    summary: スカウトリストの一覧を取得
+    description: statusは 0:未読、1:既読、2：興味なし、3:興味あり、uuidはcommunityのuuidを入れる
+    operationId: get_scout_list
+    parameters:
+      - $ref: "../components/user.yml#/UserUUIDRequest"
+    responses:
+      200:
+        description: スカウトに一覧取得成功
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../components/scout.yml#/GetCommunityScoutDetail"
+
+change_scout_status:
+  put:
+    summary: スカウトのステータスを変更
+    description: 0:未読、1:既読、2：興味なし、3:興味あり
+    operationId: changeScoutStatus
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "../components/scout.yml#/ChangeScoutStatus"
+    responses:
+      200:
+        description: イベントのステータス変更成功

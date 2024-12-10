@@ -10,6 +10,7 @@ type ScoutList struct {
 	User_UUID      uuid.UUID  `gorm:"type:varchar(36);column:user_uuid"`
 	Status         uint       `gorm:"type:int unsigned"`
 	Community_UUID uuid.UUID  `gorm:"type:varchar(36)"`
+	Scoutdate      time.Time  `gorm:"type:timestamp"`
 	CreatedAt      time.Time  `gorm:"type:timestamp"`
 	UpdatedAt      time.Time  `gorm:"type:timestamp"`
 	DeletedAt      *time.Time `gorm:"type:timestamp"`
@@ -24,8 +25,10 @@ type ScoutListResponse struct {
 }
 
 type DetailInfo struct {
-	Name string `json:"name"`
-	Img  string `json:"img"`
+	Name string   `json:"name"`
+	Img  string   `json:"img"`
+	Mem1 string   `json:"mem1"`
+	Tags []string `json:"tags"`
 }
 
 type MessageCommunity struct {
