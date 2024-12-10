@@ -181,13 +181,18 @@ paths:
       responses:
         '201':
           description: イベント作成成功
-  /getCommunityscoutdetail:
+  /scoutlist/getcommunitydetail:
     get:
       summary: スカウトリストの一覧を取得
       description: statusは 0:未読、1:既読、2：興味なし、3:興味あり、uuidはcommunityのuuidを入れる
       operationId: get_scout_list
       parameters:
-        - $ref: '#/components/parameters/UserUUIDRequest'
+        - name: user_uuid
+          in: query
+          required: true
+          description: ユーザーのID
+          schema:
+            type: string
       responses:
         '200':
           description: スカウトに一覧取得成功
@@ -197,7 +202,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/GetCommunityScoutDetail'
-  /changescoutstatus:
+  /scoutlist/updatestatus:
     put:
       summary: スカウトのステータスを変更
       description: 0:未読、1:既読、2：興味なし、3:興味あり
@@ -451,9 +456,24 @@ components:
               format: string
               description: 画像URL
               example: image_url
+            mem1:
+              type: string
+              format: string
+              description: 所属1
+              example: 立命館
+            tags:
+              type: array
+              items:
+                type: string
+              example:
+                - tag1
+                - tag2
+                - tag3
           required:
             - name
             - img
+            - mem1
+            - tags
       required:
         - id
         - status

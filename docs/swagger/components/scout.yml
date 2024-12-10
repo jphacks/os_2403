@@ -32,9 +32,21 @@ GetCommunityScoutDetail:
           format: string
           description: 画像URL
           example: "image_url"
+        mem1:
+          type: string
+          format: string
+          description: 所属1
+          example: "立命館"
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["tag1", "tag2", "tag3"]
       required:
           - name
           - img
+          - mem1
+          - tags
   required:
       - id
       - status

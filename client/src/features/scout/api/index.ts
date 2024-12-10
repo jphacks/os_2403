@@ -1,24 +1,23 @@
-import { ScoutCardProps, ScoutDetailProps, UpdateScoutStatusRequest } from "@/features/scout/types";
+import { GetCommunityDetailResponse, UpdateScoutStatusRequest } from "@/features/scout/types";
 import { apiClient } from "@/utils/client";
 
-export const GetScoutList = async () => {
-  const res = await apiClient.get("/scoutlist");
+export const getScoutCommunityDetail = async (uuid: string) => {
+  if (!uuid) {
+    return undefined;
+  }
+  const res = await apiClient.get("/scoutlist/getcommunitydetail", {
+    params: {
+      user_uuid: uuid,
+    },
+  });
 
-  const data: ScoutCardProps = res.data;
+  const data: GetCommunityDetailResponse[] = res.data;
 
   return data;
 };
 
-export const GetScoutDeital = async () => {
-  const res = await apiClient.get("/scoutlist/getcommunitydetail");
+export const updateScoutStatus = async (req: UpdateScoutStatusRequest) => {
+  await apiClient.put("/scoutlist/updatestatus", req);
 
-  const data: ScoutDetailProps = res.data;
-
-  return data;
-};
-
-export const UpdateScoutStatus = async (req: UpdateScoutStatusRequest) => {
-  const res = await apiClient.put("/scoutlist/updatestatus", req);
-
-  return res.data;
+  return;
 };

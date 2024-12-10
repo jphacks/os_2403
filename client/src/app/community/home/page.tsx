@@ -1,6 +1,5 @@
 import { UserCard } from "@/features/community-home/components/user-card";
 
-
 export default function Home() {
   const mockData = {
     username: "ユーザ名",
