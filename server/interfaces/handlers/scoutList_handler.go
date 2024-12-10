@@ -83,17 +83,8 @@ func (h *ScoutHandler) ChangeStatus(ctx *gin.Context) {
 		return
 	}
 
-	if req.Status != models.Approve && req.Status != models.Reject {
-		if err := h.scoutUsecase.ChangeStatus(ctx.Request.Context(), uint(id), req.Status); err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-	} else {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error":  "Invalid status",
-			"status": req.Status,
-		})
+	if err := h.scoutUsecase.ChangeStatus(ctx.Request.Context(), uint(id), req.Status); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

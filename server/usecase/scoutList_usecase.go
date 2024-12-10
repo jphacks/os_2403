@@ -60,6 +60,14 @@ func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.S
 }
 
 func (u *scoutListUsecase) ChangeStatus(ctx context.Context, ID uint, status models.ScoutStatus) error {
+	scoutList, err := u.scoutListRepo.FindByID(ctx, ID)
+	if err != nil {
+		return fmt.Errorf("failed to find scout list by ID: %w", err)
+	}
+	if scoutList.Status == models.Approve || scoutList.Status == models.Reject {
+		return fmt.Errorf("this scout list is already handled with status: %v", scoutList.Status)
+	}
+
 	return u.scoutListRepo.ChangeStatus(ctx, ID, status)
 }
 
