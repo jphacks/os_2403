@@ -2,45 +2,82 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
 import styles from "../styles/user-card.module.scss";
 
-type ProfileCardProps = {
+export type UserCardType = {
+  uuid: string;
   username: string;
-  icon: string;
-  tags: string[];
-  detail: string;
-  university: string;
+  icon?: string;
+  tags?: number[];
+  detail?: string;
+  university?: string;
+  onClick: () => void;
 };
 
-export function UserCard({ username, tags, icon, detail, university }: ProfileCardProps) {
+export function UserCard({
+  uuid,
+  username,
+  icon,
+  tags,
+  detail,
+  university,
+  onClick,
+}: UserCardType) {
+  const [isSelect, setIsSelect] = useState(false);
+
+  const handleDetailClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // window.location.href = `/community/user/${uuid}`;
+    console.log(uuid);
+  };
+
+  const handleClick = () => {
+    setIsSelect(!isSelect);
+    onClick();
+  };
+
   return (
-    <Card className={styles.profileCard}>
+    <Card className={cn(styles.profileCard, isSelect && styles.selected)} onClick={handleClick}>
+      <div className={styles.tagsContainer}>
+        {tags?.map(tag => (
+          <Badge key={tag} className={styles.tag}>
+            {tag}
+          </Badge>
+        ))}
+      </div>
+
       <div className={styles.cardContent}>
-        <div className={styles.leftContent}>
-          <div className={styles.avatarWrapper}>
-            <Avatar className={styles.avatar}>
-              <AvatarImage src={icon} />
-              <AvatarFallback>{username}</AvatarFallback>
-            </Avatar>
+        <div className={styles.leftSection}>
+          <Avatar className={styles.avatar}>
+            <AvatarImage src={icon} />
+            <AvatarFallback>{username}</AvatarFallback>
+          </Avatar>
+        </div>
+
+        <div className={styles.middleSection}>
+          <h2 className={styles.username} title={username}>
+            {username}
+          </h2>
+          <div className={styles.details} title={detail}>
+            {detail}
           </div>
         </div>
 
-        <div className={styles.mainContent}>
-          <div className={styles.tagsContainer}>
-            {tags.map(tag => (
-              <Badge key={`tag-${tag}`} variant="secondary" className={styles.tag}>
-                {tag}
-              </Badge>
-            ))}
-          </div>
-          <h2 className={styles.username}>{username}</h2>
-          <div className={styles.details}>{detail}</div>
-        </div>
-
-        <div className={styles.rightContent}>
-          <p className={styles.university}>{university}</p>
-          もっと詳しく
-          <span className={styles.arrow}>›</span>
+        <div className={styles.rightSection}>
+          <p className={styles.university} title={university}>
+            {university}
+          </p>
+          <button
+            className={styles.moreButton}
+            onClick={handleDetailClick}
+            type="button"
+            aria-label="詳細を見る"
+          >
+            <span className={styles.arrow}>›</span>
+            もっと詳しく
+          </button>
         </div>
       </div>
     </Card>
