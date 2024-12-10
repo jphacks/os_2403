@@ -14,7 +14,8 @@ type IScoutListUsecase interface {
 	Create(ctx context.Context, scoutList *models.ScoutList, context string) error
 	ChangeStatus(ctx context.Context, id uint, status models.ScoutStatus) error
 	GetWithCommunityDetails(ctx context.Context, userUUID string) ([]models.ScoutListResponse, error)
-	GetWithUserDetail(ctx context.Context, communityUUID string) ([]models.ScoutListResponse, error)
+	GetCommunityDetailsWithScoutLists(ctx context.Context, userUUID string) ([]models.ScoutListResponse, error)
+	//GetWithUserDetail(ctx context.Context, communityUUID string) ([]models.ScoutListResponse, error)
 }
 
 type scoutListUsecase struct {
@@ -79,7 +80,7 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID
 
 	responses := make([]models.ScoutListResponse, 0, len(scoutlists))
 	for _, scoutlist := range scoutlists {
-		if scoutlist.Status == models.Approve || scoutlist.Status == models.Reject {
+		if scoutlist.Status != models.Approve {
 			continue
 		}
 		detail, err := u.communityRepo.FindByID(ctx, scoutlist.Community_UUID.String())
@@ -129,25 +130,20 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID
 	return responses, nil
 }
 
-func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, communityUUID string) ([]models.ScoutListResponse, error) {
-	scoutlists, err := u.scoutListRepo.GetByCommunityUUID(ctx, communityUUID)
+func (u *scoutListUsecase) GetCommunityDetailsWithScoutLists(ctx context.Context, UserUUID string) ([]models.ScoutListResponse, error) {
+	scoutlists, err := u.scoutListRepo.GetByUserUUID(ctx, UserUUID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get scout lists: %w", err)
-	}
-
-	if len(scoutlists) == 0 {
-		return []models.ScoutListResponse{}, nil
+		return nil, err
 	}
 
 	responses := make([]models.ScoutListResponse, 0, len(scoutlists))
 	for _, scoutlist := range scoutlists {
-		detail, err := u.userRepo.FindByID(ctx, scoutlist.User_UUID.String())
-		if err != nil {
-			return nil, fmt.Errorf("failed to find community details: %w", err)
+		if scoutlist.Status == models.Approve || scoutlist.Status == models.Reject {
+			continue
 		}
-		unreadcount, err := u.messageRepo.GetCountByStatus(scoutlist.User_UUID.String(), 0)
+		detail, err := u.communityRepo.FindByID(ctx, scoutlist.Community_UUID.String())
 		if err != nil {
-			return nil, fmt.Errorf("failed to get unread count for user %s: %w", scoutlist.User_UUID.String(), err)
+			return nil, err
 		}
 
 		// Mem1 の取得
@@ -169,10 +165,10 @@ func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, communityUUID 
 		}
 
 		response := models.ScoutListResponse{
-			ID:          scoutlist.ID,
-			Status:      scoutlist.Status,
-			UUID:        scoutlist.User_UUID,
-			UnreadCount: unreadcount,
+			ID:        scoutlist.ID,
+			Status:    scoutlist.Status,
+			UUID:      scoutlist.Community_UUID,
+			Scoutdate: scoutlist.Scoutdate,
 			DetailInfo: models.DetailInfo{
 				Name:     detail.Name,
 				Img:      detail.Img,
@@ -186,6 +182,64 @@ func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, communityUUID 
 
 	return responses, nil
 }
+
+//func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, communityUUID string) ([]models.ScoutListResponse, error) {
+//	scoutlists, err := u.scoutListRepo.GetByCommunityUUID(ctx, communityUUID)
+//	if err != nil {
+//		return nil, fmt.Errorf("failed to get scout lists: %w", err)
+//	}
+//
+//	if len(scoutlists) == 0 {
+//		return []models.ScoutListResponse{}, nil
+//	}
+//
+//	responses := make([]models.ScoutListResponse, 0, len(scoutlists))
+//	for _, scoutlist := range scoutlists {
+//		detail, err := u.userRepo.FindByID(ctx, scoutlist.User_UUID.String())
+//		if err != nil {
+//			return nil, fmt.Errorf("failed to find community details: %w", err)
+//		}
+//		unreadcount, err := u.messageRepo.GetCountByStatus(scoutlist.User_UUID.String(), 0)
+//		if err != nil {
+//			return nil, fmt.Errorf("failed to get unread count for user %s: %w", scoutlist.User_UUID.String(), err)
+//		}
+//
+//		// Mem1 の取得
+//		mem1, err := u.memberRepo.FindByID(ctx, detail.Mem1)
+//		if err != nil {
+//			return nil, fmt.Errorf("failed to get unread member1 %s: %w", detail.Mem1, err)
+//		}
+//
+//		// Tags の取得
+//		tagNames := make([]string, 0, len(detail.Tags))
+//		tagColor := make([]string, 0, len(detail.Tags))
+//		for _, tagID := range detail.Tags {
+//			tag, err := u.tagRepo.FindTagByID(ctx, tagID)
+//			if err != nil {
+//				return nil, fmt.Errorf("failed to find tag by ID (%d): %w", tagID, err)
+//			}
+//			tagNames = append(tagNames, tag.Name)
+//			tagColor = append(tagColor, tag.Color)
+//		}
+//
+//		response := models.ScoutListResponse{
+//			ID:          scoutlist.ID,
+//			Status:      scoutlist.Status,
+//			UUID:        scoutlist.User_UUID,
+//			UnreadCount: unreadcount,
+//			DetailInfo: models.DetailInfo{
+//				Name:     detail.Name,
+//				Img:      detail.Img,
+//				Mem1:     mem1.Name,
+//				Tags:     tagNames,
+//				TagColor: tagColor,
+//			},
+//		}
+//		responses = append(responses, response)
+//	}
+//
+//	return responses, nil
+//}
 
 func sendEmail(content string, user *models.User, community *models.Community) error {
 
