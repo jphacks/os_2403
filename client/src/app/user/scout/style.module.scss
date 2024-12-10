@@ -1,0 +1,39 @@
+@use "@/styles/theme";
+
+.topContainer {
+  display: grid;
+  grid-template-columns: 600px auto;
+}
+
+.leftContainer {
+  grid-column: 1/2;
+  //margin: 10px 10px;
+  
+}
+
+.rightContainer {
+  grid-column: 2/3;
+  margin: auto;
+}
+
+.listHeader {
+  color: theme.$wheat;
+  border-bottom: solid theme.$wheat;
+  width: 270px;
+  margin-left: 30px;
+  font-family: 'MOBO';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 35px;
+}
+
+.scrollAreaContainer {
+  height: 84vh;
+  overflow-y: auto;
+}
+
+//.scrollBarContainer {
+//  width: 50px;
+//  border: solid theme.$black;
+//}
+

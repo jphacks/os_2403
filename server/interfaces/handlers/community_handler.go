@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/jphacks/os_2403/usecase"
@@ -13,6 +14,7 @@ type icommunityHandler struct {
 
 type ICommunityHandler interface {
 	FindById(ctx *gin.Context)
+	GetAll(ctx *gin.Context)
 	Update(ctx *gin.Context)
 }
 
@@ -36,13 +38,48 @@ func (h *icommunityHandler) FindById(ctx *gin.Context) {
 	}
 
 	community, err := h.communityUsecase.FindByID(ctx, request)
+	res := gin.H{
+		"uuid":  community.UUID,
+		"name":  community.Name,
+		"email": community.Email,
+		"img":   community.Img,
+		"self":  community.Self,
+		"mem1":  community.Mem1,
+		"mem2":  community.Mem2,
+		"mem3":  community.Mem3,
+		"tags":  community.Tags,
+	}
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, community)
+	ctx.JSON(http.StatusOK, res)
 
+}
+
+func (h *icommunityHandler) GetAll(ctx *gin.Context) {
+	communities, err := h.communityUsecase.GetAll(ctx)
+	if err != nil {
+		fmt.Errorf("failed to get users: %w", err)
+		return
+	}
+
+	var response []gin.H
+	for _, community := range communities {
+		res := gin.H{
+			"uuid":       community.UUID,
+			"name":       community.Name,
+			"img":        community.Img,
+			"self":       community.Self,
+			"mem1":       community.Mem1,
+			"tags":       community.Tags,
+			"tag_colors": community.TagColors,
+		}
+		response = append(response, res)
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }
 
 func (h *icommunityHandler) Update(ctx *gin.Context) {
@@ -64,5 +101,5 @@ func (h *icommunityHandler) Update(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "community status change successful"})
 }

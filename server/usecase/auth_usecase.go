@@ -18,7 +18,7 @@ type InputSignUp struct {
 	Mem1     string
 	Mem2     string
 	Mem3     string
-	Text     string
+	Tag      []string
 }
 
 type InputSignIn struct {
@@ -27,7 +27,7 @@ type InputSignIn struct {
 }
 
 type IAuthUsecase interface {
-	SignUp(ctx context.Context, input InputSignUp) error
+	SignUp(ctx context.Context, input InputSignUp) (uuid.UUID, error)
 	SignIn(ctx context.Context, input InputSignIn) (uuid.UUID, error)
 }
 
@@ -47,7 +47,7 @@ func NewAuthUserUseCase(userRepo repositories.IUserRepository, sessionRepo repos
 	}
 }
 
-func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) error {
+func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) (uuid.UUID, error) {
 	fmt.Println("usecase")
 	fmt.Println(input)
 	var user *models.User
@@ -67,12 +67,19 @@ func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) error {
 	}
 	mem3ID, _ := u.memberRepo.Create(ctx, mem3)
 
-	fmt.Println(mem3ID)
+	var tags []int
+
+	for _, t := range input.Tag {
+		tag := models.NewTag(t)
+		tag_num, _ := u.tagRepo.Create(ctx, tag)
+
+		tags = append(tags, tag_num) // tagsにtag_numを追加
+	}
 
 	// パスワードをハッシュ化
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return fmt.Errorf("failed to hash password: %v", err)
+		return uuid.Nil, fmt.Errorf("failed to hash password: %v", err)
 	}
 
 	// 新規ユーザーの作成
@@ -86,15 +93,16 @@ func (u *authUsecase) SignUp(ctx context.Context, input InputSignUp) error {
 		Mem1:     mem1ID,
 		Mem2:     mem2ID,
 		Mem3:     mem3ID,
+		Tags:     tags,
 	}
 
 	fmt.Println(user)
 
 	if err := u.userRepo.Create(ctx, user); err != nil {
-		return err
+		return uuid.Nil, err
 	}
 
-	return nil
+	return user.UUID, nil
 }
 
 func (u *authUsecase) SignIn(ctx context.Context, input InputSignIn) (uuid.UUID, error) {

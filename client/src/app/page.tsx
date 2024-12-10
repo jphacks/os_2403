@@ -1,6 +1,6 @@
-import { HomeComponent } from "@/feature/home/components/page";
-
 const Home = () => {
-  return <HomeComponent />;
+  // return <HomeComponent />;
+  return <></>;
 };
+
 export default Home;

@@ -22,3 +22,9 @@ func (r *MessageRepository) FindByRoomID(roomID string) ([]*models.Message, erro
 	err := r.db.Where("room_id = ?", roomID).Order("created_at desc").Limit(50).Find(&messages).Error
 	return messages, err
 }
+
+func (r *MessageRepository) GetCountByStatus(uuid string, looked uint) (uint, error) {
+	var count int64
+	err := r.db.Model(&models.Message{}).Where("user_id = ? AND looked = ?", uuid, looked).Count(&count).Error
+	return uint(count), err
+}

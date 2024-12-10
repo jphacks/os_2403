@@ -38,33 +38,34 @@ func (h *communityHandler) SignUp(ctx *gin.Context) {
 	}
 
 	// SignInメソッドを呼び出す
-	if err := h.authUsecase.SignUp(ctx, request); err != nil {
+	uuid, err := h.authUsecase.SignUp(ctx, request)
+	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	//// セッションの取得
-	//session, err := h.store.Get(ctx.Request, "session-name")
-	//if err != nil {
-	//	ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Session error"})
-	//	return
-	//}
-	//
-	//// セッションの設定を調整
-	//session.Options = &sessions.Options{
-	//	Path:     "/",
-	//	MaxAge:   100 * 1, // セッションの有効期限（適宜調整）
-	//	HttpOnly: true,
-	//	Secure:   true, // HTTPSが有効な環境で使用
-	//	SameSite: http.SameSiteNoneMode,
-	//}
+	// セッションの取得
+	session, err := h.store.Get(ctx.Request, "session-name")
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Session error"})
+		return
+	}
 
-	//if err := session.Save(ctx.Request, ctx.Writer); err != nil {
-	//	ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
-	//	return
-	//}
+	session.Values["user_id"] = uuid // ユーザーIDを保存
+	session.Values["account_type"] = "community"
+	// セッションの設定を調整
+	session.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   3600 * 24, // セッションの有効期限（適宜調整）
+		HttpOnly: true,
+		Secure:   true, // HTTPSが有効な環境で使用
+		SameSite: http.SameSiteNoneMode,
+	}
 
-	//h.sessionsUsecase.SignIn(ctx, )
+	if err := session.Save(ctx.Request, ctx.Writer); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
+		return
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
 }
@@ -80,6 +81,29 @@ func (h *communityHandler) SignIn(ctx *gin.Context) {
 	uuid, err := h.authUsecase.SignIn(ctx, request)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// セッションの取得
+	session, err := h.store.Get(ctx.Request, "session-name")
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Session error"})
+		return
+	}
+
+	session.Values["user_id"] = uuid // ユーザーIDを保存
+	session.Values["account_type"] = "user"
+	// セッションの設定を調整
+	session.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   3600 * 24, // セッションの有効期限（適宜調整）
+		HttpOnly: true,
+		Secure:   true, // HTTPSが有効な環境で使用
+		SameSite: http.SameSiteNoneMode,
+	}
+
+	if err := session.Save(ctx.Request, ctx.Writer); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return
 	}
 

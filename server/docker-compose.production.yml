@@ -1,0 +1,6 @@
+services:
+  app:
+    environment:
+      ENV: production-migrating
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

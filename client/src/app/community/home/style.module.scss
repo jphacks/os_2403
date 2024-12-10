@@ -1,0 +1,36 @@
+/* style.module.scss */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+}
+
+.userName {
+  display: inline-block;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.userName.fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.userName.fadeOut {
+  animation: fadeOut 0.5s ease-in-out;
+}

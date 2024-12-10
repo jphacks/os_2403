@@ -181,6 +181,35 @@ paths:
       responses:
         '201':
           description: イベント作成成功
+  /getCommunityscoutdetail:
+    get:
+      summary: スカウトリストの一覧を取得
+      description: statusは 0:未読、1:既読、2：興味なし、3:興味あり、uuidはcommunityのuuidを入れる
+      operationId: get_scout_list
+      parameters:
+        - $ref: '#/components/parameters/UserUUIDRequest'
+      responses:
+        '200':
+          description: スカウトに一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetCommunityScoutDetail'
+  /changescoutstatus:
+    put:
+      summary: スカウトのステータスを変更
+      description: 0:未読、1:既読、2：興味なし、3:興味あり
+      operationId: changeScoutStatus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeScoutStatus'
+      responses:
+        '200':
+          description: イベントのステータス変更成功
 components:
   parameters:
     UserUUIDRequest:
@@ -388,3 +417,62 @@ components:
         - title
         - img
         - detailed
+    GetCommunityScoutDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: チャットルームID
+          example: 1
+        status:
+          type: integer
+          format: int32
+          description: スカウトステータス（0:未承認、1:承認保留、2:承認破棄、3:承認）
+          example: 0
+        unread_count:
+          type: integer
+          format: int32
+          description: メッセージの未読件数
+          example: 0
+        uuid:
+          type: string
+          description: コミュニティのUUID
+          example: community_uuid
+        detail_info:
+          type: object
+          properties:
+            name:
+              type: string
+              description: 名前
+              example: name
+            img:
+              type: string
+              format: string
+              description: 画像URL
+              example: image_url
+          required:
+            - name
+            - img
+      required:
+        - id
+        - status
+        - unread_count
+        - uuid
+        - detail_info
+    ChangeScoutStatus:
+      type: object
+      properties:
+        user_uuid:
+          type: string
+          format: uuid
+          description: userのuuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        status:
+          type: int
+          format: uint
+          description: スカウトのステータス(0:未読、1:既読、2：興味なし、3:興味あり)
+          example: 1
+      required:
+        - user_uuid
+        - status

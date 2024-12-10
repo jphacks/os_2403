@@ -1,0 +1,112 @@
+@use "../../../styles/theme";
+
+.all {
+  padding: 20px;
+  margin-top: 2%;
+
+}
+
+.br {
+  margin-top: 5%;
+}
+
+.heading {
+  font-size: 40px;
+  border-bottom: 1px solid theme.$wheat;
+  width: 22%;
+  margin-left: 12%;
+  color: theme.$wheat
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 2px; // FormField間の間隔
+  width: 70%;
+  margin: auto;
+}
+
+.img {
+  //display: flex;
+  margin: auto;
+  width: 50%;
+  height: 50%;
+}
+
+.errorMessage {
+  padding-left: 15%;
+}
+
+
+.tag {
+  display: flex;
+  flex-direction: column;
+  place-content: center;
+  margin-left: 10%;
+
+  .button {
+    display: flex;
+    width: 55%;
+    margin-left: 17%;
+  }
+
+  .tagRow {
+    display: flex;
+    flex-wrap: wrap;
+
+    .yellow {
+      gap: 10px;
+      color: theme.$yellow;
+      margin-left: 20%;
+    }
+  }
+
+
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 49%;
+    margin: auto;
+  }
+
+  .icon::before {
+    color: theme.$black
+  }
+
+  .button::placeholder {
+    color: theme.$black;
+  }
+
+  .label {
+    font-weight: 500;
+    margin-left: 28%;
+    color: theme.$wheat
+  }
+
+  .dateErrorMessage {
+    padding-left: 25%;
+  }
+}
+
+.black {
+  color: #666;
+}
+
+.detail {
+  line-height: 3;
+  padding: 1em 0.5em;
+}
+
+.submit {
+  display: flex;
+  justify-content: center; // 水平方向の中央揃え
+  margin-top: 20px; // 上部との間隔（必要に応じて調整）
+}

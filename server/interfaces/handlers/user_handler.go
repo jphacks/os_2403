@@ -14,6 +14,7 @@ type userHandler struct {
 
 type IUserHandler interface {
 	Update(ctx *gin.Context)
+	GetAll(ctx *gin.Context)
 	FindByID(ctx *gin.Context)
 }
 
@@ -47,7 +48,7 @@ func (h *userHandler) Update(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "user status change successful"})
 }
 
 func (h *userHandler) FindByID(ctx *gin.Context) {
@@ -60,15 +61,16 @@ func (h *userHandler) FindByID(ctx *gin.Context) {
 	user, err := h.userUsecase.FindByID(ctx, request)
 
 	res := gin.H{
-		"uuid":  user.UUID,
-		"name":  user.Name,
-		"email": user.Email,
-		"img":   user.Img,
-		"self":  user.Self,
-		"mem1":  user.Mem1,
-		"mem2":  user.Mem2,
-		"mem3":  user.Mem3,
-		"tags":  user.Tags,
+		"uuid":       user.UUID,
+		"name":       user.Name,
+		"email":      user.Email,
+		"img":        user.Img,
+		"self":       user.Self,
+		"mem1":       user.Mem1,
+		"mem2":       user.Mem2,
+		"mem3":       user.Mem3,
+		"tags":       user.Tags,
+		"tag_colors": user.TagColors,
 	}
 
 	if err != nil {
@@ -77,4 +79,28 @@ func (h *userHandler) FindByID(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *userHandler) GetAll(ctx *gin.Context) {
+	users, err := h.userUsecase.GetAll(ctx)
+	if err != nil {
+		fmt.Errorf("failed to get users: %w", err)
+		return
+	}
+
+	var response []gin.H
+	for _, user := range users {
+		res := gin.H{
+			"uuid":       user.UUID,
+			"name":       user.Name,
+			"img":        user.Img,
+			"self":       user.Self,
+			"mem1":       user.Mem1,
+			"tags":       user.Tags,
+			"tag_colors": user.TagColors,
+		}
+		response = append(response, res)
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }

@@ -1,0 +1,114 @@
+@use "@/styles/theme";
+@use "@/styles/utils";
+
+
+.icons {
+  display: flex;
+  padding-left: 10px;
+  padding-top: 5px;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.card {
+  width: 340px;
+  height: 540px;
+  background: theme.$background;
+  box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.cardHeader {
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 12px 26px;
+}
+
+.tagWrapper {
+  flex: 1;
+  padding-right: 32px;
+}
+
+.tags {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  background: theme.$background;
+  transition: background-color 0.2s;
+}
+
+.imgBox {
+  width: 290px;
+  height: 290px;
+  margin: 0 auto;
+  border-radius: 20px;
+  border: 2px solid black; // border-colorとborder-widthをまとめて記述
+  overflow: hidden; // 画像がはみ出る場合に隠す
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; // アスペクト比を保ちながら領域を埋める
+  border-radius: 18px; // imgBoxのborderの内側に収まるように
+}
+
+.cardFooter {
+  padding: 40px 16px;
+}
+
+.footerContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.footerInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.publisherRow {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  gap: 8px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+}
+
+.publisherName {
+  font-size: 0.7rem;
+  color: theme.$black;
+}
+
+.dateDisplay {
+  font-size: 0.875rem;
+  color: theme.$black;
+}
