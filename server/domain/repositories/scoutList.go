@@ -10,4 +10,5 @@ type IScoutListRepository interface {
 	GetByUserUUID(ctx context.Context, userUUID string) ([]models.ScoutList, error)
 	Create(ctx context.Context, scoutList *models.ScoutList) error
 	ChangeStatus(ctx context.Context, ID uint, status models.ScoutStatus) error
+	FindByID(ctx context.Context, ID uint) (*models.ScoutList, error)
 }

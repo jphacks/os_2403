@@ -59,3 +59,14 @@ func (r *scoutListRepository) ChangeStatus(ctx context.Context, ID uint, status 
 		Where("id = ?", ID).
 		Update("status", status).Error
 }
+
+func (r *scoutListRepository) FindByID(ctx context.Context, ID uint) (*models.ScoutList, error) {
+	var scoutlist models.ScoutList
+
+	err := r.db.WithContext(ctx).Where("id = ?", ID).First(&scoutlist).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &scoutlist, nil
+}
