@@ -1,4 +1,5 @@
 "use client";
+
 import InviteCheck from "@/../public/invite-check";
 import LikeSearch from "@/../public/like-search";
 import { getTags } from "@/components/tags/hooks/get-tags";
@@ -7,7 +8,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EventCard } from "@/features/event";
 import { getEvents } from "@/features/event/hooks/get-events";
 import { EventType } from "@/features/event/types/event";
-import { Menubar } from "@/features/menubar/components/menubar";
 import { Popup } from "@/features/popup";
 import { TagType } from "@/features/tags/types/tag";
 import { useEffect, useState } from "react";
@@ -16,7 +16,6 @@ import styles from "./style.module.scss";
 const EventPage = () => {
   const [tags, setTags] = useState<TagType[]>([]);
   const [events, setEvents] = useState<EventType[]>([]);
-  const [invitedEvents, setInvitedEvents] = useState<EventType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
@@ -38,10 +37,7 @@ const EventPage = () => {
         const fetchedEvents = await getEvents();
         if (mounted) {
           setEvents(fetchedEvents);
-          setInvitedEvents(fetchedEvents);
-          //本来は以下のようにして招待されたイベントのみを取得する
-          //setInvitedEvents(fetchedEvents.filter((home) => home.invited));
-          if (invitedEvents.length > 0) {
+          if (fetchedEvents.length > 0) {
             setShowPopup(true);
           }
         }
@@ -58,7 +54,7 @@ const EventPage = () => {
     return () => {
       mounted = false;
     };
-  }, [invitedEvents]);
+  }, []);
 
   const handleEventClose = () => {
     console.log("Event closed");
@@ -66,9 +62,9 @@ const EventPage = () => {
 
   return (
     <>
+
       {/*<AuthProvider>*/}
       {!loading && events.length > 0 && showPopup && <Popup cards={events} />}
-      <Menubar />
       <div className={styles.inviteCheck}>
         <InviteCheck size={500} />
       </div>
