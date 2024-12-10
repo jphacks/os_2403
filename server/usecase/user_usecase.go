@@ -42,13 +42,10 @@ type UserResponse struct {
 }
 
 type GetAllUserResponse struct {
-	UUID      uuid.UUID
 	Name      string
 	Img       string
 	Self      string
 	Mem1      string
-	Mem2      string
-	Mem3      string
 	Tags      []string `json:"tag"`
 	TagColors []string `json:"tag_color"`
 }
@@ -83,8 +80,6 @@ func (u *userUsecase) GetAll(ctx context.Context) ([]*GetAllUserResponse, error)
 	for _, user := range users {
 		// Find members by ID
 		mem1, _ := u.memberRepo.FindByID(ctx, user.Mem1)
-		mem2, _ := u.memberRepo.FindByID(ctx, user.Mem2)
-		mem3, _ := u.memberRepo.FindByID(ctx, user.Mem3)
 
 		// Find tags by ID and collect their names
 		tagNames := make([]string, 0, len(user.Tags))
@@ -101,13 +96,10 @@ func (u *userUsecase) GetAll(ctx context.Context) ([]*GetAllUserResponse, error)
 
 		// Create the user response
 		res := &GetAllUserResponse{
-			UUID:      user.UUID,
 			Name:      user.Name,
 			Img:       user.Img,
 			Self:      user.Self,
 			Mem1:      mem1.Name,
-			Mem2:      mem2.Name,
-			Mem3:      mem3.Name,
 			Tags:      tagNames,
 			TagColors: tagColors,
 		}

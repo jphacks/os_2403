@@ -39,14 +39,12 @@ type CommunityResponse struct {
 }
 
 type GetAllCommunityResponse struct {
-	UUID uuid.UUID
-	Name string
-	Img  string
-	Self string
-	Mem1 string
-	Mem2 string
-	Mem3 string
-	Tags []string `json:"tag"`
+	Name     string
+	Img      string
+	Self     string
+	Mem1     string
+	Tags     []string `json:"tag"`
+	TagColor []string `json:"tag_color"`
 }
 
 type ICommunityUsecase interface {
@@ -155,29 +153,27 @@ func (u *communityUsecase) GetAll(ctx context.Context) ([]*GetAllCommunityRespon
 	for _, community := range communities {
 		// Find members by ID
 		mem1, _ := u.memberRepo.FindByID(ctx, community.Mem1)
-		mem2, _ := u.memberRepo.FindByID(ctx, community.Mem2)
-		mem3, _ := u.memberRepo.FindByID(ctx, community.Mem3)
 
 		// Find tags by ID and collect their names
 		tagNames := make([]string, 0, len(community.Tags))
+		tagColor := make([]string, 0, len(community.Tags))
 		for _, tagID := range community.Tags {
 			tag, err := u.tagRepo.FindTagByID(ctx, tagID)
 			if err != nil {
 				return nil, fmt.Errorf("failed to find tag by ID (%d): %w", tagID, err)
 			}
 			tagNames = append(tagNames, tag.Name)
+			tagColor = append(tagColor, tag.Color)
 		}
 
 		// Create the user response
 		res := &GetAllCommunityResponse{
-			UUID: community.UUID,
-			Name: community.Name,
-			Img:  community.Img,
-			Self: community.Self,
-			Mem1: mem1.Name,
-			Mem2: mem2.Name,
-			Mem3: mem3.Name,
-			Tags: tagNames,
+			Name:     community.Name,
+			Img:      community.Img,
+			Self:     community.Self,
+			Mem1:     mem1.Name,
+			Tags:     tagNames,
+			TagColor: tagColor,
 		}
 		// Append to the response list
 		responses = append(responses, res)
