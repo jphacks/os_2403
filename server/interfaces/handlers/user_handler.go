@@ -91,6 +91,7 @@ func (h *userHandler) GetAll(ctx *gin.Context) {
 	var response []gin.H
 	for _, user := range users {
 		res := gin.H{
+			"uuid":       user.UUID,
 			"name":       user.Name,
 			"img":        user.Img,
 			"self":       user.Self,

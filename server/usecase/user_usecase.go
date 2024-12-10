@@ -42,6 +42,7 @@ type UserResponse struct {
 }
 
 type GetAllUserResponse struct {
+	UUID      uuid.UUID
 	Name      string
 	Img       string
 	Self      string

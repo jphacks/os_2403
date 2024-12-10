@@ -59,21 +59,22 @@ func (h *icommunityHandler) FindById(ctx *gin.Context) {
 }
 
 func (h *icommunityHandler) GetAll(ctx *gin.Context) {
-	community, err := h.communityUsecase.GetAll(ctx)
+	communities, err := h.communityUsecase.GetAll(ctx)
 	if err != nil {
 		fmt.Errorf("failed to get users: %w", err)
 		return
 	}
 
 	var response []gin.H
-	for _, user := range community {
+	for _, community := range communities {
 		res := gin.H{
-			"name":       user.Name,
-			"img":        user.Img,
-			"self":       user.Self,
-			"mem1":       user.Mem1,
-			"tags":       user.Tags,
-			"tag_colors": user.TagColors,
+			"uuid":       community.UUID,
+			"name":       community.Name,
+			"img":        community.Img,
+			"self":       community.Self,
+			"mem1":       community.Mem1,
+			"tags":       community.Tags,
+			"tag_colors": community.TagColors,
 		}
 		response = append(response, res)
 	}
