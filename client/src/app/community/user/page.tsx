@@ -12,7 +12,7 @@ const ProfileDetailPage = () => {
       <div className={style.profile_detail_card}>
         <ProfileDetailCard />
       </div>
-      <Link href={"/"} className={style.link_home}>
+      <Link href={"/community/home"} className={style.link_home}>
         <ChevronRight size={36} strokeWidth={3} />
         ホームに戻る
       </Link>
