@@ -169,6 +169,7 @@ func (u *communityUsecase) GetAll(ctx context.Context) ([]*GetAllCommunityRespon
 
 		// Create the user response
 		res := &GetAllCommunityResponse{
+			UUID:      community.UUID,
 			Name:      community.Name,
 			Img:       community.Img,
 			Self:      community.Self,
