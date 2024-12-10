@@ -39,12 +39,12 @@ type CommunityResponse struct {
 }
 
 type GetAllCommunityResponse struct {
-	Name     string
-	Img      string
-	Self     string
-	Mem1     string
-	Tags     []string `json:"tag"`
-	TagColor []string `json:"tag_color"`
+	Name      string
+	Img       string
+	Self      string
+	Mem1      string
+	Tags      []string `json:"tag"`
+	TagColors []string `json:"tag_color"`
 }
 
 type ICommunityUsecase interface {
@@ -168,12 +168,12 @@ func (u *communityUsecase) GetAll(ctx context.Context) ([]*GetAllCommunityRespon
 
 		// Create the user response
 		res := &GetAllCommunityResponse{
-			Name:     community.Name,
-			Img:      community.Img,
-			Self:     community.Self,
-			Mem1:     mem1.Name,
-			Tags:     tagNames,
-			TagColor: tagColor,
+			Name:      community.Name,
+			Img:       community.Img,
+			Self:      community.Self,
+			Mem1:      mem1.Name,
+			Tags:      tagNames,
+			TagColors: tagColor,
 		}
 		// Append to the response list
 		responses = append(responses, res)
