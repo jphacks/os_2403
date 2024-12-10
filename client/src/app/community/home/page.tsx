@@ -3,12 +3,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GetUsers } from "@/features/community-home/hooks/gets-users";
-import { useState, useEffect } from "react";
-import { UserCard } from "@/features/community-home/components/user-card";
-import { User } from "@/features/account/types/user";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { User } from "@/features/account/types/user";
+import { UserCard } from "@/features/community-home/components/user-card";
+import { GetUsers } from "@/features/community-home/hooks/gets-users";
 import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 
 export default function Home() {
@@ -18,29 +18,29 @@ export default function Home() {
   const [textAreaValue, setTextAreaValue] = useState("");
 
   useEffect(() => {
-    GetUsers().then((users) => {
+    GetUsers().then(users => {
       setUsers(users);
     });
   }, []);
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleCardClick = (user: User) => {
     if (!selectedUser.includes(user)) {
       setSelectedUser([...selectedUser, user]);
     } else {
-      setSelectedUser(selectedUser.filter((selected) => selected !== user));
+      setSelectedUser(selectedUser.filter(selected => selected !== user));
     }
-  }
+  };
 
   const handleSubmit = () => {
     //selectedUserのuuidをconsole.logで出力
-    selectedUser.map((user) => console.log(user.uuid));
+    selectedUser.map(user => console.log(user.uuid));
     console.log(textAreaValue);
     setTextAreaValue("");
-  }
+  };
 
   return (
     <>
@@ -52,7 +52,7 @@ export default function Home() {
               type="text"
               placeholder="ユーザー名で検索..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="w-full pr-10"
             />
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
@@ -63,7 +63,7 @@ export default function Home() {
 
         <ScrollArea className="h-96 w-full rounded-md border">
           <div className="grid grid-cols-2 gap-2 p-4">
-            {filteredUsers.map((user) => {
+            {filteredUsers.map(user => {
               return (
                 <UserCard
                   key={user.name}
@@ -84,14 +84,9 @@ export default function Home() {
         <div className="mt-4">
           <div className="w-full h-full pointer-events-none">
             <div className="p-2">
-              {selectedUser.map((user) => (
-                <span
-                  key={user.uuid}
-                  className={`${styles.userName} ${styles.fadeIn}`}
-                >
-                  <Badge className="bg-white text-black border-blue-500">
-                    {user.name}
-                  </Badge>
+              {selectedUser.map(user => (
+                <span key={user.uuid} className={`${styles.userName} ${styles.fadeIn}`}>
+                  <Badge className="bg-white text-black border-blue-500">{user.name}</Badge>
                 </span>
               ))}
             </div>
@@ -99,13 +94,11 @@ export default function Home() {
           <textarea
             className="w-full h-60 p-2 border rounded-md"
             value={textAreaValue}
-            onChange={(e) => setTextAreaValue(e.target.value)}
+            onChange={e => setTextAreaValue(e.target.value)}
             placeholder="スカウトメッセージを入力してください..."
           />
           <div className="flex justify-end mt-2">
-            <Button onClick={handleSubmit}>
-              招待を送る
-            </Button>
+            <Button onClick={handleSubmit}>招待を送る</Button>
           </div>
         </div>
       </div>
