@@ -20,6 +20,7 @@ type ScoutListResponse struct {
 	ID          uint       `json:"id"`
 	Status      uint       `json:"status"`
 	UnreadCount uint       `json:"unread_count"`
+	Scoutdate   time.Time  `json:"scoutdate"`
 	UUID        uuid.UUID  `json:"uuid"`
 	DetailInfo  DetailInfo `json:"detail_info"`
 }

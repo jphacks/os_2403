@@ -102,6 +102,7 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID
 			Status:      scoutlist.Status,
 			UUID:        scoutlist.Community_UUID,
 			UnreadCount: unreadcount,
+			Scoutdate:   scoutlist.Scoutdate,
 			DetailInfo: models.DetailInfo{
 				Name: detail.Name,
 				Img:  detail.Img,
