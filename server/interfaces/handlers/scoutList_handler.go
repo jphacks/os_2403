@@ -7,6 +7,7 @@ import (
 	"github.com/jphacks/os_2403/domain/models"
 	"github.com/jphacks/os_2403/usecase"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -31,8 +32,8 @@ type IScoutListHandler interface {
 }
 
 type changeStatusRequest struct {
-	UserUUID string `json:"user_uuid"`
-	Status   uint   `json:"status"`
+	ID     string             `json:"id"`
+	Status models.ScoutStatus `json:"status"`
 }
 
 type UUIDItem struct {
@@ -76,13 +77,13 @@ func (h *ScoutHandler) ChangeStatus(ctx *gin.Context) {
 		return
 	}
 
-	userUUID, err := uuid.Parse(req.UserUUID)
+	id, err := strconv.ParseUint(req.ID, 10, 32)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID format"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
 	}
 
-	if err := h.scoutUsecase.ChangeStatus(ctx.Request.Context(), userUUID, req.Status); err != nil {
+	if err := h.scoutUsecase.ChangeStatus(ctx.Request.Context(), uint(id), req.Status); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -120,7 +121,7 @@ func (h *ScoutHandler) CreateScouts(ctx *gin.Context) {
 
 		scoutDetail := &models.ScoutList{
 			User_UUID:      userUUID,
-			Status:         0, // 未承認(0)
+			Status:         models.Unread,
 			Scoutdate:      time.Now(),
 			Community_UUID: communityUUID,
 		}

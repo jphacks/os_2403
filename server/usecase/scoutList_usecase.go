@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/jphacks/os_2403/domain/models"
 	"github.com/jphacks/os_2403/domain/repositories"
 	"gopkg.in/gomail.v2"
@@ -13,7 +12,7 @@ import (
 
 type IScoutListUsecase interface {
 	Create(ctx context.Context, scoutList *models.ScoutList, context string) error
-	ChangeStatus(ctx context.Context, userUUID uuid.UUID, status uint) error
+	ChangeStatus(ctx context.Context, id uint, status models.ScoutStatus) error
 	GetWithCommunityDetails(ctx context.Context, userUUID string) ([]models.ScoutListResponse, error)
 	GetWithUserDetail(ctx context.Context, communityUUID string) ([]models.ScoutListResponse, error)
 }
@@ -60,8 +59,8 @@ func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.S
 	return u.scoutListRepo.Create(ctx, scoutDetailList)
 }
 
-func (u *scoutListUsecase) ChangeStatus(ctx context.Context, userUUID uuid.UUID, status uint) error {
-	return u.scoutListRepo.ChangeStatus(ctx, userUUID, status)
+func (u *scoutListUsecase) ChangeStatus(ctx context.Context, ID uint, status models.ScoutStatus) error {
+	return u.scoutListRepo.ChangeStatus(ctx, ID, status)
 }
 
 func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID string) ([]models.ScoutListResponse, error) {
@@ -76,7 +75,7 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID
 		if err != nil {
 			return nil, err
 		}
-		unreadcount, err := u.messageRepo.GetCountByStatus(scoutlist.User_UUID.String(), scoutlist.Status)
+		unreadcount, err := u.messageRepo.GetCountByStatus(scoutlist.User_UUID.String(), 0)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get unread count for user %s: %w", scoutlist.User_UUID.String(), err)
 		}
@@ -135,7 +134,7 @@ func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, communityUUID 
 		if err != nil {
 			return nil, fmt.Errorf("failed to find community details: %w", err)
 		}
-		unreadcount, err := u.messageRepo.GetCountByStatus(scoutlist.User_UUID.String(), scoutlist.Status)
+		unreadcount, err := u.messageRepo.GetCountByStatus(scoutlist.User_UUID.String(), 0)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get unread count for user %s: %w", scoutlist.User_UUID.String(), err)
 		}

@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `scout_lists` (
-    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, -- 主キー
-    `user_uuid` CHAR(36) NOT NULL,                         -- ユーザーUUID（外部キーとして扱う）
-    `status` INT NOT NULL,                                 -- ステータス
+                                             `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, -- 主キー
+                                             `user_uuid` CHAR(36) NOT NULL,                         -- ユーザーUUID（外部キーとして扱う）
+    `status` ENUM('unread', 'read', 'approve', 'reject') NOT NULL DEFAULT 'unread', -- ステータス
     `community_uuid` CHAR(36) NOT NULL,                    -- コミュニティUUID（外部キーとして扱う）
     `scout_date` DATE NOT NULL,                            -- スカウト日
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 作成日時
