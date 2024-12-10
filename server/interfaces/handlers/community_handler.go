@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/jphacks/os_2403/usecase"
@@ -58,11 +59,27 @@ func (h *icommunityHandler) FindById(ctx *gin.Context) {
 }
 
 func (h *icommunityHandler) GetAll(ctx *gin.Context) {
-	communities, err := h.communityUsecase.GetAll(ctx)
+	community, err := h.communityUsecase.GetAll(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Errorf("failed to get users: %w", err)
+		return
 	}
-	ctx.JSON(http.StatusOK, communities)
+
+	var response []gin.H
+	for _, user := range community {
+		res := gin.H{
+			"uuid":       user.UUID,
+			"name":       user.Name,
+			"img":        user.Img,
+			"self":       user.Self,
+			"mem1":       user.Mem1,
+			"tags":       user.Tags,
+			"tag_colors": user.TagColors,
+		}
+		response = append(response, res)
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }
 
 func (h *icommunityHandler) Update(ctx *gin.Context) {
