@@ -61,15 +61,16 @@ func (h *userHandler) FindByID(ctx *gin.Context) {
 	user, err := h.userUsecase.FindByID(ctx, request)
 
 	res := gin.H{
-		"uuid":  user.UUID,
-		"name":  user.Name,
-		"email": user.Email,
-		"img":   user.Img,
-		"self":  user.Self,
-		"mem1":  user.Mem1,
-		"mem2":  user.Mem2,
-		"mem3":  user.Mem3,
-		"tags":  user.Tags,
+		"uuid":       user.UUID,
+		"name":       user.Name,
+		"email":      user.Email,
+		"img":        user.Img,
+		"self":       user.Self,
+		"mem1":       user.Mem1,
+		"mem2":       user.Mem2,
+		"mem3":       user.Mem3,
+		"tags":       user.Tags,
+		"tag_colors": user.TagColors,
 	}
 
 	if err != nil {

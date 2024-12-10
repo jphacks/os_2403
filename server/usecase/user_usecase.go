@@ -24,30 +24,33 @@ type InputUserUpdate struct {
 // uuid
 type InputUserFindByID struct {
 	UUID string
+	Tags []string
 }
 
 type UserResponse struct {
-	UUID     uuid.UUID
-	Name     string
-	Email    string
-	Password []byte
-	Img      string
-	Self     string
-	Mem1     string
-	Mem2     string
-	Mem3     string
-	Tags     []string `json:"tag"`
+	UUID      uuid.UUID
+	Name      string
+	Email     string
+	Password  []byte
+	Img       string
+	Self      string
+	Mem1      string
+	Mem2      string
+	Mem3      string
+	Tags      []string `json:"tag"`
+	TagColors []string `json:"tag_color"`
 }
 
 type GetAllUserResponse struct {
-	UUID uuid.UUID
-	Name string
-	Img  string
-	Self string
-	Mem1 string
-	Mem2 string
-	Mem3 string
-	Tags []string `json:"tag"`
+	UUID      uuid.UUID
+	Name      string
+	Img       string
+	Self      string
+	Mem1      string
+	Mem2      string
+	Mem3      string
+	Tags      []string `json:"tag"`
+	TagColors []string `json:"tag_color"`
 }
 
 type IUesrUsecase interface {
@@ -85,24 +88,28 @@ func (u *userUsecase) GetAll(ctx context.Context) ([]*GetAllUserResponse, error)
 
 		// Find tags by ID and collect their names
 		tagNames := make([]string, 0, len(user.Tags))
+		tagColors := make([]string, 0, len(user.Tags))
+
 		for _, tagID := range user.Tags {
 			tag, err := u.tagRepo.FindTagByID(ctx, tagID)
 			if err != nil {
 				return nil, fmt.Errorf("failed to find tag by ID (%d): %w", tagID, err)
 			}
 			tagNames = append(tagNames, tag.Name)
+			tagColors = append(tagColors, tag.Color)
 		}
 
 		// Create the user response
 		res := &GetAllUserResponse{
-			UUID: user.UUID,
-			Name: user.Name,
-			Img:  user.Img,
-			Self: user.Self,
-			Mem1: mem1.Name,
-			Mem2: mem2.Name,
-			Mem3: mem3.Name,
-			Tags: tagNames,
+			UUID:      user.UUID,
+			Name:      user.Name,
+			Img:       user.Img,
+			Self:      user.Self,
+			Mem1:      mem1.Name,
+			Mem2:      mem2.Name,
+			Mem3:      mem3.Name,
+			Tags:      tagNames,
+			TagColors: tagColors,
 		}
 		// Append to the response list
 		responses = append(responses, res)
@@ -197,25 +204,30 @@ func (u *userUsecase) FindByID(ctx context.Context, input InputUserFindByID) (*U
 	mem3, _ := u.memberRepo.FindByID(ctx, user.Mem3)
 
 	tagNames := make([]string, 0, len(user.Tags))
+	tagColors := make([]string, 0, len(input.Tags))
+
+	// ユーザーに紐付いているタグの名前を取得
 	for _, tagID := range user.Tags {
 		tag, err := u.tagRepo.FindTagByID(ctx, tagID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to find tag by ID (%d): %w", tagID, err)
 		}
 		tagNames = append(tagNames, tag.Name)
+		tagColors = append(tagColors, tag.Color)
 	}
 
 	res := UserResponse{
-		UUID:     user.UUID,
-		Name:     user.Name,
-		Email:    user.Email,
-		Password: user.Password,
-		Img:      user.Img,
-		Self:     user.Self,
-		Mem1:     mem1.Name,
-		Mem2:     mem2.Name,
-		Mem3:     mem3.Name,
-		Tags:     tagNames,
+		UUID:      user.UUID,
+		Name:      user.Name,
+		Email:     user.Email,
+		Password:  user.Password,
+		Img:       user.Img,
+		Self:      user.Self,
+		Mem1:      mem1.Name,
+		Mem2:      mem2.Name,
+		Mem3:      mem3.Name,
+		Tags:      tagNames,
+		TagColors: tagColors,
 	}
 	return &res, nil
 }
