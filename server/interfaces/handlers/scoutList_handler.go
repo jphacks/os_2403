@@ -32,7 +32,7 @@ type IScoutListHandler interface {
 }
 
 type changeStatusRequest struct {
-	ID     string             `json:"id"`
+	ID     uint               `json:"id"`
 	Status models.ScoutStatus `json:"status"`
 }
 
@@ -77,7 +77,7 @@ func (h *ScoutHandler) ChangeStatus(ctx *gin.Context) {
 		return
 	}
 
-	id, err := strconv.ParseUint(req.ID, 10, 32)
+	id, err := strconv.ParseUint(strconv.Itoa(int(req.ID)), 10, 32)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
