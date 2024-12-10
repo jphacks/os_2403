@@ -89,12 +89,14 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID
 
 		// Tags の取得
 		tagNames := make([]string, 0, len(detail.Tags))
+		tagColor := make([]string, 0, len(detail.Tags))
 		for _, tagID := range detail.Tags {
 			tag, err := u.tagRepo.FindTagByID(ctx, tagID)
 			if err != nil {
 				return nil, fmt.Errorf("failed to find tag by ID (%d): %w", tagID, err)
 			}
 			tagNames = append(tagNames, tag.Name)
+			tagColor = append(tagColor, tag.Color)
 		}
 
 		response := models.ScoutListResponse{
@@ -104,10 +106,11 @@ func (u *scoutListUsecase) GetWithCommunityDetails(ctx context.Context, UserUUID
 			UnreadCount: unreadcount,
 			Scoutdate:   scoutlist.Scoutdate,
 			DetailInfo: models.DetailInfo{
-				Name: detail.Name,
-				Img:  detail.Img,
-				Mem1: mem1.Name,
-				Tags: tagNames,
+				Name:     detail.Name,
+				Img:      detail.Img,
+				Mem1:     mem1.Name,
+				Tags:     tagNames,
+				TagColor: tagColor,
 			},
 		}
 		responses = append(responses, response)
