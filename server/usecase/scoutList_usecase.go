@@ -140,14 +140,35 @@ func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, communityUUID 
 			return nil, fmt.Errorf("failed to get unread count for user %s: %w", scoutlist.User_UUID.String(), err)
 		}
 
+		// Mem1 の取得
+		mem1, err := u.memberRepo.FindByID(ctx, detail.Mem1)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get unread member1 %s: %w", detail.Mem1, err)
+		}
+
+		// Tags の取得
+		tagNames := make([]string, 0, len(detail.Tags))
+		tagColor := make([]string, 0, len(detail.Tags))
+		for _, tagID := range detail.Tags {
+			tag, err := u.tagRepo.FindTagByID(ctx, tagID)
+			if err != nil {
+				return nil, fmt.Errorf("failed to find tag by ID (%d): %w", tagID, err)
+			}
+			tagNames = append(tagNames, tag.Name)
+			tagColor = append(tagColor, tag.Color)
+		}
+
 		response := models.ScoutListResponse{
 			ID:          scoutlist.ID,
 			Status:      scoutlist.Status,
 			UUID:        scoutlist.User_UUID,
 			UnreadCount: unreadcount,
 			DetailInfo: models.DetailInfo{
-				Name: detail.Name,
-				Img:  detail.Img,
+				Name:     detail.Name,
+				Img:      detail.Img,
+				Mem1:     mem1.Name,
+				Tags:     tagNames,
+				TagColor: tagColor,
 			},
 		}
 		responses = append(responses, response)
