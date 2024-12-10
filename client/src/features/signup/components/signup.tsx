@@ -17,6 +17,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import style from "./style.module.scss";
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 type SignUpProps = {
   type: "user" | "community";
@@ -37,6 +39,7 @@ type SignupForm = z.infer<typeof SignupFormSchema>;
 
 export const SignUpDialog = (props: SignUpProps) => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   let name = "";
   let introduction = "";
@@ -169,15 +172,28 @@ export const SignUpDialog = (props: SignUpProps) => {
                   <FormLabel className={style.label}>
                     <span className={style.span}>*</span>パスワード
                   </FormLabel>
-                  <FormControl>
-                    <Input placeholder="text" {...field} className={style.input} />
-                  </FormControl>
+                  <div className="relative w-full max-w-md">
+                    <FormControl>
+                      <Input
+                        placeholder="パスワード"
+                        {...field}
+                        type={showPassword ? 'text' : 'password'}
+                        className={`${style.input} pr-12`}
+                      />
+                    </FormControl>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    >
+                      {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                    </button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <br />
             <br />
 
             <FormField
