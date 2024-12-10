@@ -53,7 +53,7 @@ type GetAllUserResponse struct {
 
 type IUesrUsecase interface {
 	Update(ctx context.Context, input InputUserUpdate) error
-	GetAll(ctx context.Context) ([]*GetAllUserResponse, error)
+	GetAll(ctx context.Context) ([]GetAllUserResponse, error)
 	FindByID(ctx context.Context, input InputUserFindByID) (*UserResponse, error)
 }
 
@@ -71,13 +71,13 @@ func NewUserUseCase(userRepo repositories.IUserRepository, memberRepo repositori
 	}
 }
 
-func (u *userUsecase) GetAll(ctx context.Context) ([]*GetAllUserResponse, error) {
+func (u *userUsecase) GetAll(ctx context.Context) ([]GetAllUserResponse, error) {
 	users, err := u.userRepo.GetAll(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
 
-	var responses []*GetAllUserResponse
+	var responses []GetAllUserResponse
 	for _, user := range users {
 		// Find members by ID
 		mem1, _ := u.memberRepo.FindByID(ctx, user.Mem1)
@@ -95,8 +95,8 @@ func (u *userUsecase) GetAll(ctx context.Context) ([]*GetAllUserResponse, error)
 			tagColors = append(tagColors, tag.Color)
 		}
 
-		// Create the user response
-		res := &GetAllUserResponse{
+		res := GetAllUserResponse{
+			UUID:      user.UUID,
 			Name:      user.Name,
 			Img:       user.Img,
 			Self:      user.Self,
@@ -104,7 +104,7 @@ func (u *userUsecase) GetAll(ctx context.Context) ([]*GetAllUserResponse, error)
 			Tags:      tagNames,
 			TagColors: tagColors,
 		}
-		// Append to the response list
+
 		responses = append(responses, res)
 	}
 
