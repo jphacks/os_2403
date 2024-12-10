@@ -23,7 +23,6 @@ export function CommunityCard({
   university,
   onClick,
 }: UserCardType) {
-
   const handleDetailClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     // window.location.href = `/community/user/${uuid}`;

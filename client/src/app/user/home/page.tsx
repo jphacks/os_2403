@@ -1,13 +1,13 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import InviteCheck from "../../../../public/invite-check";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Community } from "@/features/account/types/community";
 import { CommunityCard } from "@/features/home/user/components/community-card";
 import { GetCommunities } from "@/features/home/user/hooks/gets-communities";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import InviteCheck from "../../../../public/invite-check";
 import styles from "./style.module.scss";
 
 export default function Home() {

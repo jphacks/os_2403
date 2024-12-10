@@ -23,7 +23,6 @@ import style from "../styles/menubar.module.scss";
 import { MailIcon } from "./mail";
 // import Search from "./search";
 
-
 const inviteNum = 3;
 const mailNum = 80;
 
