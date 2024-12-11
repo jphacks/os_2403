@@ -17,18 +17,21 @@ import { getTags } from "@/components/tags/hooks/get-tags";
 import { apiClient } from "@/utils/client";
 import { useAtom } from "jotai";
 import { userAtom } from "@/features/account/stores";
+import { communityAtom } from "@/features/account/stores";
 
 type TagCardProps = {
+  type: "user" | "community";
   className?: string;
 };
 
-export const TagCard = ({ className }: TagCardProps) => {
+export const TagCard = ({ type, className }: TagCardProps) => {
   const router = useRouter();
   const [tags, setTags] = useState<TagType[]>([]);
   const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentUser] = useAtom(userAtom);
+  const [currentCommunity] = useAtom(communityAtom);
 
   const fetchTags = async () => {
     try {
@@ -63,8 +66,23 @@ export const TagCard = ({ className }: TagCardProps) => {
   };
 
   const onClick = async () => {
-    if (!currentUser?.uuid) {
-      alert("ユーザー情報が取得できません");
+    let uuid: string | undefined;
+    let endpoint: string;
+    let redirectPath: string;
+
+    if (type === "user") {
+      uuid = currentUser?.uuid;
+      endpoint = `/user/${uuid}`;
+      redirectPath = "/user/signin";
+    } else {
+      uuid = currentCommunity?.uuid;
+      console.log(uuid);
+      endpoint = `/community/${uuid}`;
+      redirectPath = "/community/signin";
+    }
+
+    if (!uuid) {
+      alert(type === "user" ? "ユーザー情報が取得できません" : "コミュニティ情報が取得できません");
       return;
     }
 
@@ -72,18 +90,15 @@ export const TagCard = ({ className }: TagCardProps) => {
       alert("3つ以上のタグを選択してください");
       return;
     }
-  
-    const selectedTagsData = Array.from(selectedTags).map(index => ({
-      name: tags[index].name,
-      color: tags[index].color
-    }));
-  
+
+    const selectedTagNames = Array.from(selectedTags).map(index => tags[index].name);
+
     try {
-      await apiClient.put(`/user/${currentUser.uuid}`, {
-        tags: JSON.stringify(selectedTagsData)
+      await apiClient.put(endpoint, {
+        tag: selectedTagNames
       });
       
-      router.push("/user/signin");
+      router.push(redirectPath);
     } catch (error) {
       console.error("Failed to update tags:", error);
       alert("タグの更新に失敗しました。もう一度お試しください。");

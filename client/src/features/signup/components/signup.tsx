@@ -58,8 +58,6 @@ export const SignUpDialog = (props: SignUpProps) => {
   let title = "";
   let alternative = "";
   let get_base_url = "";
-  let signin_url = "";
-  let link = "";
   if (props.type === "user") {
     title = "ユーザーログイン";
     name = "ニックネーム";
@@ -68,26 +66,14 @@ export const SignUpDialog = (props: SignUpProps) => {
     go_url = "/user/signup/tags";
     alternative = "イベント・サークル運営者の方はこちら";
     get_base_url = "/user";
-    signin_url = "/user/signin";
-    link = "/community/signin";
   } else if (props.type === "community") {
     title = "イベント・サークル運営者ログイン";
     alternative = "ユーザーの方はこちら";
     name = "団体名";
     introduction = "団体紹介";
     api_url = "/community/signup";
-    go_url = "/community/signin";
+    go_url = "/community/signup/tags";
     get_base_url = "/community";
-    signin_url = "/community/signin";
-    link = "/user/signin";
-  }
-  if (props.type === "user") {
-    
-  } else if (props.type === "community") {
-    name = "団体名";
-    introduction = "団体紹介";
-    api_url = "/community/signup";
-    go_url = "/community/signin";
   }
 
   const form = useForm<SignupForm>({
@@ -106,12 +92,11 @@ export const SignUpDialog = (props: SignUpProps) => {
   const onSubmit = async (loginData: SignupForm) => {
     try {
       const signUpResponse = await apiClient.post(api_url, loginData);
-
+  
       if (props.type === "user") {
         setCurrentAccountType("user");
         const uuid = signUpResponse.data.uuid;
         const response = await apiClient.get(`${get_base_url}/${uuid}`);
-        console.log(response);
         const user: User = {
           uuid: response.data.uuid,
           name: response.data.name,
@@ -119,11 +104,18 @@ export const SignUpDialog = (props: SignUpProps) => {
           img: response.data.img,
         };
         setCurrentUser(user);
+        
+        // Atomの状態確認
+        console.log('Current User Atom after setting:', user);
+        
+        // 非同期更新後の状態を確認
+        setTimeout(() => {
+          console.log('Current User Atom after delay:', currentUser);
+        }, 100);
       } else if (props.type === "community") {
         setCurrentAccountType("community");
         const uuid = signUpResponse.data.uuid;
         const response = await apiClient.get(`${get_base_url}/${uuid}`);
-        console.log(response);
         const community: Community = {
           uuid: response.data.uuid,
           name: response.data.name,
@@ -131,11 +123,19 @@ export const SignUpDialog = (props: SignUpProps) => {
           img: response.data.img,
         };
         setCurrentCommunity(community);
+        
+        // Atomの状態確認
+        console.log('Current Community Atom after setting:', community);
+        
+        // 非同期更新後の状態を確認
+        setTimeout(() => {
+          console.log('Current Community Atom after delay:', currentCommunity);
+        }, 100);
       }
       toast("サインインしました。");
       router.push(go_url);
     } catch (err) {
-      console.error(err);
+      console.error('Sign up error:', err);
     }
   };
 
