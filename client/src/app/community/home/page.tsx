@@ -1,5 +1,6 @@
 "use client";
 
+import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +11,16 @@ import { GetUsers } from "@/features/home/community/hooks/gets-users";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import styles from "./style.module.scss";
+import { useAtom } from "jotai";
+import { communityAtom } from "@/features/account/stores";
+import { apiClient } from "@/utils/client";
 
 export default function Home() {
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState<User[]>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
+  const [community] = useAtom(communityAtom);
 
   useEffect(() => {
     GetUsers().then(users => {
@@ -35,10 +40,29 @@ export default function Home() {
     }
   };
 
+  const uuidSchema = z.object({
+    user_uuid: z.string(),
+  });
+
+  const scoutPostSchema = z.object({
+    content: z.string(),
+    community_uuid: z.string(),
+    uuids: uuidSchema.array(),
+  });
+
+  type ScoutPostType = z.infer<typeof scoutPostSchema>;
+
   const handleSubmit = () => {
-    //selectedUserのuuidをconsole.logで出力
-    selectedUser.map(user => console.log(user.uuid));
-    console.log(textAreaValue);
+    //selectedUserのuuidを配列に格納
+    const uuids = selectedUser.map(user => ({ user_uuid: user.uuid }));
+    //ScoutPostTypeの型に合わせてデータを格納
+    const postData: ScoutPostType = {
+      content: textAreaValue,
+      community_uuid: community.uuid,
+      uuids: uuids,
+    };
+    apiClient.post("/scoutlist/createscout", postData);
+    console.log(postData);
     setTextAreaValue("");
   };
 
