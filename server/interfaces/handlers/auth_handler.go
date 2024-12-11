@@ -2,11 +2,12 @@ package handlers
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"github.com/jphacks/os_2403/usecase"
-	"net/http"
 )
 
 type authUserHandler struct {
@@ -75,6 +76,7 @@ func (h *authUserHandler) SignUp(ctx *gin.Context) {
 		return
 	}
 
+
 	tags, err := h.tagUsecase.GetAll(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -86,9 +88,7 @@ func (h *authUserHandler) SignUp(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
-
-	ctx.JSON(http.StatusCreated, gin.H{"message": "sign in successful"})
+	ctx.JSON(http.StatusCreated, gin.H{"message": "sign in successful", "uuid": uuid})
 }
 
 func (h *authUserHandler) SignIn(ctx *gin.Context) {
