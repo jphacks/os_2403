@@ -55,7 +55,7 @@ export default function Home() {
           </div>
         </div>
 
-        <ScrollArea className="h-96 w-full rounded-md border">
+        <ScrollArea className={styles.communityContainer}>
           <div className="grid grid-cols-2 gap-2 p-4">
             {filteredCommunities.map(community => {
               return (

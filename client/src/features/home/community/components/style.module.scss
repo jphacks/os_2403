@@ -1,4 +1,5 @@
-/* style.module.scss */
+@use "@/styles/theme";
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -31,6 +32,8 @@
   animation: fadeIn 0.5s ease-in-out;
 }
 
-.userName.fadeOut {
-  animation: fadeOut 0.5s ease-in-out;
+.userContainer {
+  background-color: theme.$theme-user;
+  border-radius: 10px;
+  height: 24rem;
 }

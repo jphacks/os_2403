@@ -1,9 +1,10 @@
+// user-card.tsx
+
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import styles from "../styles/user-card.module.scss";
 
 export type UserCardType = {
@@ -14,6 +15,7 @@ export type UserCardType = {
   detail?: string;
   university?: string;
   onClick: () => void;
+  selected: boolean; // selected プロップを追加
 };
 
 export function UserCard({
@@ -24,24 +26,26 @@ export function UserCard({
   detail,
   university,
   onClick,
+  selected, // selected を受け取る
 }: UserCardType) {
-  const [isSelect, setIsSelect] = useState(false);
-
   const handleDetailClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // window.location.href = `/community/user/${uuid}`;
+    // 詳細ページへの遷移などの処理
     console.log(uuid);
   };
 
+  // isSelect 状態と handleClick 内の setIsSelect を削除
   const handleClick = () => {
-    setIsSelect(!isSelect);
     onClick();
   };
 
   return (
-    <Card className={cn(styles.profileCard, isSelect && styles.selected)} onClick={handleClick}>
+    <Card
+      className={cn(styles.profileCard, selected && styles.selected)} // selected に基づいてクラスを適用
+      onClick={handleClick}
+    >
       <div className={styles.tagsContainer}>
-        {tags?.map(tag => (
+        {tags?.map((tag) => (
           <Badge key={tag} className={styles.tag}>
             {tag}
           </Badge>

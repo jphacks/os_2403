@@ -27,7 +27,6 @@ import { useAtom } from "jotai/index";
 import { CircleChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import react from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -46,15 +45,11 @@ const LoginFormSchema = z.object({
 type LoginForm = z.infer<typeof LoginFormSchema>;
 
 export const SignInDialog = (props: LoginCardProps) => {
-  const [currentUser, setCurrentUser] = useAtom(userAtom);
-  const [currentCommunity, setCurrentCommunity] = useAtom(communityAtom);
+  const [, setCurrentUser] = useAtom(userAtom);
+  const [, setCurrentCommunity] = useAtom(communityAtom);
   const [_currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
   const router = useRouter();
 
-  react.useEffect(() => {
-    console.log("currentUser updated:", currentUser);
-    console.log("currentCommunity updated:", currentCommunity);
-  }, [currentUser, currentCommunity]);
 
   let title = "";
   let alternative = "";

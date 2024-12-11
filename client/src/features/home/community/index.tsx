@@ -1,0 +1,99 @@
+"use client";
+
+import { useEffect, useState, useRef } from "react";
+import { useAtom } from "jotai";
+import { communityAtom } from "@/features/account/stores";
+import { User } from "@/features/account/types/user";
+import { GetUsers } from "@/features/home/community/hooks/gets-users";
+import { toast } from "sonner";
+import { SearchBar } from "./components/search-bar";
+import { UserList } from "./components/user-list";
+import { SelectedUserBadges } from "./components/selected-user-badges";
+import { MessageForm } from "./components/message-form";
+import { postScout } from "@/features/home/community/hooks/post-scout";
+import { ScoutPostType } from "@/features/home/community/types/scout";
+import { useRouter } from "next/navigation";
+
+export function CommunityHome() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUser, setSelectedUser] = useState<User[]>([]);
+  const [textAreaValue, setTextAreaValue] = useState("");
+  const [community] = useAtom(communityAtom);
+  const [sending, setSending] = useState(false);
+  const router = useRouter();
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      GetUsers().then((users) => {
+        setUsers(users);
+      });
+      isFirstRender.current = false;
+    }
+  }, []);
+
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  const handleCardClick = (user: User) => {
+    if (!selectedUser.includes(user)) {
+      setSelectedUser([...selectedUser, user]);
+    } else {
+      setSelectedUser(selectedUser.filter((selected) => selected !== user));
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!community?.uuid) {
+      toast.error("一度サインアウトして再度サインインしてください。");
+      router.push("/community/signin");
+      return;
+    }
+
+    const uuids = selectedUser.map((user) => ({ user_uuid: user.uuid }));
+    const postData: ScoutPostType = {
+      content: textAreaValue,
+      community_uuid: community.uuid,
+      uuids: uuids,
+    };
+
+    try {
+      setSending(true);
+      await postScout(postData);
+      toast.success("送信しました");
+      setTextAreaValue("");
+      setSelectedUser([]);
+    } catch (error) {
+      console.error("Error posting scout:", error);
+      toast.error("送信に失敗しました。もう一度お試しください。");
+    } finally {
+      setSending(false);
+    }
+  };
+  return (
+    <>
+      <h1 className="text-2xl font-bold text-white mt-4 ml-10">ホーム</h1>
+      <div className="container mx-auto p-4">
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+
+        <UserList
+          users={filteredUsers}
+          handleCardClick={handleCardClick}
+          selectedUser={selectedUser}
+        />
+
+        <SelectedUserBadges selectedUser={selectedUser} />
+
+        <MessageForm
+          textAreaValue={textAreaValue}
+          setTextAreaValue={setTextAreaValue}
+          handleSubmit={handleSubmit}
+          isSending={sending}
+          canSubmit={textAreaValue !== "" && selectedUser.length > 0}
+        />
+      </div>
+    </>
+  );
+}
