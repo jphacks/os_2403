@@ -89,7 +89,7 @@ func main() {
 
 	//openai系
 	openaiUsecase := gpt.NewOpenAIClient(apiKey)
-	threadUsecase := usecase.NewThreadUsecase(threadRepo, wsService, openaiUsecase)
+	threadUsecase := usecase.NewThreadUsecase(threadRepo, tagRepo, wsService, openaiUsecase)
 	threadHandler := handlers.NewThreadHandler(threadUsecase, wsService, tagUsecase, tagClickHistoryUsecase)
 
 	authUserHandler := handlers.NewAuthUserHandler(&authUserUsecase, store, &tagUsecase, &threadUsecase)

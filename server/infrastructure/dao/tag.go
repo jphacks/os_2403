@@ -58,3 +58,11 @@ func (r *tagRepository) FindTagByID(ctx context.Context, tagID int) (*models.Tag
 	}
 	return &tag, nil
 }
+
+func (r *tagRepository) FindTagByName(ctx context.Context, tagName string) (*models.Tag, error) {
+	var tag models.Tag
+	if err := r.db.WithContext(ctx).Where("name = ?", tagName).First(&tag).Error; err != nil {
+		return nil, err
+	}
+	return &tag, nil
+}

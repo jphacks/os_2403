@@ -26,12 +26,14 @@ type ThreadUsecase struct {
 }
 
 type RecommendedTags struct {
-	Recommended []string `json:"recommendedtags"`
+	RecommendedTagName  []string `json:"recommendedTagName"`
+	RecommendedTagColor []string `json:"recommendedTagColor"`
 }
 
-func NewThreadUsecase(threadRepo repositories.IThreadRepository, wsService *middleware.WebSocketService, openAIClient *gpt.OpenAIClient) IThreadUsecase {
+func NewThreadUsecase(threadRepo repositories.IThreadRepository, tagRepo repositories.ITagRepository, wsService *middleware.WebSocketService, openAIClient *gpt.OpenAIClient) IThreadUsecase {
 	return &ThreadUsecase{
 		threadRepo:   threadRepo,
+		tagRepo:      tagRepo,
 		wsService:    wsService,
 		openAIClient: openAIClient,
 	}
@@ -120,9 +122,34 @@ func (u *ThreadUsecase) ThreadMessage(ctx context.Context, threadID string, uuid
 				}
 			}
 
+			// スライスの初期化（必要に応じて）
+			tagnamelist := []string{}
+			tagcolorlist := []string{}
+
+			for _, tagContent := range res {
+				if u.tagRepo == nil {
+					return nil, fmt.Errorf("tagRepo is not initialized")
+				}
+
+				taglist, err := u.tagRepo.FindTagByName(ctx, tagContent)
+				if err != nil {
+					return nil, fmt.Errorf("failed to find tag by name: %w", err)
+				}
+
+				// taglistがnilでないことを確認
+				if taglist == nil {
+					return nil, fmt.Errorf("taglist is nil for tagContent: %s", tagContent)
+				}
+
+				// appendの結果をスライスに再代入
+				tagnamelist = append(tagnamelist, taglist.Name)
+				tagcolorlist = append(tagcolorlist, taglist.Color)
+			}
+
 			if len(res) > 0 {
 				recommendedTags := RecommendedTags{
-					Recommended: res,
+					RecommendedTagName:  tagnamelist,
+					RecommendedTagColor: tagcolorlist,
 				}
 				u.wsService.BroadcastToRoom(uuid, recommendedTags)
 			}
