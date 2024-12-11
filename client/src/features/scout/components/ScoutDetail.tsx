@@ -16,7 +16,7 @@ const scoutDetailPropsSchema = z.object({
   isLiked: z.boolean(),
   handleReject: z.function(),
   handleApprove: z.function(),
-  isEmpty: z.boolean(),
+  // isEmpty: z.boolean(),
 });
 
 type ScoutDetailProps = z.infer<typeof scoutDetailPropsSchema>;
@@ -53,9 +53,9 @@ export const ScoutDetail = (props: ScoutDetailProps) => {
         return;
       }
 
-      if (props.isEmpty) {
-        setCurrenttCommunityInfo(undefined);
-      }
+      // if (props.isEmpty) {
+      //   setCurrenttCommunityInfo(undefined);
+      // }
 
       try {
         const communityData = await GetCommunityByUUID(props.community_uuid);
@@ -74,7 +74,6 @@ export const ScoutDetail = (props: ScoutDetailProps) => {
     fetchCommunityData();
   }, [props?.community_uuid]);
 
-  // const [isLiked, setIsLiked] = React.useState(false);
   return (
     <div>
       <Card className={style.scout_detail_card}>

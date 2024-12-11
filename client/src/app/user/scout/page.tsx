@@ -33,6 +33,8 @@ const ScoutListPage = () => {
   const [selectNumber, setSelectNumber] = React.useState<number>();
   const [refreshTrigger, setRefreshTrigger] = React.useState(0);
 
+  const generalToastTimeout = 500;
+
   const createScoutCommunityStruct = (data: GetCommunityDetailResponse[]): ScoutList[] => {
     return data
       .filter(item => item.status !== ScoutStatus.Reject)
@@ -51,34 +53,25 @@ const ScoutListPage = () => {
     if (!currentUser?.uuid) {
       setTimeout(() => {
         toast.error("サインインしてください");
-      }, 0);
+      }, generalToastTimeout);
       return;
     }
 
     try {
       const getScoutCommunityDetailRes = await getScoutCommunityDetail(currentUser.uuid);
 
-      if (!getScoutCommunityDetailRes) {
-        // setSelectNumber(undefined);
-        return;
-      }
+      if (!getScoutCommunityDetailRes) return;
+
       const scoutListData: ScoutList[] = createScoutCommunityStruct(getScoutCommunityDetailRes);
       setScoutList(scoutListData);
 
       setSelectNumber(scoutListData[0].id);
-
-      // const firstScout: ScoutList = scoutListData[0];
-      // if (firstScout) {
-      //   setSelectNumber(firstScout.id);
-      // } else {
-      //   setSelectNumber(undefined);
-      // }
     } catch (error) {
       console.error(error);
 
       setTimeout(() => {
         toast.error("新着スカウトはありません");
-      }, 0);
+      }, generalToastTimeout);
     }
   };
 
@@ -87,7 +80,9 @@ const ScoutListPage = () => {
 
     try {
       await updateScoutStatusForReject(id);
-      toast.warning("スカウトを辞退しました");
+      setTimeout(() => {
+        toast.warning("スカウトを辞退しました");
+      }, 0);
 
       setRefreshTrigger(prev => prev + 1);
     } catch (error) {
@@ -112,7 +107,9 @@ const ScoutListPage = () => {
 
       await updateScoutStatusForApprove(id);
 
-      toast.success("スカウトを承認しました!");
+      setTimeout(() => {
+        toast.success("スカウトを承認しました!");
+      }, 0);
 
       setRefreshTrigger(prev => prev + 1);
       await fetchScoutList();
@@ -158,7 +155,7 @@ const ScoutListPage = () => {
             isLiked={selectIsLiked ?? false}
             handleReject={() => handleReject(selectNumber ?? 0)}
             handleApprove={() => handleApprove(selectNumber ?? 0)}
-            isEmpty={scoutList.length === 0}
+            // isEmpty={scoutList.length === 0}
           />
         ) : (
           <div className={style.noScoutMessage}>スカウト情報がありません</div>
