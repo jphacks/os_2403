@@ -1,18 +1,18 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { useAtom } from "jotai";
 import { communityAtom } from "@/features/account/stores";
 import { User } from "@/features/account/types/user";
 import { GetUsers } from "@/features/home/community/hooks/gets-users";
-import { toast } from "sonner";
-import { SearchBar } from "./components/search-bar";
-import { UserList } from "./components/user-list";
-import { SelectedUserBadges } from "./components/selected-user-badges";
-import { MessageForm } from "./components/message-form";
 import { postScout } from "@/features/home/community/hooks/post-scout";
 import { ScoutPostType } from "@/features/home/community/types/scout";
+import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { MessageForm } from "./components/message-form";
+import { SearchBar } from "./components/search-bar";
+import { SelectedUserBadges } from "./components/selected-user-badges";
+import { UserList } from "./components/user-list";
 
 export function CommunityHome() {
   const [users, setUsers] = useState<User[]>([]);
@@ -26,14 +26,14 @@ export function CommunityHome() {
 
   useEffect(() => {
     if (isFirstRender.current) {
-      GetUsers().then((users) => {
+      GetUsers().then(users => {
         setUsers(users);
       });
       isFirstRender.current = false;
     }
   }, []);
 
-  const filteredUsers = users.filter((user) =>
+  const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -41,7 +41,7 @@ export function CommunityHome() {
     if (!selectedUser.includes(user)) {
       setSelectedUser([...selectedUser, user]);
     } else {
-      setSelectedUser(selectedUser.filter((selected) => selected !== user));
+      setSelectedUser(selectedUser.filter(selected => selected !== user));
     }
   };
 
@@ -52,7 +52,7 @@ export function CommunityHome() {
       return;
     }
 
-    const uuids = selectedUser.map((user) => ({ user_uuid: user.uuid }));
+    const uuids = selectedUser.map(user => ({ user_uuid: user.uuid }));
     const postData: ScoutPostType = {
       content: textAreaValue,
       community_uuid: community.uuid,

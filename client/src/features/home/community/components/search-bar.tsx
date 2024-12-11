@@ -16,7 +16,7 @@ export function SearchBar({ searchQuery, setSearchQuery }: SearchBarProps) {
           type="text"
           placeholder="ユーザー名で検索..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={e => setSearchQuery(e.target.value)}
           className="w-full pr-10"
         />
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">

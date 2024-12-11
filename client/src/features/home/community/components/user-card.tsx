@@ -45,7 +45,7 @@ export function UserCard({
       onClick={handleClick}
     >
       <div className={styles.tagsContainer}>
-        {tags?.map((tag) => (
+        {tags?.map(tag => (
           <Badge key={tag} className={styles.tag}>
             {tag}
           </Badge>

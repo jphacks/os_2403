@@ -22,7 +22,7 @@ export function MessageForm({
       <textarea
         className="w-full h-60 p-2 border rounded-md"
         value={textAreaValue}
-        onChange={(e) => setTextAreaValue(e.target.value)}
+        onChange={e => setTextAreaValue(e.target.value)}
         placeholder="スカウトメッセージを入力してください..."
       />
       <div className="flex justify-end mt-2">

@@ -50,7 +50,6 @@ export const SignInDialog = (props: LoginCardProps) => {
   const [_currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
   const router = useRouter();
 
-
   let title = "";
   let alternative = "";
   let get_base_url = "";
