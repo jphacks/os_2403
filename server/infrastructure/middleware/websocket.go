@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"github.com/gorilla/websocket"
-	"github.com/jphacks/os_2403/domain/models"
 	"strconv"
 	"sync"
 )
@@ -40,7 +39,7 @@ func (s *WebSocketService) RemoveClient(roomID string, conn *websocket.Conn) {
 	}
 }
 
-func (s *WebSocketService) BroadcastToRoom(roomID int, message *models.Message) {
+func (s *WebSocketService) BroadcastToRoom(roomID int, message any) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
