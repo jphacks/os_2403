@@ -2,8 +2,6 @@ package middleware
 
 import (
 	"github.com/gorilla/websocket"
-	"github.com/jphacks/os_2403/domain/models"
-	"strconv"
 	"sync"
 )
 
@@ -40,13 +38,11 @@ func (s *WebSocketService) RemoveClient(roomID string, conn *websocket.Conn) {
 	}
 }
 
-func (s *WebSocketService) BroadcastToRoom(roomID int, message *models.Message) {
+func (s *WebSocketService) BroadcastToRoom(roomID string, message any) {
 	s.mu.RLock()
-	defer s.mu.RUnlock()
+	defer s.mu.RUnlock() // intをstringに変換
 
-	roomIDStr := strconv.Itoa(roomID) // intをstringに変換
-
-	if clients, exists := s.clients[roomIDStr]; exists {
+	if clients, exists := s.clients[roomID]; exists {
 		for client := range clients {
 			err := client.WriteJSON(message)
 			if err != nil {

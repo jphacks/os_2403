@@ -20,7 +20,7 @@ export default function RootLayout({
         <BackGroundColor>
           <Menubar />
           <main className="flex-grow">{children}</main>
-          <Toaster />
+          <Toaster richColors />
         </BackGroundColor>
       </body>
     </html>

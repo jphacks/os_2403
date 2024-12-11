@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 	"github.com/jphacks/os_2403/infrastructure/dao"
+	"github.com/jphacks/os_2403/infrastructure/gpt"
 	"github.com/jphacks/os_2403/infrastructure/middleware"
 	"github.com/jphacks/os_2403/interfaces/handlers"
 	"github.com/jphacks/os_2403/usecase"
@@ -55,6 +56,11 @@ func main() {
 
 	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	if apiKey == "" {
+		log.Fatal("環境変数 OPENAI_API_KEY が設定されていません")
+	}
+
 	// 初期化はinfra(persistence)->domain/service->usecase->handlerの順番で行うようにしよう
 	userRepo := dao.NewUserRepository(db)
 	tagRepo := dao.NewTagRepository(db)
@@ -64,6 +70,8 @@ func main() {
 	scoutListRepo := dao.NewscoutListRepository(db)
 	eventRepo := dao.NewEventRepository(db)
 	messageRepo := dao.NewMessageRepository(db)
+	threadRepo := dao.NewThreadRepository(db)
+	tagClickHistoryRepo := dao.NewTagClickHistory(db)
 
 	authUserUsecase := usecase.NewAuthUserUseCase(userRepo, sessionRepo, memberRepo, tagRepo)
 	authcommunityUsecase := usecase.NewAuthCommunityUseCase(communityRepo, sessionRepo, memberRepo, tagRepo)
@@ -72,19 +80,25 @@ func main() {
 	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo, userRepo, communityRepo, messageRepo, tagRepo, memberRepo)
 	eventUsecase := usecase.NewEventUsecase(eventRepo)
 	tagUsecase := usecase.NewTagUseCase(tagRepo)
+	tagClickHistoryUsecase := usecase.NewTagClickHistoryUsecase(tagClickHistoryRepo)
 
-	authUserHandler := handlers.NewAuthUserHandler(authUserUsecase, store)
-	authCommunityHandler := handlers.NewAuthCommunityHandler(authcommunityUsecase, store)
+	// WebSocketの初期化
+	wsService := middleware.NewWebSocketService()
+	chatUsecase := usecase.NewChatUseCase(messageRepo, wsService)
+	chatHandler := handlers.NewChatHandler(chatUsecase, wsService)
+
+	//openai系
+	openaiUsecase := gpt.NewOpenAIClient(apiKey)
+	threadUsecase := usecase.NewThreadUsecase(threadRepo, tagRepo, wsService, openaiUsecase)
+	threadHandler := handlers.NewThreadHandler(threadUsecase, wsService, tagUsecase, tagClickHistoryUsecase)
+
+	authUserHandler := handlers.NewAuthUserHandler(&authUserUsecase, store, &tagUsecase, &threadUsecase)
+	authCommunityHandler := handlers.NewAuthCommunityHandler(&authcommunityUsecase, store, &tagUsecase, &threadUsecase)
 	userHandler := handlers.NewUserHandler(userUsecase)
 	communityHandler := handlers.NewCommunityHandler(communityUsecase)
 	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase, userUsecase)
 	tagHandler := handlers.NewTagHandler(tagUsecase)
 	eventHandler := handlers.NewEventHandler(eventUsecase, communityUsecase)
-
-	// WebSocketの初期化
-	wsService := middleware.NewWebSocketService()
-	chatUsecase := usecase.NewChatUseCase(messageRepo, wsService)
-	chatHandler := handlers.NewChatHandler(chatUsecase, wsService) // 他の初期化ここに書いてね
 
 	// ルーティング
 	router := gin.Default()
@@ -114,7 +128,7 @@ func main() {
 
 	router.GET("/api/tag", tagHandler.GetRandom)
 	router.GET("/api/scoutlist/getcommunitydetail", scoutListHandler.GetCommunityDetailWithScoutList)
-	router.POST("api/scoutlist/createscout", scoutListHandler.CreateScouts)
+	router.POST("/api/scoutlist/createscout", scoutListHandler.CreateScouts)
 	router.GET("/api/scoutlist/getdmlist", scoutListHandler.GetCommunityDetailByScoutList)
 	router.PUT("/api/scoutlist/updatestatus", scoutListHandler.ChangeStatus)
 
@@ -124,6 +138,9 @@ func main() {
 
 	router.GET("/api/ws/chat/:room_id", chatHandler.HandleWebSocket)
 	router.GET("/api/messages/:room_id", chatHandler.GetMessages) // チャット履歴取得用
+
+	router.GET("/api/thread", threadHandler.CreateThread)
+	router.GET("/api/ws/tag_recommend/:uuid", threadHandler.ThreadMessage)
 
 	log.Fatal(http.ListenAndServe(":80", router))
 }

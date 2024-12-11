@@ -35,6 +35,7 @@ export default function Home() {
 
   return (
     <>
+
       <div className={styles.inviteCheck}>
         <InviteCheck size={500} />
       </div>

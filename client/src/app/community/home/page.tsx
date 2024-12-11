@@ -11,6 +11,7 @@ import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 
+
 export default function Home() {
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
