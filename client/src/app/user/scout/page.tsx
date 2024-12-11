@@ -1,51 +1,130 @@
 "use client";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { userAtom } from "@/features/account/stores";
+import { getScoutCommunityDetail } from "@/features/scout/api";
 import { ScoutCard } from "@/features/scout/components/ScoutCard";
 import { ScoutDetail } from "@/features/scout/components/ScoutDetail";
+import {
+  updateScoutStatusForApprove,
+  updateScoutStatusForReject,
+} from "@/features/scout/funcs/updateScoutStatus";
+import { GetCommunityDetailResponse, ScoutStatus } from "@/features/scout/types";
+import { useAtom } from "jotai/index";
 import React from "react";
+import { toast } from "sonner";
+import z from "zod";
 import style from "./style.module.scss";
 
-const ScoutListPage = () => {
-  const [selectNumber, setSelectNumber] = React.useState<number>(1);
+const scoutListSchema = z.object({
+  id: z.number(),
+  uuid: z.string(),
+  name: z.string(),
+  icon: z.string().optional(),
+  mem1: z.string(),
+  tags: z.string().array().optional(),
+  isLiked: z.boolean(),
+});
 
-  //モック
-  const scouts = [
-    {
-      id: 1,
-      username: "test",
-      icon: "test",
-      university: "立命館",
-      tags: ["test", "test", "test"],
-    },
-    {
-      id: 2,
-      username: "test",
-      icon: "test",
-      university: "立命館",
-      tags: undefined,
-    },
-    {
-      id: 3,
-      username: "test",
-      icon: "test",
-      university: "立命館",
-      tags: undefined,
-    },
-    {
-      id: 4,
-      username: "test",
-      icon: "test",
-      university: "立命館",
-      tags: undefined,
-    },
-    {
-      id: 5,
-      username: "test",
-      icon: "test",
-      university: "立命館",
-      tags: undefined,
-    },
-  ];
+type ScoutList = z.infer<typeof scoutListSchema>;
+
+const ScoutListPage = () => {
+  const [currentUser, _setCurrentUser] = useAtom(userAtom);
+  const [scoutList, setScoutList] = React.useState<ScoutList[]>([]);
+  const [selectNumber, setSelectNumber] = React.useState<number>();
+  const [refreshTrigger, setRefreshTrigger] = React.useState(0);
+
+  const generalToastTimeout = 500;
+
+  const createScoutCommunityStruct = (data: GetCommunityDetailResponse[]): ScoutList[] => {
+    return data
+      .filter(item => item.status !== ScoutStatus.Reject)
+      .map(item => ({
+        id: item.id,
+        uuid: item.uuid,
+        name: item.detail_info.name,
+        icon: item.detail_info.img,
+        mem1: item.detail_info.mem1,
+        tags: item.detail_info.tags,
+        isLiked: false,
+      }));
+  };
+
+  const fetchScoutList = async () => {
+    if (!currentUser?.uuid) {
+      setTimeout(() => {
+        toast.error("サインインしてください");
+      }, generalToastTimeout);
+      return;
+    }
+
+    try {
+      const getScoutCommunityDetailRes = await getScoutCommunityDetail(currentUser.uuid);
+
+      if (!getScoutCommunityDetailRes) return;
+
+      const scoutListData: ScoutList[] = createScoutCommunityStruct(getScoutCommunityDetailRes);
+      setScoutList(scoutListData);
+
+      setSelectNumber(scoutListData[0].id);
+    } catch (error) {
+      console.error(error);
+
+      setTimeout(() => {
+        toast.error("新着スカウトはありません");
+      }, generalToastTimeout);
+    }
+  };
+
+  const handleReject = async (id: number) => {
+    if (!id) return;
+
+    try {
+      await updateScoutStatusForReject(id);
+      setTimeout(() => {
+        toast.warning("スカウトを辞退しました");
+      }, 0);
+
+      setRefreshTrigger(prev => prev + 1);
+    } catch (error) {
+      console.error(error);
+      toast.error("更新に失敗しました");
+    }
+  };
+
+  const handleApprove = async (id: number) => {
+    if (!id) return;
+
+    try {
+      setScoutList(prevList =>
+        prevList?.map(item => {
+          if (item.id === id) {
+            console.log("更新: ", { ...item, isLiked: !item.isLiked });
+            return { ...item, isLiked: !item.isLiked };
+          }
+          return item;
+        }),
+      );
+
+      await updateScoutStatusForApprove(id);
+
+      setTimeout(() => {
+        toast.success("スカウトを承認しました!");
+      }, 0);
+
+      setRefreshTrigger(prev => prev + 1);
+      await fetchScoutList();
+    } catch (error) {
+      console.error("更新に失敗しました: ", error);
+    }
+  };
+
+  const selectIsLiked = scoutList?.find(item => item.id === selectNumber)?.isLiked;
+  React.useEffect(() => {
+    // updateScoutStatusForReaded(props?.id);
+    console.log("refreshTrigger updated:", refreshTrigger);
+
+    fetchScoutList();
+  }, [refreshTrigger]);
 
   return (
     <div className={style.topContainer}>
@@ -53,12 +132,15 @@ const ScoutListPage = () => {
         <h1 className={style.listHeader}>招待一覧</h1>
         <div className={style.scrollAreaContainer}>
           <ScrollArea type="scroll">
-            {scouts.map(scout => (
+            {scoutList?.map(scout => (
               <ScoutCard
                 key={scout.id}
                 {...scout}
                 isSelected={selectNumber === scout.id}
+                isLiked={scout.isLiked}
                 onSelect={() => setSelectNumber(scout.id)}
+                handleReject={() => handleReject(scout.id)} // または onReject={handleReject}
+                handleApprove={() => handleApprove(scout.id)}
               />
             ))}
 
@@ -67,7 +149,17 @@ const ScoutListPage = () => {
         </div>
       </div>
       <div className={style.rightContainer}>
-        <ScoutDetail name={"test"} self={"test"} mem1={"test"} tags={["test", "test"]} />
+        {scoutList && scoutList.length > 0 ? (
+          <ScoutDetail
+            community_uuid={scoutList?.find(item => item.id === selectNumber)?.uuid ?? ""}
+            isLiked={selectIsLiked ?? false}
+            handleReject={() => handleReject(selectNumber ?? 0)}
+            handleApprove={() => handleApprove(selectNumber ?? 0)}
+            // isEmpty={scoutList.length === 0}
+          />
+        ) : (
+          <div className={style.noScoutMessage}>スカウト情報がありません</div>
+        )}
       </div>
     </div>
   );

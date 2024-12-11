@@ -102,13 +102,13 @@ export const Menubar = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <a href="/user/invite" className={style.icon}>
+        <Link href="/user/scout" className={style.icon}>
           <Invite size={60} />
           <span className={style.badge}>{inviteNum}</span>
-        </a>
-        <a href="/user/chat" className={style.icon}>
+        </Link>
+        <Link href="/user/chat" className={style.icon}>
           <MailIcon count={mailNum} size={40} />
-        </a>
+        </Link>
       </div>
       <div className={style.logo}>
         <Link href={homeURI}>

@@ -4,7 +4,12 @@ get_community_scout_list:
     description: statusは 0:未読、1:既読、2：興味なし、3:興味あり、uuidはcommunityのuuidを入れる
     operationId: get_scout_list
     parameters:
-      - $ref: "../components/user.yml#/UserUUIDRequest"
+      - name: user_uuid
+        in: query
+        required: true
+        description: "ユーザーのID"
+        schema:
+          type: string
     responses:
       200:
         description: スカウトに一覧取得成功
