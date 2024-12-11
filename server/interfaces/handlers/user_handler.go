@@ -84,8 +84,23 @@ func (h *userHandler) FindByID(ctx *gin.Context) {
 func (h *userHandler) GetAll(ctx *gin.Context) {
 	users, err := h.userUsecase.GetAll(ctx)
 	if err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
+		fmt.Errorf("failed to get users: %w", err)
+		return
 	}
 
-	ctx.JSON(http.StatusOK, users)
+	var response []gin.H
+	for _, user := range users {
+		res := gin.H{
+			"uuid":       user.UUID,
+			"name":       user.Name,
+			"img":        user.Img,
+			"self":       user.Self,
+			"mem1":       user.Mem1,
+			"tags":       user.Tags,
+			"tag_colors": user.TagColors,
+		}
+		response = append(response, res)
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }

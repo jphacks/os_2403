@@ -21,20 +21,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import style from "../styles/menubar.module.scss";
 import { MailIcon } from "./mail";
-import Search from "./search";
-
-const mockData = [
-  { label: "東京大学" },
-  { label: "京都大学" },
-  { label: "大阪大学" },
-  { label: "東北大学" },
-  { label: "名古屋大学" },
-  { label: "九州大学" },
-  { label: "北海道大学" },
-  { label: "筑波大学" },
-  { label: "早稲田大学" },
-  { label: "慶應義塾大学" },
-];
+// import Search from "./search";
 
 const inviteNum = 3;
 const mailNum = 80;
@@ -128,13 +115,13 @@ export const Menubar = () => {
           <Logo size={50} />
         </Link>
       </div>
-      {currentAccountType === "user" ? (
+      {/* {currentAccountType === "user" ? (
         <div className={style.search}>
           <Search data={mockData} />
         </div>
       ) : (
         <></>
-      )}
+      )} */}
     </div>
   );
 };
