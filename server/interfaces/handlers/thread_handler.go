@@ -41,7 +41,7 @@ func NewThreadHandler(threadUsecase usecase.IThreadUsecase, wsService *middlewar
 }
 
 func (h *threadHandler) CreateThread(ctx *gin.Context) {
-	userUUID := ctx.Query("user_uuid")
+	uuid := ctx.Query("uuid")
 	// 全てのタグの取得
 	tags, err := h.tagUsecase.GetAll(ctx)
 	if err != nil {
@@ -49,13 +49,13 @@ func (h *threadHandler) CreateThread(ctx *gin.Context) {
 	}
 
 	// スレッド作成の関数呼び出し
-	threadID, err := h.threadUsecase.CreateThread(ctx, userUUID, tags)
+	_, err = h.threadUsecase.CreateThread(ctx, uuid, tags)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
 	// レスポンスでIDだけ返す
-	ctx.JSON(http.StatusOK, gin.H{"thread_id": &threadID})
+	ctx.JSON(http.StatusOK, "thread_created")
 }
 
 func (h *threadHandler) ThreadMessage(ctx *gin.Context) {
@@ -95,9 +95,9 @@ func (h *threadHandler) ThreadMessage(ctx *gin.Context) {
 		}
 
 		err = h.tagClickHistoryUsecase.Create(ctx, CreateTagClickHistoryRequest{
-			UserUUID: user.UserUUID,
-			TagName:  msgData.Tag,
-			Action:   "click",
+			UUID:    user.UUID,
+			TagName: msgData.Tag,
+			Action:  "click",
 		})
 		if err != nil {
 			fmt.Println("Error create tagClickHistory:", err)
@@ -112,9 +112,9 @@ func (h *threadHandler) ThreadMessage(ctx *gin.Context) {
 
 		for _, tag := range gpttags {
 			err = h.tagClickHistoryUsecase.Create(ctx, CreateTagClickHistoryRequest{
-				UserUUID: user.UserUUID,
-				TagName:  tag,
-				Action:   "gpt",
+				UUID:    user.UUID,
+				TagName: tag,
+				Action:  "gpt",
 			})
 			if err != nil {
 				fmt.Println("Error create tagClickHistory:", err)

@@ -12,6 +12,8 @@ import (
 type authUserHandler struct {
 	authUsecase     usecase.IAuthUsecase
 	sessionsUsecase usecase.IAuthUsecase
+	tagUsecase      usecase.ITagUsecase
+	threadUsecase   usecase.IThreadUsecase
 	store           *sessions.CookieStore
 }
 
@@ -27,10 +29,12 @@ type (
 	SignInRequest = usecase.InputSignIn
 )
 
-func NewAuthUserHandler(authUsecase usecase.IAuthUsecase, store *sessions.CookieStore) IAuthHandler {
+func NewAuthUserHandler(authUsecase *usecase.IAuthUsecase, store *sessions.CookieStore, tagUsecase *usecase.ITagUsecase, threadUsecase *usecase.IThreadUsecase) IAuthHandler {
 	return &authUserHandler{
-		authUsecase: authUsecase,
-		store:       store,
+		authUsecase:   *authUsecase,
+		store:         store,
+		tagUsecase:    *tagUsecase,
+		threadUsecase: *threadUsecase,
 	}
 }
 
@@ -70,6 +74,19 @@ func (h *authUserHandler) SignUp(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return
 	}
+
+	tags, err := h.tagUsecase.GetAll(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	// スレッド作成の関数呼び出し
+	_, err = h.threadUsecase.CreateThread(ctx, uuid.String(), tags)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
 
 	ctx.JSON(http.StatusCreated, gin.H{"message": "sign in successful"})
 }

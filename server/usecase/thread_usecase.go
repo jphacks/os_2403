@@ -56,7 +56,7 @@ func (u *ThreadUsecase) CreateThread(ctx context.Context, uuid string, tags []*m
 	}
 
 	_, err = u.threadRepo.Create(ctx, &models.Thread{
-		UserUUID: uuid,
+		UUID:     uuid,
 		ThreadID: openAIthread.ID,
 	})
 	if err != nil {

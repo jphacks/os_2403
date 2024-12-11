@@ -7,9 +7,9 @@ import (
 )
 
 type CreateTagClickHistoryInput struct {
-	UserUUID string
-	TagName  string //一旦IDではなく送られてくる予定のNameを保存する方針です。
-	Action   string
+	UUID    string
+	TagName string //一旦IDではなく送られてくる予定のNameを保存する方針です。
+	Action  string
 }
 
 type ITagClickHistoryUsecase interface {
@@ -28,9 +28,9 @@ func NewTagClickHistoryUsecase(tagClickHistoryRepository repositories.ITagClickH
 
 func (u *TagClickHistoryUsecase) Create(ctx context.Context, input CreateTagClickHistoryInput) error {
 	err := u.tagClickHistoryRepository.Create(ctx, &models.TagClickHistory{
-		UserUUID: input.UserUUID,
-		Tag:      input.TagName,
-		Action:   input.Action,
+		UUID:   input.UUID,
+		Tag:    input.TagName,
+		Action: input.Action,
 	})
 
 	if err != nil {

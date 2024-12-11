@@ -82,23 +82,23 @@ func main() {
 	tagUsecase := usecase.NewTagUseCase(tagRepo)
 	tagClickHistoryUsecase := usecase.NewTagClickHistoryUsecase(tagClickHistoryRepo)
 
-	authUserHandler := handlers.NewAuthUserHandler(authUserUsecase, store)
-	authCommunityHandler := handlers.NewAuthCommunityHandler(authcommunityUsecase, store)
-	userHandler := handlers.NewUserHandler(userUsecase)
-	communityHandler := handlers.NewCommunityHandler(communityUsecase)
-	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase, userUsecase)
-	tagHandler := handlers.NewTagHandler(tagUsecase)
-	eventHandler := handlers.NewEventHandler(eventUsecase, communityUsecase)
-
 	// WebSocketの初期化
 	wsService := middleware.NewWebSocketService()
 	chatUsecase := usecase.NewChatUseCase(messageRepo, wsService)
-	chatHandler := handlers.NewChatHandler(chatUsecase, wsService) // 他の初期化ここに書いてね
+	chatHandler := handlers.NewChatHandler(chatUsecase, wsService)
 
 	//openai系
 	openaiUsecase := gpt.NewOpenAIClient(apiKey)
 	threadUsecase := usecase.NewThreadUsecase(threadRepo, wsService, openaiUsecase)
 	threadHandler := handlers.NewThreadHandler(threadUsecase, wsService, tagUsecase, tagClickHistoryUsecase)
+
+	authUserHandler := handlers.NewAuthUserHandler(&authUserUsecase, store, &tagUsecase, &threadUsecase)
+	authCommunityHandler := handlers.NewAuthCommunityHandler(&authcommunityUsecase, store, &tagUsecase, &threadUsecase)
+	userHandler := handlers.NewUserHandler(userUsecase)
+	communityHandler := handlers.NewCommunityHandler(communityUsecase)
+	scoutListHandler := handlers.NewScoutListHandler(scoutListUsecase, userUsecase)
+	tagHandler := handlers.NewTagHandler(tagUsecase)
+	eventHandler := handlers.NewEventHandler(eventUsecase, communityUsecase)
 
 	// ルーティング
 	router := gin.Default()
