@@ -4,6 +4,7 @@ import (
 	"github.com/jphacks/os_2403/domain/models"
 	"github.com/jphacks/os_2403/domain/repositories"
 	"github.com/jphacks/os_2403/infrastructure/middleware"
+	"strconv"
 )
 
 type ChatUseCase struct {
@@ -22,7 +23,7 @@ func (u *ChatUseCase) HandleMessage(message *models.Message) error {
 	if err := u.messageRepo.Save(message); err != nil {
 		return err
 	}
-	u.wsService.BroadcastToRoom(message.RoomID, message)
+	u.wsService.BroadcastToRoom(strconv.Itoa(message.RoomID), message)
 	return nil
 }
 

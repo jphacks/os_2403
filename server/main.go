@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 	"github.com/jphacks/os_2403/infrastructure/dao"
+	"github.com/jphacks/os_2403/infrastructure/gpt"
 	"github.com/jphacks/os_2403/infrastructure/middleware"
 	"github.com/jphacks/os_2403/interfaces/handlers"
 	"github.com/jphacks/os_2403/usecase"
@@ -55,6 +56,11 @@ func main() {
 
 	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	if apiKey == "" {
+		log.Fatal("環境変数 OPENAI_API_KEY が設定されていません")
+	}
+
 	// 初期化はinfra(persistence)->domain/service->usecase->handlerの順番で行うようにしよう
 	userRepo := dao.NewUserRepository(db)
 	tagRepo := dao.NewTagRepository(db)
@@ -89,7 +95,9 @@ func main() {
 	chatUsecase := usecase.NewChatUseCase(messageRepo, wsService)
 	chatHandler := handlers.NewChatHandler(chatUsecase, wsService) // 他の初期化ここに書いてね
 
-	threadUsecase := usecase.NewThreadUsecase(threadRepo, wsService)
+	//openai系
+	openaiUsecase := gpt.NewOpenAIClient(apiKey)
+	threadUsecase := usecase.NewThreadUsecase(threadRepo, wsService, openaiUsecase)
 	threadHandler := handlers.NewThreadHandler(threadUsecase, wsService, tagUsecase, tagClickHistoryUsecase)
 
 	// ルーティング
@@ -132,7 +140,7 @@ func main() {
 	router.GET("/api/messages/:room_id", chatHandler.GetMessages) // チャット履歴取得用
 
 	router.GET("/api/thread", threadHandler.CreateThread)
-	router.GET("/api/ws/tag_recommend", threadHandler.ThreadMessage)
+	router.GET("/api/ws/tag_recommend/:uuid", threadHandler.ThreadMessage)
 
 	log.Fatal(http.ListenAndServe(":80", router))
 }
