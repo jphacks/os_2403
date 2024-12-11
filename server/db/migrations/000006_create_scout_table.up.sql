@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `scout_lists` (
                                              `user_uuid` CHAR(36) NOT NULL,                         -- ユーザーUUID（外部キーとして扱う）
     `status` ENUM('unread', 'read', 'approve', 'reject') NOT NULL DEFAULT 'unread', -- ステータス
     `community_uuid` CHAR(36) NOT NULL,                    -- コミュニティUUID（外部キーとして扱う）
-    `scout_date` DATE NOT NULL,                            -- スカウト日
+    `scoutdate` DATE NOT NULL,                            -- スカウト日
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 作成日時
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 更新日時
     `deleted_at` TIMESTAMP NULL,                           -- 削除日時（論理削除）
