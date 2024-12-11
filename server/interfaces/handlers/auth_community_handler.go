@@ -10,6 +10,8 @@ import (
 type communityHandler struct {
 	authUsecase     usecase.IAuthCommunityUsecase
 	sessionsUsecase usecase.IAuthCommunityUsecase
+	tagUsecase      usecase.ITagUsecase
+	threadUsecase   usecase.IThreadUsecase
 	store           *sessions.CookieStore
 }
 
@@ -23,10 +25,12 @@ type (
 	LoginCommunityRequest  = usecase.InputCommunitySignIn
 )
 
-func NewAuthCommunityHandler(authUsecase usecase.IAuthCommunityUsecase, store *sessions.CookieStore) IAuthCommunityHandler {
+func NewAuthCommunityHandler(authUsecase *usecase.IAuthCommunityUsecase, store *sessions.CookieStore, tagusecase *usecase.ITagUsecase, threadUsecase *usecase.IThreadUsecase) IAuthCommunityHandler {
 	return &communityHandler{
-		authUsecase: authUsecase,
-		store:       store,
+		authUsecase:   *authUsecase,
+		store:         store,
+		tagUsecase:    *tagusecase,
+		threadUsecase: *threadUsecase,
 	}
 }
 
@@ -65,6 +69,17 @@ func (h *communityHandler) SignUp(ctx *gin.Context) {
 	if err := session.Save(ctx.Request, ctx.Writer); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return
+	}
+
+	tags, err := h.tagUsecase.GetAll(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	// スレッド作成の関数呼び出し
+	_, err = h.threadUsecase.CreateThread(ctx, uuid.String(), tags)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
