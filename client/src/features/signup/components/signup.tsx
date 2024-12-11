@@ -19,6 +19,12 @@ import { z } from "zod";
 import style from "./style.module.scss";
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { toast } from "sonner";
+import { User } from "@/features/account/types/user";
+import { Community } from "@/features/account/types/community";
+import { accountTypeAtom, communityAtom } from "@/features/account/stores";
+import { useAtom } from "jotai";
+import { userAtom } from "@/features/account/stores";
 
 type SignUpProps = {
   type: "user" | "community";
@@ -40,16 +46,43 @@ type SignupForm = z.infer<typeof SignupFormSchema>;
 export const SignUpDialog = (props: SignUpProps) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [user, setUserAtom] = useAtom(userAtom);
+  const [currentUser, setCurrentUser] = useAtom(userAtom);
+  const [currentCommunity, setCurrentCommunity] = useAtom(communityAtom);
+  const [_currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
 
   let name = "";
   let introduction = "";
   let api_url = "";
   let go_url = "";
+  let title = "";
+  let alternative = "";
+  let get_base_url = "";
+  let signin_url = "";
+  let link = "";
   if (props.type === "user") {
+    title = "ユーザーログイン";
     name = "ニックネーム";
     introduction = "自己紹介";
     api_url = "/user/signup";
     go_url = "/user/signup/tags";
+    alternative = "イベント・サークル運営者の方はこちら";
+    get_base_url = "/user";
+    signin_url = "/user/signin";
+    link = "/community/signin";
+  } else if (props.type === "community") {
+    title = "イベント・サークル運営者ログイン";
+    alternative = "ユーザーの方はこちら";
+    name = "団体名";
+    introduction = "団体紹介";
+    api_url = "/community/signup";
+    go_url = "/community/signin";
+    get_base_url = "/community";
+    signin_url = "/community/signin";
+    link = "/user/signin";
+  }
+  if (props.type === "user") {
+    
   } else if (props.type === "community") {
     name = "団体名";
     introduction = "団体紹介";
@@ -70,12 +103,39 @@ export const SignUpDialog = (props: SignUpProps) => {
     },
   });
 
-  const onSubmit = async (signupData: SignupForm) => {
+  const onSubmit = async (loginData: SignupForm) => {
     try {
-      await apiClient.post(api_url, signupData);
+      const signUpResponse = await apiClient.post(api_url, loginData);
+
+      if (props.type === "user") {
+        setCurrentAccountType("user");
+        const uuid = signUpResponse.data.uuid;
+        const response = await apiClient.get(`${get_base_url}/${uuid}`);
+        console.log(response);
+        const user: User = {
+          uuid: response.data.uuid,
+          name: response.data.name,
+          email: response.data.email,
+          img: response.data.img,
+        };
+        setCurrentUser(user);
+      } else if (props.type === "community") {
+        setCurrentAccountType("community");
+        const uuid = signUpResponse.data.uuid;
+        const response = await apiClient.get(`${get_base_url}/${uuid}`);
+        console.log(response);
+        const community: Community = {
+          uuid: response.data.uuid,
+          name: response.data.name,
+          email: response.data.email,
+          img: response.data.img,
+        };
+        setCurrentCommunity(community);
+      }
+      toast("サインインしました。");
       router.push(go_url);
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    } catch (err) {
+      console.error(err);
     }
   };
 

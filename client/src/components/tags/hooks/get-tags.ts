@@ -6,7 +6,6 @@ export const getTags = async (): Promise<TagType[]> => {
     const response = await apiClient.get("/tag");
     // APIレスポンスの型を明示的に定義
     type ApiTag = {
-      ID: number;
       Name: string;
       Color: string;
     };

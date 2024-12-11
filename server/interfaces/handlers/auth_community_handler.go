@@ -1,10 +1,11 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/sessions"
 	"github.com/jphacks/os_2403/usecase"
-	"net/http"
 )
 
 type communityHandler struct {
@@ -67,7 +68,7 @@ func (h *communityHandler) SignUp(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "sign up successful", "uuid": uuid})
 }
 
 func (h *communityHandler) SignIn(ctx *gin.Context) {
