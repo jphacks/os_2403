@@ -76,3 +76,23 @@ community_signup:
     responses:
       201:
         description: "サインアップ成功"
+
+session:
+  get:
+    summary: セッション
+    description: セッション
+    operationID: session
+    parameters:
+      - in: header
+        name: session-name
+        schema:
+          type: string
+        required: true
+        description: sessionの名前
+    responses:
+      200:
+        description: 認証成功
+        content:
+          application/json:
+            schema:
+              $ref: "../components/auth.yml#/Session"

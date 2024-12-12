@@ -108,7 +108,7 @@ func (h *communityHandler) SignIn(ctx *gin.Context) {
 	}
 
 	session.Values["user_id"] = uuid // ユーザーIDを保存
-	session.Values["account_type"] = "user"
+	session.Values["account_type"] = "community"
 	// セッションの設定を調整
 	session.Options = &sessions.Options{
 		Path:     "/",

@@ -1,21 +1,51 @@
 // hooks/useAuth.ts
-
+"use client";
+import { GetCommunityByUUID, GetUserByUUID } from "@/features/account/api";
+import { accountTypeAtom, communityAtom, userAtom } from "@/features/account/stores";
 import { SessionData } from "@/features/account/types/session";
 import { apiClient } from "@/utils/client";
+import { useAtom } from "jotai/index";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 export const useAuth = () => {
+  const [_currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
+  const [_currentUser, setCurrentUser] = useAtom(userAtom);
+  const [_currentCommunity, setCurrentCommunity] = useAtom(communityAtom);
+
   const router = useRouter();
   const checkSession = useCallback(async () => {
     try {
       const res = await apiClient.get("/session");
       const session = res.data;
       const userData: SessionData = {
-        uuid: session.user_id,
-        email: session.email,
+        uuid: session.uuid,
+        account_type: session.account_type,
+        status: session.status,
       };
-      console.log(userData);
+      // console.log(userData);
+
+      switch (userData.account_type) {
+        case "user": {
+          setCurrentAccountType(userData.account_type);
+          const getUser = await GetUserByUUID(userData.uuid);
+          setCurrentUser(getUser);
+          router.push("/user/home");
+          break;
+        }
+
+        case "community": {
+          setCurrentAccountType(userData.account_type);
+          const getCommunity = await GetCommunityByUUID(userData.uuid);
+          setCurrentCommunity(getCommunity);
+          router.push("/community/home");
+          break;
+        }
+        default:
+          setCurrentAccountType("not");
+          router.push("/user/signin");
+          break;
+      }
     } catch (error) {
       console.error("Session check failed:", error);
     } finally {

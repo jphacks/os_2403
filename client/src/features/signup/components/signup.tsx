@@ -11,20 +11,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { accountTypeAtom, communityAtom } from "@/features/account/stores";
+import { userAtom } from "@/features/account/stores";
+import { Community } from "@/features/account/types/community";
+import { User } from "@/features/account/types/user";
 import { apiClient } from "@/utils/client";
+import { useAtom } from "jotai";
 import { CircleChevronRight } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import style from "./style.module.scss";
-import { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
-import { toast } from "sonner";
-import { User } from "@/features/account/types/user";
-import { Community } from "@/features/account/types/community";
-import { accountTypeAtom, communityAtom } from "@/features/account/stores";
-import { useAtom } from "jotai";
-import { userAtom } from "@/features/account/stores";
 
 type SignUpProps = {
   type: "user" | "community";
@@ -46,7 +46,7 @@ type SignupForm = z.infer<typeof SignupFormSchema>;
 export const SignUpDialog = (props: SignUpProps) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [user, setUserAtom] = useAtom(userAtom);
+  // const [user, setUserAtom] = useAtom(userAtom);
   const [currentUser, setCurrentUser] = useAtom(userAtom);
   const [currentCommunity, setCurrentCommunity] = useAtom(communityAtom);
   const [_currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
@@ -55,20 +55,20 @@ export const SignUpDialog = (props: SignUpProps) => {
   let introduction = "";
   let api_url = "";
   let go_url = "";
-  let title = "";
-  let alternative = "";
+  // let title = "";
+  // let alternative = "";
   let get_base_url = "";
   if (props.type === "user") {
-    title = "ユーザーログイン";
+    // title = "ユーザーログイン";
     name = "ニックネーム";
     introduction = "自己紹介";
     api_url = "/user/signup";
     go_url = "/user/signup/tags";
-    alternative = "イベント・サークル運営者の方はこちら";
+    // alternative = "イベント・サークル運営者の方はこちら";
     get_base_url = "/user";
   } else if (props.type === "community") {
-    title = "イベント・サークル運営者ログイン";
-    alternative = "ユーザーの方はこちら";
+    // title = "イベント・サークル運営者ログイン";
+    // alternative = "ユーザーの方はこちら";
     name = "団体名";
     introduction = "団体紹介";
     api_url = "/community/signup";
@@ -92,7 +92,7 @@ export const SignUpDialog = (props: SignUpProps) => {
   const onSubmit = async (loginData: SignupForm) => {
     try {
       const signUpResponse = await apiClient.post(api_url, loginData);
-  
+
       if (props.type === "user") {
         setCurrentAccountType("user");
         const uuid = signUpResponse.data.uuid;
@@ -104,13 +104,13 @@ export const SignUpDialog = (props: SignUpProps) => {
           img: response.data.img,
         };
         setCurrentUser(user);
-        
+
         // Atomの状態確認
-        console.log('Current User Atom after setting:', user);
-        
+        console.log("Current User Atom after setting:", user);
+
         // 非同期更新後の状態を確認
         setTimeout(() => {
-          console.log('Current User Atom after delay:', currentUser);
+          console.log("Current User Atom after delay:", currentUser);
         }, 100);
       } else if (props.type === "community") {
         setCurrentAccountType("community");
@@ -123,19 +123,19 @@ export const SignUpDialog = (props: SignUpProps) => {
           img: response.data.img,
         };
         setCurrentCommunity(community);
-        
+
         // Atomの状態確認
-        console.log('Current Community Atom after setting:', community);
-        
+        console.log("Current Community Atom after setting:", community);
+
         // 非同期更新後の状態を確認
         setTimeout(() => {
-          console.log('Current Community Atom after delay:', currentCommunity);
+          console.log("Current Community Atom after delay:", currentCommunity);
         }, 100);
       }
       toast("サインインしました。");
       router.push(go_url);
     } catch (err) {
-      console.error('Sign up error:', err);
+      console.error("Sign up error:", err);
     }
   };
 
@@ -237,7 +237,7 @@ export const SignUpDialog = (props: SignUpProps) => {
                       <Input
                         placeholder="パスワード"
                         {...field}
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? "text" : "password"}
                         className={`${style.input} pr-12`}
                       />
                     </FormControl>

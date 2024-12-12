@@ -5,7 +5,7 @@ export type ButtonVariant = z.infer<typeof ButtonVariantEnum>;
 
 export const TagSchema = z.object({
   name: z.string(),
-  color: ButtonVariantEnum
+  color: ButtonVariantEnum,
 });
 
 export type TagType = z.infer<typeof TagSchema>;

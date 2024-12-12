@@ -1,6 +1,6 @@
 "use client";
 import CardTag from "@/components/tags/card-tag";
-import { TagType, ButtonVariant } from "@/features/tags/types/tag";
+import { getTags } from "@/components/tags/hooks/get-tags";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,14 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
-import style from "./style.module.scss";
-import { useEffect, useState } from "react";
-import { getTags } from "@/components/tags/hooks/get-tags";
-import { apiClient } from "@/utils/client";
-import { useAtom } from "jotai";
 import { userAtom } from "@/features/account/stores";
 import { communityAtom } from "@/features/account/stores";
+import { TagType } from "@/features/tags/types/tag";
+import { apiClient } from "@/utils/client";
+import { useAtom } from "jotai";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import style from "./style.module.scss";
 
 type TagCardProps = {
   type: "user" | "community";
@@ -95,9 +95,9 @@ export const TagCard = ({ type, className }: TagCardProps) => {
 
     try {
       await apiClient.put(endpoint, {
-        tag: selectedTagNames
+        tag: selectedTagNames,
       });
-      
+
       router.push(redirectPath);
     } catch (error) {
       console.error("Failed to update tags:", error);
@@ -128,109 +128,105 @@ export const TagCard = ({ type, className }: TagCardProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent className={style.content}>
-        <CardTag 
-          key="1" 
-          variant={displayTags[0]?.color} 
-          className={`${style.tag1} ${selectedTags.has(0) ? style.selected : ''}`}
+        <CardTag
+          key="1"
+          variant={displayTags[0]?.color}
+          className={`${style.tag1} ${selectedTags.has(0) ? style.selected : ""}`}
           onClick={() => handleTagClick(0)}
         >
           {displayTags[0]?.name}
         </CardTag>
-        <CardTag 
-          key="2" 
-          variant={tags[1]?.color} 
-          className={`${style.tag2} ${selectedTags.has(1) ? style.selected : ''}`}
+        <CardTag
+          key="2"
+          variant={tags[1]?.color}
+          className={`${style.tag2} ${selectedTags.has(1) ? style.selected : ""}`}
           onClick={() => handleTagClick(1)}
         >
           {tags[1]?.name}
         </CardTag>
-        <CardTag 
-          key="3" 
-          variant={tags[2]?.color} 
-          className={`${style.tag3} ${selectedTags.has(2) ? style.selected : ''}`}
+        <CardTag
+          key="3"
+          variant={tags[2]?.color}
+          className={`${style.tag3} ${selectedTags.has(2) ? style.selected : ""}`}
           onClick={() => handleTagClick(2)}
         >
           {tags[2]?.name}
         </CardTag>
-        <CardTag 
-          key="4" 
-          variant={tags[3]?.color} 
-          className={`${style.tag1} ${selectedTags.has(3) ? style.selected : ''}`}
+        <CardTag
+          key="4"
+          variant={tags[3]?.color}
+          className={`${style.tag1} ${selectedTags.has(3) ? style.selected : ""}`}
           onClick={() => handleTagClick(3)}
         >
           {tags[3]?.name}
         </CardTag>
-        <CardTag 
-          key="5" 
-          variant={tags[4]?.color} 
-          className={`${style.tag2} ${selectedTags.has(4) ? style.selected : ''}`}
+        <CardTag
+          key="5"
+          variant={tags[4]?.color}
+          className={`${style.tag2} ${selectedTags.has(4) ? style.selected : ""}`}
           onClick={() => handleTagClick(4)}
         >
           {tags[4]?.name}
         </CardTag>
-        <CardTag 
-          key="6" 
-          variant={tags[5]?.color} 
-          className={`${style.tag1} ${selectedTags.has(5) ? style.selected : ''}`}
+        <CardTag
+          key="6"
+          variant={tags[5]?.color}
+          className={`${style.tag1} ${selectedTags.has(5) ? style.selected : ""}`}
           onClick={() => handleTagClick(5)}
         >
           {tags[5]?.name}
         </CardTag>
-        <CardTag 
-          key="7" 
-          variant={tags[6]?.color} 
-          className={`${style.tag1} ${selectedTags.has(6) ? style.selected : ''}`}
+        <CardTag
+          key="7"
+          variant={tags[6]?.color}
+          className={`${style.tag1} ${selectedTags.has(6) ? style.selected : ""}`}
           onClick={() => handleTagClick(6)}
         >
           {tags[6]?.name}
         </CardTag>
-        <CardTag 
-          key="8" 
-          variant={tags[7]?.color} 
-          className={`${style.tag3} ${selectedTags.has(7) ? style.selected : ''}`}
+        <CardTag
+          key="8"
+          variant={tags[7]?.color}
+          className={`${style.tag3} ${selectedTags.has(7) ? style.selected : ""}`}
           onClick={() => handleTagClick(7)}
         >
           {tags[7]?.name}
         </CardTag>
-        <CardTag 
-          key="9" 
-          variant={tags[8]?.color} 
-          className={`${style.tag1} ${selectedTags.has(8) ? style.selected : ''}`}
+        <CardTag
+          key="9"
+          variant={tags[8]?.color}
+          className={`${style.tag1} ${selectedTags.has(8) ? style.selected : ""}`}
           onClick={() => handleTagClick(8)}
         >
           {tags[8]?.name}
         </CardTag>
-        <CardTag 
-          key="10" 
-          variant={tags[9]?.color} 
-          className={`${style.tag2} ${selectedTags.has(9) ? style.selected : ''}`}
+        <CardTag
+          key="10"
+          variant={tags[9]?.color}
+          className={`${style.tag2} ${selectedTags.has(9) ? style.selected : ""}`}
           onClick={() => handleTagClick(9)}
         >
           {tags[9]?.name}
         </CardTag>
-        <CardTag 
-          key="11" 
-          variant={tags[10]?.color} 
-          className={`${style.tag3} ${selectedTags.has(10) ? style.selected : ''}`}
+        <CardTag
+          key="11"
+          variant={tags[10]?.color}
+          className={`${style.tag3} ${selectedTags.has(10) ? style.selected : ""}`}
           onClick={() => handleTagClick(10)}
         >
           {tags[10]?.name}
         </CardTag>
-        <CardTag 
-          key="12" 
-          variant={tags[11]?.color} 
-          className={`${style.tag1} ${selectedTags.has(11) ? style.selected : ''}`}
+        <CardTag
+          key="12"
+          variant={tags[11]?.color}
+          className={`${style.tag1} ${selectedTags.has(11) ? style.selected : ""}`}
           onClick={() => handleTagClick(11)}
         >
           {tags[11]?.name}
         </CardTag>
       </CardContent>
       <CardFooter className={style.footer}>
-        <Button 
-          onClick={onClick} 
-          className={style.button}
-          disabled={selectedTags.size < 3}
-        >
+        <Button onClick={onClick} className={style.button} disabled={selectedTags.size < 3}>
           これが気に入った！
         </Button>
       </CardFooter>

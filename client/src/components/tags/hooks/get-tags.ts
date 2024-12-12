@@ -1,4 +1,4 @@
-import {ButtonVariant, TagType} from "@/features/tags/types/tag";
+import { ButtonVariant, TagType } from "@/features/tags/types/tag";
 import { apiClient } from "@/utils/client";
 
 export const getTags = async (): Promise<TagType[]> => {
@@ -13,7 +13,7 @@ export const getTags = async (): Promise<TagType[]> => {
     // タグの変換時に明示的な型付け
     return response.data.tags.map((tag: ApiTag) => ({
       name: tag.Name,
-      color: tag.Color.toLowerCase() as ButtonVariant
+      color: tag.Color.toLowerCase() as ButtonVariant,
     }));
   } catch (error) {
     console.error("Failed to fetch tags:", error);

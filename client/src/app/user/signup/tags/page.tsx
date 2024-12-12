@@ -10,29 +10,29 @@ const RegisterTags = () => {
       {
         ID: 2,
         color: "red",
-        Name: "st"
+        Name: "st",
       },
       {
         ID: 3,
         color: "blue",
-        Name: "a"
+        Name: "a",
       },
       {
         ID: 5,
         color: "green",
-        Name: "r"
+        Name: "r",
       },
       {
         ID: 1,
         color: "gray",
-        Name: "hogehoge"
+        Name: "hogehoge",
       },
       {
         ID: 4,
         color: "purple",
-        Name: "d"
-      }
-    ]
+        Name: "d",
+      },
+    ],
   };
 
   return (

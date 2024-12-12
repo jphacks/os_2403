@@ -76,7 +76,6 @@ func (h *authUserHandler) SignUp(ctx *gin.Context) {
 		return
 	}
 
-
 	tags, err := h.tagUsecase.GetAll(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -173,7 +172,7 @@ func (h *authUserHandler) CheckSession(c *gin.Context) {
 
 	// ユーザー情報をレスポンスとして返す
 	response := map[string]interface{}{
-		"user_id":      session.Values["user_id"],
+		"uuid":         session.Values["user_id"],
 		"account_type": session.Values["account_type"],
 		"status":       "authenticated",
 	}
