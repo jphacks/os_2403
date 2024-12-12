@@ -8,7 +8,6 @@
 
 .header {
   text-align: center;
-
 }
 
 .title {
@@ -77,4 +76,32 @@
   font-weight: 400;
   font-size: 22px;
   line-height: 100%;
+}
+
+.aiRecommendedSection {
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+}
+
+.aiRecommendedLabel {
+  font-family: 'MOBO';
+  font-size: 24px;
+  color: theme.$gray;
+  margin-bottom: 10px;
+}
+
+.aiRecommendedTags {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.aiTag {
+  width: 206px;
+  height: 72px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 39px;
+  line-height: 48px;
 }

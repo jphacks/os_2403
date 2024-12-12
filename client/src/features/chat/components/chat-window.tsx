@@ -1,167 +1,328 @@
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import React, { useState, useEffect, useRef } from "react";
-import { Message, Room, SendMessage } from "../types/types";
-import "./ChatWindow.scss";
+"use client";
+import CardTag from "@/components/tags/card-tag";
+import { TagType, ButtonVariant } from "@/features/tags/types/tag";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import style from "./style.module.scss";
+import { useEffect, useState, useRef } from "react";
+import { getTags } from "@/components/tags/hooks/get-tags";
+import { apiClient } from "@/utils/client";
+import { useAtom } from "jotai";
 import { userAtom } from "@/features/account/stores";
 import { communityAtom } from "@/features/account/stores";
-import { accountTypeAtom } from "@/features/account/stores"; // axiosをインポート
-import { apiClient } from "@/utils/client";
-import { useAtom } from "jotai/index";
 
-interface ChatWindowProps {
-  room: Room | null;
-}
+type TagCardProps = {
+  type: "user" | "community";
+};
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [current, setCurrent] = useState<string>("");
-  const [accountType] = useAtom(accountTypeAtom);
+export const TagCard = ({ type }: TagCardProps) => {
+  const router = useRouter();
+  const ws = useRef<WebSocket | null>(null);
+  const [tags, setTags] = useState<TagType[]>([]);
+  const [aiRecommendedTags, setAiRecommendedTags] = useState<TagType[]>([]);
+  const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [currentUser] = useAtom(userAtom);
   const [currentCommunity] = useAtom(communityAtom);
-  const ws = useRef<WebSocket | null>(null);
 
-  // メッセージ履歴を取得する関数
-  const fetchMessageHistory = async (roomId: number) => {
+  const fetchTags = async () => {
     try {
-      const response = await apiClient.get(`messages/${roomId}`);
-      // 日付の降順でソートされているため、そのまま設定
-      setMessages(response.data);
+      setIsLoading(true);
+      const response = await getTags();
+      if (response && response.length > 0) {
+        setTags(response);
+        setAiRecommendedTags(response.slice(0, 3));
+      }
+      setError(null);
     } catch (error) {
-      console.error("メッセージ履歴の取得に失敗:", error);
+      setError("Failed to load tags");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!room) {
-      return;
-    }
+    let wsInstance: WebSocket | null = null;
+    let isComponentMounted = true;
 
-    let account;
-    if (accountType === "community") {
-      account = currentCommunity?.uuid || "gg";
-    } else if (accountType === "user") {
-      account = currentUser?.uuid || "gg";
-    }
-    setCurrent(account || "");
+    const initializeWebSocket = async () => {
+      const uuid = type === "user" ? currentUser?.uuid : currentCommunity?.uuid;
+      if (!uuid) {
+        console.log("No UUID available, skipping WebSocket connection");
+        return;
+      }
 
-    // メッセージ履歴を取得
-    fetchMessageHistory(room.id);
+      try {
+        await fetchTags();
 
-    ws.current = new WebSocket(`ws://localhost:8080/api/ws/chat/` + room.id);
+        const wsUrl = `ws://localhost:8080/api/ws/tag_reccomrend/${uuid}`;
+        console.log("Initializing WebSocket connection to:", wsUrl);
+        wsInstance = new WebSocket(wsUrl);
+        ws.current = wsInstance;
 
-    ws.current.onopen = () => {
-      console.log("WebSocket connection established");
+        wsInstance.onopen = () => {
+          console.log("WebSocket connection established");
+        };
+
+        wsInstance.onmessage = (event) => {
+          if (!isComponentMounted) return;
+
+          try {
+            const data = JSON.parse(event.data);
+            if (Array.isArray(data.recomendedTagName) && Array.isArray(data.recomendedTagColor)) {
+              const recommendedTags = data.recomendedTagName.map((name, index) => ({
+                name: name,
+                color: data.recomendedTagColor[index],
+                id: `ai-${index}`
+              }));
+              setAiRecommendedTags(recommendedTags);
+            }
+          } catch (error) {
+            console.error("Error parsing WebSocket message:", error);
+          }
+        };
+
+        wsInstance.onerror = (error) => {
+          console.error("WebSocket error:", error);
+        };
+
+        wsInstance.onclose = () => {
+          if (isComponentMounted) {
+            setTimeout(initializeWebSocket, 5000);
+          }
+        };
+
+      } catch (error) {
+        console.error("Error in WebSocket initialization:", error);
+      }
     };
 
-    ws.current.onmessage = event => {
-      const data = JSON.parse(event.data);
-      const receivedMessage: Message = {
-        id: data.id,
-        Message: data.Message,
-        UserID: data.UserID,
-        RoomID: data.RoomID,
-        Looked: data.Looked,
-        CreatedAt: data.CreatedAt,
-        UpdatedAt: data.UpdatedAt,
-        DeletedAt: data.DeletedAt,
-      };
-
-      // 重複チェックを追加
-      setMessages(prevMessages => {
-        // 既に同じIDのメッセージが存在しないか確認
-        const messageExists = prevMessages.some(msg => msg.id === receivedMessage.id);
-
-        // 重複していない場合のみ追加
-        return messageExists ? prevMessages : [receivedMessage, ...prevMessages];
-      });
-    };
-
-    ws.current.onerror = error => {
-      console.error("WebSocket error:", error);
-    };
-
-    ws.current.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
+    initializeWebSocket();
 
     return () => {
-      ws.current?.close();
+      isComponentMounted = false;
+      if (wsInstance) {
+        wsInstance.close();
+      }
     };
-  }, [room]);
+  }, [type, currentUser?.uuid, currentCommunity?.uuid]);
 
-  const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleTagClick = (index: number) => {
+    setSelectedTags(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+        
+        if (ws.current?.readyState === WebSocket.OPEN) {
+          const message = {
+            tag: tags[index].name
+          };
+          ws.current.send(JSON.stringify(message));
+        }
+      }
+      return newSet;
+    });
+  };
 
-    if (
-      newMessage.trim() === "" ||
-      !ws.current ||
-      ws.current.readyState !== WebSocket.OPEN ||
-      !room
-    ) {
+  const onClick = async () => {
+    let uuid: string | undefined;
+    let endpoint: string;
+    let redirectPath: string;
+
+    if (type === "user") {
+      uuid = currentUser?.uuid;
+      endpoint = `/user/${uuid}`;
+      redirectPath = "/user/signin";
+    } else {
+      uuid = currentCommunity?.uuid;
+      endpoint = `/community/${uuid}`;
+      redirectPath = "/community/signin";
+    }
+
+    if (!uuid) {
+      alert(type === "user" ? "ユーザー情報が取得できません" : "コミュニティ情報が取得できません");
       return;
     }
 
-    const message: SendMessage = {
-      content: newMessage,
-      user_id: current,
-    };
+    if (selectedTags.size < 3) {
+      alert("3つ以上のタグを選択してください");
+      return;
+    }
 
-    ws.current.send(JSON.stringify(message));
-    setNewMessage("");
+    const selectedTagNames = Array.from(selectedTags).map(index => tags[index].name);
+
+    try {
+      if (ws.current) {
+        ws.current.close();
+      }
+      
+      await apiClient.put(endpoint, {
+        tag: selectedTagNames
+      });
+      router.push(redirectPath);
+    } catch (error) {
+      alert("タグの更新に失敗しました。もう一度お試しください。");
+    }
   };
 
-  if (!room) {
-    return (
-      <div className="chat-window-empty">
-        <p>チャットするユーザーを選択してください</p>
-      </div>
-    );
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  const displayTags = [...tags];
+  while (displayTags.length < 12) {
+    displayTags.push(...tags);
   }
+  displayTags.length = 12;
 
   return (
-    <div className="chat-window-container">
-      <div className="chat-window-header">
-        <h2 className="chat-window-title">{room.detail_info.name}</h2>
-      </div>
-      <ScrollArea className="chat-window-scroll-area">
-        <div className="chat-window-messages">
-          {messages
-            .sort((a, b) => new Date(a.CreatedAt).getTime() - new Date(b.CreatedAt).getTime())
-            .map(message => (
-              <div
-                key={message.id}
-                className={`${message.UserID === current ? "my-message" : "other-message"}`}
-              >
-                <div className="chat-message-content">
-                  <div className="chat-message-bubble">
-                    <p>{message.Message}</p>
-                  </div>
-                  <span className="chat-message-timestamp">
-                    {new Date(message.CreatedAt).toLocaleTimeString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-        </div>
-        <ScrollBar className="chat-window-scroll-bar" />
-      </ScrollArea>
-      <div className="chat-window-input-container">
-        <form onSubmit={handleSendMessage} className="chat-window-form">
-          <input
-            type="text"
-            value={newMessage}
-            onChange={e => setNewMessage(e.target.value)}
-            className="chat-window-input"
-            placeholder="メッセージを入力..."
-          />
-          <button type="submit" className="chat-window-send-button">
-            送信
-          </button>
-        </form>
-      </div>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>タグを探してみよう！</CardTitle>
+        <CardDescription>
+          気になるタグを3個以上選んでみよう！
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <CardTag 
+          key="1" 
+          variant={displayTags[0]?.color} 
+          className={`${style.tag1} ${selectedTags.has(0) ? style.selected : ''}`}
+          onClick={() => handleTagClick(0)}
+        >
+          {displayTags[0]?.name}
+        </CardTag>
+        <CardTag 
+          key="2" 
+          variant={tags[1]?.color} 
+          className={`${style.tag2} ${selectedTags.has(1) ? style.selected : ''}`}
+          onClick={() => handleTagClick(1)}
+        >
+          {tags[1]?.name}
+        </CardTag>
+        <CardTag 
+          key="3" 
+          variant={tags[2]?.color} 
+          className={`${style.tag3} ${selectedTags.has(2) ? style.selected : ''}`}
+          onClick={() => handleTagClick(2)}
+        >
+          {tags[2]?.name}
+        </CardTag>
+        <CardTag 
+          key="4" 
+          variant={tags[3]?.color} 
+          className={`${style.tag1} ${selectedTags.has(3) ? style.selected : ''}`}
+          onClick={() => handleTagClick(3)}
+        >
+          {tags[3]?.name}
+        </CardTag>
+        <CardTag 
+          key="5" 
+          variant={tags[4]?.color} 
+          className={`${style.tag2} ${selectedTags.has(4) ? style.selected : ''}`}
+          onClick={() => handleTagClick(4)}
+        >
+          {tags[4]?.name}
+        </CardTag>
+        <CardTag 
+          key="6" 
+          variant={tags[5]?.color} 
+          className={`${style.tag1} ${selectedTags.has(5) ? style.selected : ''}`}
+          onClick={() => handleTagClick(5)}
+        >
+          {tags[5]?.name}
+        </CardTag>
+        <CardTag 
+          key="7" 
+          variant={tags[6]?.color} 
+          className={`${style.tag1} ${selectedTags.has(6) ? style.selected : ''}`}
+          onClick={() => handleTagClick(6)}
+        >
+          {tags[6]?.name}
+        </CardTag>
+        <CardTag 
+          key="8" 
+          variant={tags[7]?.color} 
+          className={`${style.tag3} ${selectedTags.has(7) ? style.selected : ''}`}
+          onClick={() => handleTagClick(7)}
+        >
+          {tags[7]?.name}
+        </CardTag>
+        <CardTag 
+          key="9" 
+          variant={tags[8]?.color} 
+          className={`${style.tag1} ${selectedTags.has(8) ? style.selected : ''}`}
+          onClick={() => handleTagClick(8)}
+        >
+          {tags[8]?.name}
+        </CardTag>
+        <CardTag 
+          key="10" 
+          variant={tags[9]?.color} 
+          className={`${style.tag2} ${selectedTags.has(9) ? style.selected : ''}`}
+          onClick={() => handleTagClick(9)}
+        >
+          {tags[9]?.name}
+        </CardTag>
+        <CardTag 
+          key="11" 
+          variant={tags[10]?.color} 
+          className={`${style.tag3} ${selectedTags.has(10) ? style.selected : ''}`}
+          onClick={() => handleTagClick(10)}
+        >
+          {tags[10]?.name}
+        </CardTag>
+        <CardTag 
+          key="12" 
+          variant={tags[11]?.color} 
+          className={`${style.tag1} ${selectedTags.has(11) ? style.selected : ''}`}
+          onClick={() => handleTagClick(11)}
+        >
+          {tags[11]?.name}
+        </CardTag>
+
+        {aiRecommendedTags && aiRecommendedTags.length > 0 && (
+          <div className={style.aiRecommendedSection}>
+            <div className={style.aiRecommendedLabel}>AIおすすめ</div>
+            <div className={style.aiRecommendedTags}>
+              {aiRecommendedTags.map((tag, index) => (
+                <CardTag
+                  key={`ai-recommended-${tag.id || index}`}
+                  variant={tag.color}
+                  className={style.aiTag}
+                  onClick={() => {
+                    const tagIndex = tags.findIndex(t => t.id === tag.id);
+                    if (tagIndex !== -1) {
+                      handleTagClick(tagIndex);
+                    }
+                  }}
+                >
+                  {tag.name}
+                </CardTag>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+      <CardFooter className={style.footer}>
+        <Button 
+          onClick={onClick} 
+          className={style.button}
+          disabled={selectedTags.size < 3}
+        >
+          これが気に入った！
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
-
-export default ChatWindow;
