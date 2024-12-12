@@ -25,14 +25,14 @@ const ChatRooms: React.FC<ChatRoomsProps> = ({ onSelectRoom }) => {
     try {
       if (accountType === "user") {
         const user_uuid = currentUser?.uuid;
-        const response = await apiClient.get(`scoutlist/getcommunitydetail`, {
+        const response = await apiClient.get(`scoutlist/getdmlist/community`, {
           params: { user_uuid },
         });
         console.log(response);
         setRooms(response.data);
       } else if (accountType === "community") {
         const community_uuid = currentCommunity?.uuid;
-        const response = await apiClient.get(`scoutlist/getuserdetail`, {
+        const response = await apiClient.get(`scoutlist/getdmlist/user`, {
           params: { community_uuid },
         });
         console.log(response);
