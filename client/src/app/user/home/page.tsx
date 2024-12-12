@@ -11,31 +11,40 @@ import InviteCheck from "../../../../public/invite-check";
 import styles from "./style.module.scss";
 
 export default function Home() {
-  const [Communities, setCommunities] = useState<Community[]>([]);
+  const [communities, setCommunities] = useState<Community[]>([]);
+  const [filterCommunities, setFilterCommunities] = useState<Community[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCommunity, setSelectedCommunity] = useState<Community[]>([]);
 
   useEffect(() => {
     GetCommunities().then(Communities => {
       setCommunities(Communities);
+      setFilterCommunities(Communities);
     });
   }, []);
 
-  const filteredCommunities = Communities.filter(Community =>
-    Community.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  useEffect(() => {
+    if (searchQuery) {
+      setFilterCommunities(
+        communities?.filter(communities =>
+          communities.name.toLowerCase().includes(searchQuery.toLowerCase()),
+        ),
+      );
+      return;
+    }
+    setFilterCommunities(communities);
+  }, [searchQuery]);
 
-  const handleCardClick = (Community: Community) => {
-    if (!selectedCommunity.includes(Community)) {
-      setSelectedCommunity([...selectedCommunity, Community]);
+  const handleCardClick = (communities: Community) => {
+    if (!selectedCommunity.includes(communities)) {
+      setSelectedCommunity([...selectedCommunity, communities]);
     } else {
-      setSelectedCommunity(selectedCommunity.filter(selected => selected !== Community));
+      setSelectedCommunity(selectedCommunity.filter(selected => selected !== communities));
     }
   };
 
   return (
     <>
-
       <div className={styles.inviteCheck}>
         <InviteCheck size={500} />
       </div>
@@ -58,7 +67,7 @@ export default function Home() {
 
         <ScrollArea className="h-96 w-full rounded-md border">
           <div className="grid grid-cols-2 gap-2 p-4">
-            {filteredCommunities.map(community => {
+            {filterCommunities?.map(community => {
               return (
                 <CommunityCard
                   key={community.name}

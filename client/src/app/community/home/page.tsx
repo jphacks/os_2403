@@ -11,9 +11,9 @@ import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 
-
 export default function Home() {
   const [users, setUsers] = useState<User[]>([]);
+  const [filterUsers, setFilterUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState<User[]>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
@@ -21,12 +21,19 @@ export default function Home() {
   useEffect(() => {
     GetUsers().then(users => {
       setUsers(users);
+      setFilterUsers(users);
     });
   }, []);
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  useEffect(() => {
+    if (searchQuery) {
+      setFilterUsers(
+        users?.filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase())),
+      );
+      return;
+    }
+    setFilterUsers(users);
+  }, [searchQuery]);
 
   const handleCardClick = (user: User) => {
     if (!selectedUser.includes(user)) {
@@ -64,7 +71,7 @@ export default function Home() {
 
         <ScrollArea className="h-96 w-full rounded-md border">
           <div className="grid grid-cols-2 gap-2 p-4">
-            {filteredUsers.map(user => {
+            {filterUsers?.map(user => {
               return (
                 <UserCard
                   key={user.name}
