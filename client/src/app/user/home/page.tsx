@@ -11,13 +11,14 @@ import InviteCheck from "../../../../public/invite-check";
 import styles from "./style.module.scss";
 
 export default function Home() {
-  const [Communities, setCommunities] = useState<Community[]>([]);
+  const [communities, setCommunities] = useState<Community[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCommunity, setSelectedCommunity] = useState<Community[]>([]);
 
   useEffect(() => {
     GetCommunities().then(Communities => {
       setCommunities(Communities);
+      setFilterCommunities(Communities);
     });
   }, []);
 
@@ -25,11 +26,11 @@ export default function Home() {
     Community.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const handleCardClick = (Community: Community) => {
-    if (!selectedCommunity.includes(Community)) {
-      setSelectedCommunity([...selectedCommunity, Community]);
+  const handleCardClick = (communities: Community) => {
+    if (!selectedCommunity.includes(communities)) {
+      setSelectedCommunity([...selectedCommunity, communities]);
     } else {
-      setSelectedCommunity(selectedCommunity.filter(selected => selected !== Community));
+      setSelectedCommunity(selectedCommunity.filter(selected => selected !== communities));
     }
   };
 

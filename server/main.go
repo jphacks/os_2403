@@ -129,7 +129,8 @@ func main() {
 	router.GET("/api/tag", tagHandler.GetRandom)
 	router.GET("/api/scoutlist/getcommunitydetail", scoutListHandler.GetCommunityDetailWithScoutList)
 	router.POST("/api/scoutlist/createscout", scoutListHandler.CreateScouts)
-	router.GET("/api/scoutlist/getdmlist", scoutListHandler.GetCommunityDetailByScoutList)
+	router.GET("/api/scoutlist/getdmlist/community", scoutListHandler.GetCommunityDetailByScoutList)
+	router.GET("/api/scoutlist/getdmlist/user", scoutListHandler.GetUserDetailByScoutList)
 	router.PUT("/api/scoutlist/updatestatus", scoutListHandler.ChangeStatus)
 
 	router.GET("/api/getevent", eventHandler.GetAllEvents)
