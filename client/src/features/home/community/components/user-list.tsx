@@ -15,7 +15,7 @@ export function UserList({ users, handleCardClick, selectedUser }: UserListProps
   return (
     <ScrollArea className={style.userContainer}>
       <div className="grid grid-cols-2 gap-2 p-4">
-        {users.map(user => (
+        {users?.map(user => (
           <UserCard
             key={user.uuid}
             uuid={user.uuid}

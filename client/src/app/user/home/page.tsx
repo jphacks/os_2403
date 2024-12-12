@@ -21,7 +21,7 @@ export default function Home() {
     });
   }, []);
 
-  const filteredCommunities = Communities.filter(Community =>
+  const filteredCommunities = Communities?.filter(Community =>
     Community.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -57,7 +57,7 @@ export default function Home() {
 
         <ScrollArea className={styles.communityContainer}>
           <div className="grid grid-cols-2 gap-2 p-4">
-            {filteredCommunities.map(community => {
+            {filteredCommunities?.map(community => {
               return (
                 <CommunityCard
                   key={community.name}

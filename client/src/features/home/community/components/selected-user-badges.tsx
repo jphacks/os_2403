@@ -15,7 +15,7 @@ export function SelectedUserBadges({ selectedUser, onBadgeClick }: SelectedUserB
           <span key={user.uuid} className={`${styles.userName} ${styles.fadeIn}`}>
             <Badge className={styles.userBadge} onClick={() => onBadgeClick(user.uuid)}>
               {user.name}
-              <span className={styles.closeIcon} onClick={() => onBadgeClick(user.uuid)}>x</span>
+              <span className={styles.closeIcon}>x</span>
             </Badge>
           </span>
         ))}

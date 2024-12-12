@@ -33,7 +33,7 @@ export function CommunityHome() {
     }
   }, []);
 
-  const filteredUsers = users.filter(user =>
+  const filteredUsers = users?.filter(user =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 

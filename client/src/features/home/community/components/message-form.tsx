@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import styles from "./style.module.scss";
 
 type MessageFormProps = {
   textAreaValue: string;
@@ -16,15 +17,15 @@ export function MessageForm({
   canSubmit,
 }: MessageFormProps) {
   return (
-    <div className="flex flex-col">
+    <div className={styles.messageFormContainer}>
       <textarea
-        className="w-full h-60 p-2 border rounded-md"
+        className={styles.textArea}
         value={textAreaValue}
         onChange={e => setTextAreaValue(e.target.value)}
         placeholder="スカウトメッセージを入力してください..."
       />
-      <div className="flex mt-2">
-        <Button className="ml-auto" onClick={handleSubmit} disabled={isSending || !canSubmit}>
+      <div className={styles.buttonContainer}>
+        <Button className={styles.submitButton} onClick={handleSubmit} disabled={isSending || !canSubmit}>
           招待を送る
         </Button>
       </div>
