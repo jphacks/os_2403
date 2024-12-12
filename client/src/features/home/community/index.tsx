@@ -46,11 +46,14 @@ export function CommunityHome() {
   };
 
   const handleBadgeClick = (uuid: string) => {
-    setSelectedUser(selectedUser =>
-      selectedUser.some(user => user.uuid === uuid)
+    setSelectedUser(selectedUser => {
+      const foundUser = users?.find(user => user.uuid === uuid);
+      if (!foundUser) return selectedUser;
+
+      return selectedUser.some(user => user.uuid === uuid)
         ? selectedUser.filter(user => user.uuid !== uuid)
-        : [...selectedUser, users?.find(user => user.uuid === uuid)!],
-    );
+        : [...selectedUser, foundUser];
+    });
   };
 
   const handleSubmit = async () => {

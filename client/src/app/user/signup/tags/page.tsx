@@ -35,9 +35,7 @@ const RegisterTags = () => {
 
   return (
     <div className={style.card}>
-      <TagCard
-        type="user"
-      />
+      <TagCard type="user" />
     </div>
   );
 };
