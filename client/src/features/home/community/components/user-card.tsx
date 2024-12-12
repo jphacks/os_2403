@@ -3,7 +3,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import styles from "../styles/user-card.module.scss";
 
 export type UserCardType = {
@@ -14,6 +13,7 @@ export type UserCardType = {
   detail?: string;
   university?: string;
   onClick: () => void;
+  selected: boolean;
 };
 
 export function UserCard({
@@ -24,22 +24,22 @@ export function UserCard({
   detail,
   university,
   onClick,
+  selected,
 }: UserCardType) {
-  const [isSelect, setIsSelect] = useState(false);
-
   const handleDetailClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // window.location.href = `/community/user/${uuid}`;
     console.log(uuid);
   };
 
   const handleClick = () => {
-    setIsSelect(!isSelect);
     onClick();
   };
 
   return (
-    <Card className={cn(styles.profileCard, isSelect && styles.selected)} onClick={handleClick}>
+    <Card
+      className={cn(styles.profileCard, selected && styles.selected)}
+      onClick={handleClick}
+    >
       <div className={styles.tagsContainer}>
         {tags?.map(tag => (
           <Badge key={tag} className={styles.tag}>

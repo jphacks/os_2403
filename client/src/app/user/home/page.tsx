@@ -12,32 +12,22 @@ import styles from "./style.module.scss";
 
 export default function Home() {
   const [communities, setCommunities] = useState<Community[]>([]);
-  const [filterCommunities, setFilterCommunities] = useState<Community[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCommunity, setSelectedCommunity] = useState<Community[]>([]);
 
   useEffect(() => {
-    GetCommunities().then(Communities => {
-      setCommunities(Communities);
-      setFilterCommunities(Communities);
+    GetCommunities().then(communities => {
+      setCommunities(communities);
     });
   }, []);
 
-  useEffect(() => {
-    if (searchQuery) {
-      setFilterCommunities(
-        communities?.filter(communities =>
-          communities.name.toLowerCase().includes(searchQuery.toLowerCase()),
-        ),
-      );
-      return;
-    }
-    setFilterCommunities(communities);
-  }, [searchQuery]);
+  const filteredCommunities = communities?.filter(community =>
+    community.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
-  const handleCardClick = (communities: Community) => {
-    if (!selectedCommunity.includes(communities)) {
-      setSelectedCommunity([...selectedCommunity, communities]);
+  const handleCardClick = (community: Community) => {
+    if (!selectedCommunity.includes(community)) {
+      setSelectedCommunity([...selectedCommunity, community]);
     } else {
       setSelectedCommunity(selectedCommunity.filter(selected => selected !== communities));
     }
@@ -65,9 +55,9 @@ export default function Home() {
           </div>
         </div>
 
-        <ScrollArea className="h-96 w-full rounded-md border">
+        <ScrollArea className={styles.communityContainer}>
           <div className="grid grid-cols-2 gap-2 p-4">
-            {filterCommunities?.map(community => {
+            {filteredCommunities?.map(community => {
               return (
                 <CommunityCard
                   key={community.name}
