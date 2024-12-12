@@ -2,7 +2,7 @@
 
 export interface Room {
   id: number;
-  status: number;
+  status: string;
   unreadCount: number;
   uuid: string;
   detail_info: DetailInfo;
