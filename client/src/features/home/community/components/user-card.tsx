@@ -15,7 +15,7 @@ export type UserCardType = {
   detail?: string;
   university?: string;
   onClick: () => void;
-  selected: boolean; // selected プロップを追加
+  selected: boolean;
 };
 
 export function UserCard({
@@ -26,22 +26,20 @@ export function UserCard({
   detail,
   university,
   onClick,
-  selected, // selected を受け取る
+  selected,
 }: UserCardType) {
   const handleDetailClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // 詳細ページへの遷移などの処理
     console.log(uuid);
   };
 
-  // isSelect 状態と handleClick 内の setIsSelect を削除
   const handleClick = () => {
     onClick();
   };
 
   return (
     <Card
-      className={cn(styles.profileCard, selected && styles.selected)} // selected に基づいてクラスを適用
+      className={cn(styles.profileCard, selected && styles.selected)}
       onClick={handleClick}
     >
       <div className={styles.tagsContainer}>

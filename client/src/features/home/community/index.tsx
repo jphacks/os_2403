@@ -41,8 +41,16 @@ export function CommunityHome() {
     if (!selectedUser.includes(user)) {
       setSelectedUser([...selectedUser, user]);
     } else {
-      setSelectedUser(selectedUser.filter(selected => selected !== user));
+      setSelectedUser(selectedUser.filter(selected => selected.uuid !== user.uuid));
     }
+  };
+
+  const handleBadgeClick = (uuid: string) => {
+    setSelectedUser(selectedUser =>
+      selectedUser.some(user => user.uuid === uuid)
+        ? selectedUser.filter(user => user.uuid !== uuid)
+        : [...selectedUser, users.find(user => user.uuid === uuid)!]
+    );
   };
 
   const handleSubmit = async () => {
@@ -72,6 +80,7 @@ export function CommunityHome() {
       setSending(false);
     }
   };
+
   return (
     <>
       <h1 className="text-2xl font-bold text-white mt-4 ml-10">ホーム</h1>
@@ -84,7 +93,10 @@ export function CommunityHome() {
           selectedUser={selectedUser}
         />
 
-        <SelectedUserBadges selectedUser={selectedUser} />
+        <SelectedUserBadges
+          selectedUser={selectedUser}
+          onBadgeClick={handleBadgeClick}
+        />
 
         <MessageForm
           textAreaValue={textAreaValue}

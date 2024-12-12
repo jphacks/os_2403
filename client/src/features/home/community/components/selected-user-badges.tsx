@@ -1,20 +1,22 @@
-// components/SelectedUserBadges.tsx
-
 import { Badge } from "@/components/ui/badge";
 import { User } from "@/features/account/types/user";
 import styles from "./style.module.scss";
 
 type SelectedUserBadgesProps = {
   selectedUser: User[];
+  onBadgeClick: (uuid: string) => void;
 };
 
-export function SelectedUserBadges({ selectedUser }: SelectedUserBadgesProps) {
+export function SelectedUserBadges({ selectedUser, onBadgeClick }: SelectedUserBadgesProps) {
   return (
     <div className="w-full h-full pointer-events-none">
       <div className="p-2 mt-2">
-        {selectedUser.map(user => (
+      {selectedUser.map(user => (
           <span key={user.uuid} className={`${styles.userName} ${styles.fadeIn}`}>
-            <Badge className="bg-white text-black border-blue-500">{user.name}</Badge>
+            <Badge className={styles.userBadge} onClick={() => onBadgeClick(user.uuid)}>
+              {user.name}
+              <span className={styles.closeIcon} onClick={() => onBadgeClick(user.uuid)}>x</span>
+            </Badge>
           </span>
         ))}
       </div>

@@ -1,6 +1,7 @@
 import { CommunityHome } from "@/features/home/community";
 
-  return (
-    <CommunityHome />
-  );
-}
+const CommunityHomePage = () => {
+  return <CommunityHome />;
+};
+
+export default CommunityHomePage;
