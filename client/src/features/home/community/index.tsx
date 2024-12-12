@@ -49,7 +49,7 @@ export function CommunityHome() {
     setSelectedUser(selectedUser =>
       selectedUser.some(user => user.uuid === uuid)
         ? selectedUser.filter(user => user.uuid !== uuid)
-        : [...selectedUser, users.find(user => user.uuid === uuid)!]
+        : [...selectedUser, users?.find(user => user.uuid === uuid)!],
     );
   };
 
@@ -93,10 +93,7 @@ export function CommunityHome() {
           selectedUser={selectedUser}
         />
 
-        <SelectedUserBadges
-          selectedUser={selectedUser}
-          onBadgeClick={handleBadgeClick}
-        />
+        <SelectedUserBadges selectedUser={selectedUser} onBadgeClick={handleBadgeClick} />
 
         <MessageForm
           textAreaValue={textAreaValue}

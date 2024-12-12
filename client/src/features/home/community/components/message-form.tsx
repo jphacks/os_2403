@@ -25,7 +25,11 @@ export function MessageForm({
         placeholder="スカウトメッセージを入力してください..."
       />
       <div className={styles.buttonContainer}>
-        <Button className={styles.submitButton} onClick={handleSubmit} disabled={isSending || !canSubmit}>
+        <Button
+          className={styles.submitButton}
+          onClick={handleSubmit}
+          disabled={isSending || !canSubmit}
+        >
           招待を送る
         </Button>
       </div>
