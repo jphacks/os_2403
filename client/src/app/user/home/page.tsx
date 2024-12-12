@@ -16,19 +16,18 @@ export default function Home() {
   const [selectedCommunity, setSelectedCommunity] = useState<Community[]>([]);
 
   useEffect(() => {
-    GetCommunities().then(Communities => {
-      setCommunities(Communities);
-      setFilterCommunities(Communities);
+    GetCommunities().then(communities => {
+      setCommunities(communities);
     });
   }, []);
 
-  const filteredCommunities = Communities?.filter(Community =>
-    Community.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredCommunities = communities?.filter(community =>
+    community.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const handleCardClick = (communities: Community) => {
-    if (!selectedCommunity.includes(communities)) {
-      setSelectedCommunity([...selectedCommunity, communities]);
+  const handleCardClick = (community: Community) => {
+    if (!selectedCommunity.includes(community)) {
+      setSelectedCommunity([...selectedCommunity, community]);
     } else {
       setSelectedCommunity(selectedCommunity.filter(selected => selected !== communities));
     }
