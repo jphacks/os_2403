@@ -43,5 +43,15 @@ func (h *tagHandler) GetAll(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "get tag all done", "tags": tags})
+
+	var res []gin.H
+	for _, tag := range tags {
+		res = append(res, gin.H{
+			"name":  tag.Name,
+			"color": tag.Color,
+		})
+	}
+
+	ctx.JSON(http.StatusOK, res)
+
 }
