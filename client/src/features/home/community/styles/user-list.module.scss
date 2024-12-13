@@ -1,0 +1,16 @@
+@use "@/styles/theme";
+
+
+.userContainer {
+  background-color: theme.$theme-community-sub;
+  border-radius: 10px;
+  height: 24rem;
+  margin-bottom: 1rem;
+}
+
+.cardContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}

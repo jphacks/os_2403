@@ -1,0 +1,33 @@
+@use "@/styles/theme";
+
+.profile_detail_card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+}
+
+.profile_overview {
+  font-family: MOBO;
+  font-style: normal;
+  font-weight: 600;
+  color: theme.$wheat;
+  margin-left: 10vh;
+  font-size: 28px;
+}
+
+
+.link_home {
+  font-family: MOBO;
+  font-style: normal;
+  font-weight: 600;
+  color: theme.$wheat;
+  margin-left: 10vh;
+  font-size: 25px;
+  position: absolute;
+  right: 4vh;
+  bottom: 5vh;
+  display: flex;
+
+}

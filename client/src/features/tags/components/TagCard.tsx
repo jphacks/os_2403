@@ -167,7 +167,7 @@ export const TagCard = ({ type }: TagCardProps) => {
       return;
     }
 
-    const selectedTagNames = Array.from(selectedTags).map(index => tags[index].name);
+    const selectedTagNames = Array.from(selectedTags).map(index => tags[index]?.name);
 
     try {
       if (ws.current) {

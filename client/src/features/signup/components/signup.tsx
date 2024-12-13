@@ -46,35 +46,26 @@ type SignupForm = z.infer<typeof SignupFormSchema>;
 export const SignUpDialog = (props: SignUpProps) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  // const [user, setUserAtom] = useAtom(userAtom);
   const [currentUser, setCurrentUser] = useAtom(userAtom);
   const [currentCommunity, setCurrentCommunity] = useAtom(communityAtom);
   const [_currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
 
-  let name = "";
-  let introduction = "";
-  let api_url = "";
-  let go_url = "";
-  // let title = "";
-  // let alternative = "";
-  let get_base_url = "";
-  if (props.type === "user") {
-    // title = "ユーザーログイン";
-    name = "ニックネーム";
-    introduction = "自己紹介";
-    api_url = "/user/signup";
-    go_url = "/user/signup/tags";
-    // alternative = "イベント・サークル運営者の方はこちら";
-    get_base_url = "/user";
-  } else if (props.type === "community") {
-    // title = "イベント・サークル運営者ログイン";
-    // alternative = "ユーザーの方はこちら";
-    name = "団体名";
-    introduction = "団体紹介";
-    api_url = "/community/signup";
-    go_url = "/community/signup/tags";
-    get_base_url = "/community";
-  }
+  const get_base_url = `/${props.type}`;
+  const api_url = `/${props.type}/signup`;
+  const go_url = `/${props.type}/signup/tags`;
+
+  const config = {
+    user: {
+      name: "ニックネーム",
+      introduction: "自己紹介",
+    },
+    community: {
+      name: "団体名",
+      introduction: "団体紹介",
+    },
+  };
+
+  const { name, introduction } = config[props.type] || {};
 
   const form = useForm<SignupForm>({
     // resolver: zodResolver(SignupFormSchema),
@@ -136,6 +127,9 @@ export const SignUpDialog = (props: SignUpProps) => {
       router.push(go_url);
     } catch (err) {
       console.error("Sign up error:", err);
+      setTimeout(() => {
+        toast.error("サインアップに失敗しました");
+      }, 10);
     }
   };
 

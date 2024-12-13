@@ -1,12 +1,15 @@
 "use client";
 
+import CardTag from "@/components/tags/card-tag";
+import { getTags } from "@/components/tags/hooks/get-tags";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Community } from "@/features/account/types/community";
-import { CommunityCard } from "@/features/home/user/components/community-card";
+import { CommunityCard } from "@/features/home/user/components/CommunityCard";
 import { GetCommunities } from "@/features/home/user/hooks/gets-communities";
+import { TagType } from "@/features/tags/types/tag";
 import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import InviteCheck from "../../../../public/invite-check";
 import styles from "./style.module.scss";
 
@@ -14,22 +17,45 @@ export default function Home() {
   const [communities, setCommunities] = useState<Community[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCommunity, setSelectedCommunity] = useState<Community[]>([]);
+  const [tags, setTags] = useState<TagType[]>([]);
+  const [selectedTags, setSelectedTags] = useState<TagType[]>([]);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
-    GetCommunities().then(communities => {
-      setCommunities(communities);
-    });
+    if (isFirstRender.current) {
+      GetCommunities().then(communities => {
+        setCommunities(communities);
+        console.log(communities);
+      });
+
+      getTags().then(tags => {
+        setTags(tags);
+      });
+      isFirstRender.current = false;
+    }
   }, []);
 
-  const filteredCommunities = communities?.filter(community =>
-    community.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const handleTagClick = (tag: TagType) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter(selectedTag => selectedTag !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+
+  const filteredCommunities = communities?.filter(community => {
+    const matchesName = community.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTags =
+      selectedTags.length === 0 ||
+      selectedTags.every(selectedTag => community.tags?.includes(selectedTag.name));
+    return matchesName && matchesTags;
+  });
 
   const handleCardClick = (community: Community) => {
     if (!selectedCommunity.includes(community)) {
       setSelectedCommunity([...selectedCommunity, community]);
     } else {
-      setSelectedCommunity(selectedCommunity.filter(selected => selected !== communities));
+      setSelectedCommunity(selectedCommunity.filter(selected => selected !== community));
     }
   };
 
@@ -38,7 +64,7 @@ export default function Home() {
       <div className={styles.inviteCheck}>
         <InviteCheck size={500} />
       </div>
-      <h1 className="text-2xl font-bold text-white mt-20 ml-10">コミュニティー一覧</h1>
+      <h1 className="text-2xl font-bold text-[#FFFFFFD0] mt-20 ml-10">コミュニティー一覧</h1>
       <div className="container mx-auto p-4">
         <div className="flex justify-center mb-6">
           <div className="w-full max-w-md relative">
@@ -55,23 +81,34 @@ export default function Home() {
           </div>
         </div>
 
+        <div className="bg-[#FFFFFF1A] p-4 rounded-md mb-6">
+          <h1 className="text-xl font-bold text-[#FFFFFFD0] mb-2">タグで絞り込む</h1>
+          <div className="flex flex-wrap gap-2">
+            {tags.map(tag => (
+              <CardTag key={tag.name} variant={tag.color} onClick={() => handleTagClick(tag)}>
+                {tag.name}
+              </CardTag>
+            ))}
+          </div>
+        </div>
+
         <ScrollArea className={styles.communityContainer}>
           <div className="grid grid-cols-2 gap-2 p-4">
-            {filteredCommunities?.map(community => {
-              return (
-                <CommunityCard
-                  key={community.name}
-                  uuid={community.uuid}
-                  communityname={community.name}
-                  icon={community.img}
-                  detail={community.self}
-                  university={community.mem1}
-                  onClick={() => {
-                    handleCardClick(community);
-                  }}
-                />
-              );
-            })}
+            {filteredCommunities?.map(community => (
+              <CommunityCard
+                key={community.name}
+                uuid={community.uuid}
+                communityname={community.name}
+                icon={community.img}
+                tags={community.tags}
+                tag_colors={community.tag_colors}
+                detail={community.self}
+                university={community.mem1}
+                onClick={() => {
+                  handleCardClick(community);
+                }}
+              />
+            ))}
           </div>
         </ScrollArea>
       </div>

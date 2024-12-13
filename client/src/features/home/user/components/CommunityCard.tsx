@@ -1,14 +1,17 @@
 "use client";
+import CardTag from "@/components/tags/card-tag";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { ButtonVariant } from "@/features/tags/types/tag";
+import { useRouter } from "next/navigation";
 import styles from "../styles/community-card.module.scss";
 
-export type UserCardType = {
+export type CommunityCardType = {
   uuid: string;
   communityname: string;
   icon?: string;
-  tags?: number[];
+  tags?: string[];
+  tag_colors?: string[];
   detail?: string;
   university?: string;
   onClick: () => void;
@@ -19,13 +22,15 @@ export function CommunityCard({
   communityname,
   icon,
   tags,
+  tag_colors,
   detail,
   university,
   onClick,
-}: UserCardType) {
+}: CommunityCardType) {
+  const router = useRouter();
   const handleDetailClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // window.location.href = `/community/user/${uuid}`;
+    router.push(`/user/community-detail?uuid=${uuid}`);
     console.log(uuid);
   };
 
@@ -36,10 +41,10 @@ export function CommunityCard({
   return (
     <Card className={styles.profileCard} onClick={handleClick}>
       <div className={styles.tagsContainer}>
-        {tags?.map(tag => (
-          <Badge key={tag} className={styles.tag}>
+        {tags?.map((tag, index) => (
+          <CardTag key={tag} variant={tag_colors?.[index]?.toLowerCase() as ButtonVariant}>
             {tag}
-          </Badge>
+          </CardTag>
         ))}
       </div>
 

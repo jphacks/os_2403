@@ -15,12 +15,12 @@ import { accountTypeAtom, communityAtom, userAtom } from "@/features/account/sto
 import { useAuth } from "@/features/menubar/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useAtom } from "jotai/index";
-import { LogOut, Settings, User } from "lucide-react";
+import { LogOut, Settings, Tag, User } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import style from "../styles/menubar.module.scss";
-import { MailIcon } from "./mail";
+import { MailIcon } from "./Mail";
 // import Search from "./search";
 
 const inviteNum = 3;
@@ -34,6 +34,7 @@ export const Menubar = () => {
   const profileURI = `${baseAccountURI}/profile`;
   const settingURI = `${profileURI}/setting`;
   const homeURI = `${baseAccountURI}/home`;
+  const tagregisterURI = `${baseAccountURI}/tag`; //要修正
   let accountName = "";
   let accountIcon = "https://github.com/shadcn.png";
 
@@ -86,6 +87,12 @@ export const Menubar = () => {
               <Link href={settingURI}>
                 <Settings />
                 <span>setting</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={tagregisterURI}>
+                <Tag />
+                <span>tag register</span>
               </Link>
             </DropdownMenuItem>
             {/*{currentAccountType === "community" && (*/}

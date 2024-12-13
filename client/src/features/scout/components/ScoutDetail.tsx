@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { GetCommunityByUUID } from "@/features/account/api";
+import { getCommunityByUUID } from "@/features/account/api";
 import { Community } from "@/features/account/types/community";
 import style from "@/features/scout/styles/ScoutDetail.module.scss";
 import { heartColor } from "@/styles/theme";
@@ -58,7 +58,7 @@ export const ScoutDetail = (props: ScoutDetailProps) => {
       // }
 
       try {
-        const communityData = await GetCommunityByUUID(props.community_uuid);
+        const communityData = await getCommunityByUUID(props.community_uuid);
         if (!communityData) {
           setCurrenttCommunityInfo(undefined);
           return;
