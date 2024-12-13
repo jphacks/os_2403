@@ -34,7 +34,6 @@ export const TagCard = ({ type }: TagCardProps) => {
   const [currentUser] = useAtom(userAtom);
   const [currentCommunity] = useAtom(communityAtom);
 
-  // aiRecommendedTagsの変更を監視
   useEffect(() => {
     console.log("aiRecommendedTags updated:", aiRecommendedTags);
   }, [aiRecommendedTags]);
@@ -125,7 +124,7 @@ export const TagCard = ({ type }: TagCardProps) => {
     };
   }, [type, currentUser?.uuid, currentCommunity?.uuid]);
 
-  const handleTagClick = (index: number) => {
+  const handleTagClick = (index: number, isAiTag: boolean = false) => {
     setSelectedTags(prev => {
       const newSet = new Set(prev);
       if (newSet.has(index)) {
@@ -134,8 +133,9 @@ export const TagCard = ({ type }: TagCardProps) => {
         newSet.add(index);
 
         if (ws.current?.readyState === WebSocket.OPEN) {
+          const tagName = isAiTag ? aiRecommendedTags[index].name : tags[index].name;
           const message = {
-            tag: tags[index].name,
+            tag: tagName,
           };
           ws.current.send(JSON.stringify(message));
         }
@@ -164,12 +164,14 @@ export const TagCard = ({ type }: TagCardProps) => {
       return;
     }
 
-    if (selectedTags.size < 3) {
-      alert("3つ以上のタグを選択してください");
+    if (selectedTags.size < 1) {
+      alert("1つ以上のタグを選択してください");
       return;
     }
 
-    const selectedTagNames = Array.from(selectedTags).map(index => tags[index]?.name);
+    const selectedTagNames = Array.from(selectedTags).map(index => (
+      tags[index]?.name || aiRecommendedTags[index]?.name
+    )).filter(Boolean);
 
     try {
       if (ws.current) {
@@ -194,7 +196,7 @@ export const TagCard = ({ type }: TagCardProps) => {
       <CardHeader>
         <CardTitle className={style.cardTitle}>タグを探してみよう！</CardTitle>
         <CardDescription className={style.CardDescription}>
-          気になるタグを3個以上選んでみよう！
+          気になるタグを1つ以上選んでみよう！
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -221,7 +223,8 @@ export const TagCard = ({ type }: TagCardProps) => {
                   <CardTag
                     key={`ai-recommended-${index}`}
                     variant={tag.color}
-                    className={style.aiTag}
+                    className={`${selectedTags.has(index) ? style.selected : ""}`}
+                    onClick={() => handleTagClick(index, true)}
                   >
                     {tag.name}
                   </CardTag>
@@ -231,7 +234,7 @@ export const TagCard = ({ type }: TagCardProps) => {
           )}
       </CardContent>
       <CardFooter className={style.footer}>
-        <Button onClick={onClick} className={style.button} disabled={selectedTags.size < 3}>
+        <Button onClick={onClick} className={style.button} disabled={selectedTags.size < 1}>
           これが気に入った！
         </Button>
       </CardFooter>
