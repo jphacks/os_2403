@@ -31,7 +31,6 @@ export function CommunityCard({
   const handleDetailClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     router.push(`/user/community-detail?uuid=${uuid}`);
-    console.log(uuid);
   };
 
   const handleClick = () => {

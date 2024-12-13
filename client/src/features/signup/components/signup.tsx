@@ -24,6 +24,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import style from "./style.module.scss";
 
 type SignUpProps = {
@@ -35,8 +36,7 @@ const SignupFormSchema = z.object({
   mem1: z.string().min(1, { message: "入力必須な項目です。" }),
   mem2: z.string(),
   mem3: z.string(),
-  img: z.string(),
-  email: z.string().min(1, { message: "入力必須な項目です。" }),
+  email: z.string().email({ message: "有効なメールアドレスを入力してください。" }).min(1, { message: "入力必須な項目です。" }),
   password: z.string().min(1, { message: "入力必須な項目です。" }),
   self: z.string(),
 });
@@ -46,8 +46,8 @@ type SignupForm = z.infer<typeof SignupFormSchema>;
 export const SignUpDialog = (props: SignUpProps) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [currentUser, setCurrentUser] = useAtom(userAtom);
-  const [currentCommunity, setCurrentCommunity] = useAtom(communityAtom);
+  const [, setCurrentUser] = useAtom(userAtom);
+  const [, setCurrentCommunity] = useAtom(communityAtom);
   const [_currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
 
   const get_base_url = `/${props.type}`;
@@ -68,7 +68,7 @@ export const SignUpDialog = (props: SignUpProps) => {
   const { name, introduction } = config[props.type] || {};
 
   const form = useForm<SignupForm>({
-    // resolver: zodResolver(SignupFormSchema),
+    resolver: zodResolver(SignupFormSchema),
     defaultValues: {
       name: "",
       mem1: "",
@@ -95,14 +95,6 @@ export const SignUpDialog = (props: SignUpProps) => {
           img: response.data.img,
         };
         setCurrentUser(user);
-
-        // Atomの状態確認
-        console.log("Current User Atom after setting:", user);
-
-        // 非同期更新後の状態を確認
-        setTimeout(() => {
-          console.log("Current User Atom after delay:", currentUser);
-        }, 100);
       } else if (props.type === "community") {
         setCurrentAccountType("community");
         const uuid = signUpResponse.data.uuid;
@@ -111,17 +103,10 @@ export const SignUpDialog = (props: SignUpProps) => {
           uuid: response.data.uuid,
           name: response.data.name,
           email: response.data.email,
+          mem1: response.data.mem1,
           img: response.data.img,
         };
         setCurrentCommunity(community);
-
-        // Atomの状態確認
-        console.log("Current Community Atom after setting:", community);
-
-        // 非同期更新後の状態を確認
-        setTimeout(() => {
-          console.log("Current Community Atom after delay:", currentCommunity);
-        }, 100);
       }
       toast("サインインしました。");
       router.push(go_url);

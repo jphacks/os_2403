@@ -37,7 +37,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
       return;
     }
 
-    let account;
+    let account = "";
     if (accountType === "community") {
       account = currentCommunity?.uuid || "gg";
     } else if (accountType === "user") {
@@ -48,7 +48,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
     // メッセージ履歴を取得
     fetchMessageHistory(room.id);
 
-    ws.current = new WebSocket(`ws://localhost:8080/api/ws/chat/` + room.id);
+    ws.current = new WebSocket(`ws://localhost:8080/api/ws/chat/${room.id}`);
 
     ws.current.onopen = () => {
       console.log("WebSocket connection established");

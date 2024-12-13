@@ -49,7 +49,6 @@ export const useAuth = () => {
     } catch (error) {
       console.error("Session check failed:", error);
     } finally {
-      console.log("set user-detail");
     }
   }, []);
 

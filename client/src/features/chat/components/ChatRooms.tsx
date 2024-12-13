@@ -16,7 +16,7 @@ interface ChatRoomsProps {
 
 const ChatRooms: React.FC<ChatRoomsProps> = ({ onSelectRoom }) => {
   const [rooms, setRooms] = useState<Room[]>([]);
-  const [accountType, SetAccountType] = useAtom(accountTypeAtom);
+  const [accountType, ] = useAtom(accountTypeAtom);
   const [currentUser] = useAtom(userAtom);
   const [currentCommunity] = useAtom(communityAtom);
 
@@ -25,17 +25,15 @@ const ChatRooms: React.FC<ChatRoomsProps> = ({ onSelectRoom }) => {
     try {
       if (accountType === "user") {
         const user_uuid = currentUser?.uuid;
-        const response = await apiClient.get(`scoutlist/getdmlist/community`, {
+        const response = await apiClient.get("scoutlist/getdmlist/community", {
           params: { user_uuid },
         });
-        console.log(response);
         setRooms(response.data);
       } else if (accountType === "community") {
         const community_uuid = currentCommunity?.uuid;
-        const response = await apiClient.get(`scoutlist/getdmlist/user`, {
+        const response = await apiClient.get("scoutlist/getdmlist/user", {
           params: { community_uuid },
         });
-        console.log(response);
         setRooms(response.data);
       }
     } catch (error) {

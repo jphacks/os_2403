@@ -12,7 +12,7 @@ export function SearchTags({ tags, handleTagClick }: SearchTagsProps) {
     <div className={style.container}>
       <h1 className={style.title}>タグで絞り込む</h1>
       <div className={style.tags}>
-        {tags.map(tag => (
+        {tags?.map(tag => (
           <CardTag key={tag.name} variant={tag.color} onClick={() => handleTagClick(tag)}>
             {tag.name}
           </CardTag>
