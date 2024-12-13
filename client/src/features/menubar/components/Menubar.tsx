@@ -20,7 +20,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import style from "../styles/menubar.module.scss";
-import { MailIcon } from "./mail";
+import { MailIcon } from "./Mail";
 // import Search from "./search";
 
 const inviteNum = 3;
