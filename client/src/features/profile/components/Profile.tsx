@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { GetUserByUUID } from "@/features/account/api";
+import { getUserByUUID } from "@/features/account/api";
 import { useSetBaseAccountType } from "@/features/account/hooks";
 import { accountTypeAtom, communityAtom, userAtom } from "@/features/account/stores";
 import { User } from "@/features/account/types/user";
@@ -16,7 +16,6 @@ import react from "react";
 import React from "react";
 import z from "zod";
 
-//user
 const profileSchema = z.object({
   name: z.string(),
   mem1: z.string(),
@@ -86,14 +85,20 @@ export const ProfileCard = () => {
   );
 };
 
+const profileDetailCardPropsSchema = z.object({
+  uuid: z.string(),
+});
+
+type ProfileDetailCardProps = z.infer<typeof profileDetailCardPropsSchema>;
+
 //uuidを渡すように
-export const ProfileDetailCard = () => {
+export const ProfileDetailCard = (props: ProfileDetailCardProps) => {
   const [userDetail, setUserDetail] = React.useState<User | null>(null);
-  const uuid = "3b8eb4ec-f54c-463c-90dc-8e3cd9c1f2d3";
+  const uuid = props.uuid;
 
   React.useEffect(() => {
     const fetch = async () => {
-      const data = await GetUserByUUID(uuid);
+      const data = await getUserByUUID(uuid);
       setUserDetail(data);
     };
     fetch();

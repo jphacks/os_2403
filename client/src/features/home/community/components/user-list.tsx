@@ -1,6 +1,6 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { User } from "@/features/account/types/user";
-import { UserCard } from "@/features/home/community/components/user-card";
+import { UserCard } from "@/features/home/community/components/UserCard";
 import style from "./style.module.scss";
 
 type UserListProps = {

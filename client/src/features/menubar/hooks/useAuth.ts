@@ -1,6 +1,6 @@
 // hooks/useAuth.ts
 "use client";
-import { GetCommunityByUUID, GetUserByUUID } from "@/features/account/api";
+import { getCommunityByUUID, getUserByUUID } from "@/features/account/api";
 import { accountTypeAtom, communityAtom, userAtom } from "@/features/account/stores";
 import { SessionData } from "@/features/account/types/session";
 import { apiClient } from "@/utils/client";
@@ -28,7 +28,7 @@ export const useAuth = () => {
       switch (userData.account_type) {
         case "user": {
           setCurrentAccountType(userData.account_type);
-          const getUser = await GetUserByUUID(userData.uuid);
+          const getUser = await getUserByUUID(userData.uuid);
           setCurrentUser(getUser);
           router.push("/user/home");
           break;
@@ -36,7 +36,7 @@ export const useAuth = () => {
 
         case "community": {
           setCurrentAccountType(userData.account_type);
-          const getCommunity = await GetCommunityByUUID(userData.uuid);
+          const getCommunity = await getCommunityByUUID(userData.uuid);
           setCurrentCommunity(getCommunity);
           router.push("/community/home");
           break;
@@ -49,7 +49,7 @@ export const useAuth = () => {
     } catch (error) {
       console.error("Session check failed:", error);
     } finally {
-      console.log("set user");
+      console.log("set user-detail");
     }
   }, []);
 
