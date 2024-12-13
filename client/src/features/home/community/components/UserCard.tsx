@@ -34,7 +34,6 @@ export function UserCard({
   const handleDetailClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     router.push(`/community/user-detail?uuid=${uuid}`);
-    console.log(uuid);
   };
 
   const handleClick = () => {

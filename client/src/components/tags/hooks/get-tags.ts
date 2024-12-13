@@ -9,9 +9,7 @@ export const getTags = async (): Promise<TagType[]> => {
       name: string;
       color: string;
     };
-
-    // タグの変換時に明示的な型付け
-    console.log(response.data);
+    // タグの変換時に明示的な型付けを行う
     return response.data.map((tag: ApiTag) => ({
       name: tag.name,
       color: tag.color.toLowerCase() as ButtonVariant,

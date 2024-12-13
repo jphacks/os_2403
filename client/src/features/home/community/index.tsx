@@ -12,10 +12,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { UserList } from "./components/UserList";
-import { MessageForm } from "./components/message-form";
-import { SearchBar } from "./components/search-bar";
-import { SearchTags } from "./components/search-tags";
-import { SelectedUserBadges } from "./components/selected-user-badges";
+import { MessageForm } from "./components/MessageForm";
+import { SearchBar } from "./components/SearchBar";
+import { SearchTags } from "./components/SearchTags";
+import { SelectedUserBadges } from "./components/SelectedUserBadges";
 
 export function CommunityHome() {
   const [users, setUsers] = useState<User[]>([]);

@@ -51,11 +51,6 @@ export const SignInDialog = (props: LoginCardProps) => {
   const [, setCurrentAccountType] = useAtom(accountTypeAtom);
   const router = useRouter();
 
-  // react.useEffect(() => {
-  //   console.log("currentUser updated:", currentUser);
-  //   console.log("currentCommunity updated:", currentCommunity);
-  // }, [currentUser, currentCommunity]);
-
   const get_base_url = `/${props.type}`;
   const signup_url = `/${props.type}/signup`;
   const signin_url = `/${props.type}/signin`;
@@ -94,7 +89,6 @@ export const SignInDialog = (props: LoginCardProps) => {
 
         const uuid = signInResponse.data.uuid;
         const response = await apiClient.get(`${get_base_url}/${uuid}`);
-        console.log(response);
         const user: User = {
           uuid: response.data.uuid,
           name: response.data.name,
@@ -108,11 +102,11 @@ export const SignInDialog = (props: LoginCardProps) => {
         const uuid = signInResponse.data.uuid;
 
         const response = await apiClient.get(`${get_base_url}/${uuid}`);
-        console.log(response);
         const community: Community = {
           uuid: response.data.uuid,
           name: response.data.name,
           email: response.data.email,
+          mem1: response.data.mem1,
           img: response.data.img,
         };
         setCurrentCommunity(community);

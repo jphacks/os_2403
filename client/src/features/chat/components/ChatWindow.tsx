@@ -43,7 +43,7 @@ export const TagCard = ({ type }: TagCardProps) => {
         setAiRecommendedTags(response.slice(0, 3));
       }
       setError(null);
-    } catch (error) {
+    } catch {
       setError("Failed to load tags");
     } finally {
       setIsLoading(false);
@@ -54,21 +54,19 @@ export const TagCard = ({ type }: TagCardProps) => {
     let wsInstance: WebSocket | null = null;
     let isComponentMounted = true;
 
+
     const initializeWebSocket = async () => {
       const uuid = type === "user" ? currentUser?.uuid : currentCommunity?.uuid;
       if (!uuid) {
         console.log("No UUID available, skipping WebSocket connection");
         return;
       }
-
       try {
         await fetchTags();
-
         const wsUrl = `ws://localhost:8080/api/ws/tag_reccomrend/${uuid}`;
         console.log("Initializing WebSocket connection to:", wsUrl);
         wsInstance = new WebSocket(wsUrl);
         ws.current = wsInstance;
-
         wsInstance.onopen = () => {
           console.log("WebSocket connection established");
         };
@@ -79,14 +77,14 @@ export const TagCard = ({ type }: TagCardProps) => {
           try {
             const data = JSON.parse(event.data);
             if (Array.isArray(data.recomendedTagName) && Array.isArray(data.recomendedTagColor)) {
-              const recommendedTags = data.recomendedTagName.map((name, index) => ({
+              const recommendedTags = data.recomendedTagName?.map((name, index) => ({
                 name: name,
                 color: data.recomendedTagColor[index],
                 id: `ai-${index}`,
               }));
               setAiRecommendedTags(recommendedTags);
             }
-          } catch (error) {
+          } catch {
             console.error("Error parsing WebSocket message:", error);
           }
         };
@@ -165,12 +163,11 @@ export const TagCard = ({ type }: TagCardProps) => {
       if (ws.current) {
         ws.current.close();
       }
-
       await apiClient.put(endpoint, {
         tag: selectedTagNames,
       });
       router.push(redirectPath);
-    } catch (error) {
+    } catch {
       alert("タグの更新に失敗しました。もう一度お試しください。");
     }
   };
@@ -294,11 +291,11 @@ export const TagCard = ({ type }: TagCardProps) => {
             <div className={style.aiRecommendedTags}>
               {aiRecommendedTags.map((tag, index) => (
                 <CardTag
-                  key={`ai-recommended-${tag.id || index}`}
+                  key={`ai-recommended-${tag.name || index}`}
                   variant={tag.color}
                   className={style.aiTag}
                   onClick={() => {
-                    const tagIndex = tags.findIndex(t => t.id === tag.id);
+                    const tagIndex = tags.findIndex(t => t.name === tag.name);
                     if (tagIndex !== -1) {
                       handleTagClick(tagIndex);
                     }
