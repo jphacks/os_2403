@@ -1,17 +1,17 @@
 "use client";
 
+import CardTag from "@/components/tags/card-tag";
+import { getTags } from "@/components/tags/hooks/get-tags";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Community } from "@/features/account/types/community";
-import { CommunityCard } from "@/features/home/user/components/community-card";
+import { CommunityCard } from "@/features/home/user/components/CommunityCard";
 import { GetCommunities } from "@/features/home/user/hooks/gets-communities";
+import { TagType } from "@/features/tags/types/tag";
 import { Search } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import InviteCheck from "../../../../public/invite-check";
 import styles from "./style.module.scss";
-import { TagType } from "@/features/tags/types/tag";
-import { getTags } from "@/components/tags/hooks/get-tags";
-import CardTag from "@/components/tags/card-tag";
 
 export default function Home() {
   const [communities, setCommunities] = useState<Community[]>([]);
@@ -23,12 +23,12 @@ export default function Home() {
 
   useEffect(() => {
     if (isFirstRender.current) {
-      GetCommunities().then((communities) => {
+      GetCommunities().then(communities => {
         setCommunities(communities);
         console.log(communities);
       });
 
-      getTags().then((tags) => {
+      getTags().then(tags => {
         setTags(tags);
       });
       isFirstRender.current = false;
@@ -37,17 +37,17 @@ export default function Home() {
 
   const handleTagClick = (tag: TagType) => {
     if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((selectedTag) => selectedTag !== tag));
+      setSelectedTags(selectedTags.filter(selectedTag => selectedTag !== tag));
     } else {
       setSelectedTags([...selectedTags, tag]);
     }
   };
 
-  const filteredCommunities = communities?.filter((community) => {
+  const filteredCommunities = communities?.filter(community => {
     const matchesName = community.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesTags =
       selectedTags.length === 0 ||
-      selectedTags.every((selectedTag) => community.tags?.includes(selectedTag.name));
+      selectedTags.every(selectedTag => community.tags?.includes(selectedTag.name));
     return matchesName && matchesTags;
   });
 
@@ -55,7 +55,7 @@ export default function Home() {
     if (!selectedCommunity.includes(community)) {
       setSelectedCommunity([...selectedCommunity, community]);
     } else {
-      setSelectedCommunity(selectedCommunity.filter((selected) => selected !== community));
+      setSelectedCommunity(selectedCommunity.filter(selected => selected !== community));
     }
   };
 
@@ -72,7 +72,7 @@ export default function Home() {
               type="text"
               placeholder="コミュニティー名で検索..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="w-full pr-10"
             />
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
@@ -84,12 +84,8 @@ export default function Home() {
         <div className="bg-[#FFFFFF1A] p-4 rounded-md mb-6">
           <h1 className="text-xl font-bold text-[#FFFFFFD0] mb-2">タグで絞り込む</h1>
           <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <CardTag
-                key={tag.name}
-                variant={tag.color}
-                onClick={() => handleTagClick(tag)}
-              >
+            {tags.map(tag => (
+              <CardTag key={tag.name} variant={tag.color} onClick={() => handleTagClick(tag)}>
                 {tag.name}
               </CardTag>
             ))}
@@ -98,7 +94,7 @@ export default function Home() {
 
         <ScrollArea className={styles.communityContainer}>
           <div className="grid grid-cols-2 gap-2 p-4">
-            {filteredCommunities?.map((community) => (
+            {filteredCommunities?.map(community => (
               <CommunityCard
                 key={community.name}
                 uuid={community.uuid}

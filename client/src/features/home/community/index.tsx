@@ -1,21 +1,21 @@
 "use client";
 
+import { getTags } from "@/components/tags/hooks/get-tags";
 import { communityAtom } from "@/features/account/stores";
 import { User } from "@/features/account/types/user";
 import { GetUsers } from "@/features/home/community/hooks/gets-users";
 import { postScout } from "@/features/home/community/hooks/post-scout";
 import { ScoutPostType } from "@/features/home/community/types/scout";
+import { TagType } from "@/features/tags/types/tag";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { UserList } from "./components/UserList";
 import { MessageForm } from "./components/message-form";
 import { SearchBar } from "./components/search-bar";
-import { SelectedUserBadges } from "./components/selected-user-badges";
-import { UserList } from "./components/user-list";
-import { TagType } from "@/features/tags/types/tag";
-import { getTags } from "@/components/tags/hooks/get-tags";
 import { SearchTags } from "./components/search-tags";
+import { SelectedUserBadges } from "./components/selected-user-badges";
 
 export function CommunityHome() {
   const [users, setUsers] = useState<User[]>([]);
@@ -46,7 +46,7 @@ export function CommunityHome() {
     const matchesName = user.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesTags =
       selectedTags.length === 0 ||
-      selectedTags.every((selectedTag) => user.tags?.includes(selectedTag.name));
+      selectedTags.every(selectedTag => user.tags?.includes(selectedTag.name));
     return matchesName && matchesTags;
   });
 
@@ -71,7 +71,7 @@ export function CommunityHome() {
 
   const handleTagClick = (tag: TagType) => {
     if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((selectedTag) => selectedTag !== tag));
+      setSelectedTags(selectedTags.filter(selectedTag => selectedTag !== tag));
     } else {
       setSelectedTags([...selectedTags, tag]);
     }

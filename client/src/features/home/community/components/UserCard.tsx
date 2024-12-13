@@ -1,11 +1,11 @@
 "use client";
+import CardTag from "@/components/tags/card-tag";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
+import { ButtonVariant } from "@/features/tags/types/tag";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import styles from "../styles/user-card.module.scss";
-import { ButtonVariant } from "@/features/tags/types/tag";
-import CardTag from "@/components/tags/card-tag";
 
 export type UserCardType = {
   uuid: string;

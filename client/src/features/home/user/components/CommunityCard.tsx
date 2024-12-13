@@ -1,9 +1,10 @@
 "use client";
+import CardTag from "@/components/tags/card-tag";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
-import styles from "../styles/community-card.module.scss";
-import CardTag from "@/components/tags/card-tag";
 import { ButtonVariant } from "@/features/tags/types/tag";
+import { useRouter } from "next/navigation";
+import styles from "../styles/community-card.module.scss";
 
 export type CommunityCardType = {
   uuid: string;
@@ -26,8 +27,10 @@ export function CommunityCard({
   university,
   onClick,
 }: CommunityCardType) {
+  const router = useRouter();
   const handleDetailClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    router.push(`/user/community-detail?uuid=${uuid}`);
     console.log(uuid);
   };
 

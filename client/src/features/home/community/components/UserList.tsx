@@ -1,7 +1,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { User } from "@/features/account/types/user";
 import { UserCard } from "@/features/home/community/components/UserCard";
-import style from "./style.module.scss";
+import style from "../styles/user-list.module.scss";
 
 type UserListProps = {
   users: User[];
@@ -12,7 +12,8 @@ type UserListProps = {
 export function UserList({ users, handleCardClick, selectedUser }: UserListProps) {
   return (
     <ScrollArea className={style.userContainer}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-4">
+      {/*<div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-4">*/}
+      <div className={style.cardContainer}>
         {users?.map(user => (
           <UserCard
             key={user.uuid}
