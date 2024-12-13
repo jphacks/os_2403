@@ -36,10 +36,7 @@ export function UserCard({
   };
 
   return (
-    <Card
-      className={cn(styles.profileCard, selected && styles.selected)}
-      onClick={handleClick}
-    >
+    <Card className={cn(styles.profileCard, selected && styles.selected)} onClick={handleClick}>
       <div className={styles.tagsContainer}>
         {tags?.map(tag => (
           <Badge key={tag} className={styles.tag}>

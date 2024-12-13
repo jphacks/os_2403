@@ -1,6 +1,6 @@
 "use client";
 import CardTag from "@/components/tags/card-tag";
-import { TagType, ButtonVariant } from "@/features/tags/types/tag";
+import { getTags } from "@/components/tags/hooks/get-tags";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,14 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
-import style from "./style.module.scss";
-import { useEffect, useState, useRef } from "react";
-import { getTags } from "@/components/tags/hooks/get-tags";
-import { apiClient } from "@/utils/client";
-import { useAtom } from "jotai";
 import { userAtom } from "@/features/account/stores";
 import { communityAtom } from "@/features/account/stores";
+import { ButtonVariant, TagType } from "@/features/tags/types/tag";
+import { apiClient } from "@/utils/client";
+import { useAtom } from "jotai";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import style from "./style.module.scss";
 
 type TagCardProps = {
   type: "user" | "community";
@@ -36,7 +36,7 @@ export const TagCard = ({ type }: TagCardProps) => {
 
   // aiRecommendedTagsの変更を監視
   useEffect(() => {
-    console.log('aiRecommendedTags updated:', aiRecommendedTags);
+    console.log("aiRecommendedTags updated:", aiRecommendedTags);
   }, [aiRecommendedTags]);
 
   const fetchTags = async () => {
@@ -78,11 +78,11 @@ export const TagCard = ({ type }: TagCardProps) => {
           console.log("WebSocket connection established");
         };
 
-        wsInstance.onmessage = (event) => {
+        wsInstance.onmessage = event => {
           if (!isComponentMounted) return;
-        
-          console.log('Raw WebSocket message:', event.data);
-        
+
+          console.log("Raw WebSocket message:", event.data);
+
           try {
             const data = JSON.parse(event.data);
             if (Array.isArray(data.recommendedTagName) && Array.isArray(data.recommendedTagColor)) {
@@ -91,7 +91,7 @@ export const TagCard = ({ type }: TagCardProps) => {
                 name: name,
                 color: data.recommendedTagColor[index] as ButtonVariant,
               }));
-              console.log('Received new recommended tags:', recommendedTags);
+              console.log("Received new recommended tags:", recommendedTags);
               setAiRecommendedTags(recommendedTags);
             }
           } catch (error) {
@@ -99,7 +99,7 @@ export const TagCard = ({ type }: TagCardProps) => {
           }
         };
 
-        wsInstance.onerror = (error) => {
+        wsInstance.onerror = error => {
           console.error("WebSocket error:", error);
         };
 
@@ -108,7 +108,6 @@ export const TagCard = ({ type }: TagCardProps) => {
             setTimeout(initializeWebSocket, 5000);
           }
         };
-
       } catch (error) {
         console.error("Error in WebSocket initialization:", error);
       }
@@ -131,10 +130,10 @@ export const TagCard = ({ type }: TagCardProps) => {
         newSet.delete(index);
       } else {
         newSet.add(index);
-        
+
         if (ws.current?.readyState === WebSocket.OPEN) {
           const message = {
-            tag: tags[index].name
+            tag: tags[index].name,
           };
           ws.current.send(JSON.stringify(message));
         }
@@ -174,9 +173,9 @@ export const TagCard = ({ type }: TagCardProps) => {
       if (ws.current) {
         ws.current.close();
       }
-      
+
       await apiClient.put(endpoint, {
-        tag: selectedTagNames
+        tag: selectedTagNames,
       });
       router.push(redirectPath);
     } catch (error) {
@@ -196,42 +195,40 @@ export const TagCard = ({ type }: TagCardProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-  <div className={style.tagContainer}>
-    {tags.slice(0, 12).map((tag, index) => (
-      <CardTag 
-        key={index}
-        variant={tag.color} 
-        className={`${selectedTags.has(index) ? style.selected : ''}`}
-        onClick={() => handleTagClick(index)}
-      >
-        {tag.name}
-      </CardTag>
-    ))}
-  </div>
-  
-  {aiRecommendedTags && aiRecommendedTags.length > 0 && aiRecommendedTags.some(tag => tag.name) && (
-    <div className={style.aiRecommendedSection}>
-      <div className={style.aiRecommendedLabel}>AIおすすめ</div>
-      <div className={style.aiRecommendedTags}>
-        {aiRecommendedTags.map((tag, index) => (
-          <CardTag
-            key={`ai-recommended-${index}`}
-            variant={tag.color}
-            className={style.aiTag}
-          >
-            {tag.name}
-          </CardTag>
-        ))}
-      </div>
-    </div>
-  )}
-  </CardContent>
+        <div className={style.tagContainer}>
+          {tags.slice(0, 12).map((tag, index) => (
+            <CardTag
+              key={index}
+              variant={tag.color}
+              className={`${selectedTags.has(index) ? style.selected : ""}`}
+              onClick={() => handleTagClick(index)}
+            >
+              {tag.name}
+            </CardTag>
+          ))}
+        </div>
+
+        {aiRecommendedTags &&
+          aiRecommendedTags.length > 0 &&
+          aiRecommendedTags.some(tag => tag.name) && (
+            <div className={style.aiRecommendedSection}>
+              <div className={style.aiRecommendedLabel}>AIおすすめ</div>
+              <div className={style.aiRecommendedTags}>
+                {aiRecommendedTags.map((tag, index) => (
+                  <CardTag
+                    key={`ai-recommended-${index}`}
+                    variant={tag.color}
+                    className={style.aiTag}
+                  >
+                    {tag.name}
+                  </CardTag>
+                ))}
+              </div>
+            </div>
+          )}
+      </CardContent>
       <CardFooter className={style.footer}>
-        <Button 
-          onClick={onClick} 
-          className={style.button}
-          disabled={selectedTags.size < 3}
-        >
+        <Button onClick={onClick} className={style.button} disabled={selectedTags.size < 3}>
           これが気に入った！
         </Button>
       </CardFooter>
