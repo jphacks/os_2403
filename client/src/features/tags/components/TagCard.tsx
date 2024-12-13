@@ -180,6 +180,7 @@ export const TagCard = ({ type }: TagCardProps) => {
       router.push(redirectPath);
     } catch (error) {
       alert("タグの更新に失敗しました。もう一度お試しください。");
+      console.error(error);
     }
   };
 
