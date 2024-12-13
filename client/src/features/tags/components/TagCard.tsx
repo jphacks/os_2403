@@ -196,131 +196,36 @@ export const TagCard = ({ type }: TagCardProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {tags[0] && (
-          <CardTag 
-            variant={tags[0].color} 
-            className={`${style.tag1} ${selectedTags.has(0) ? style.selected : ''}`}
-            onClick={() => handleTagClick(0)}
+  <div className={style.tagContainer}>
+    {tags.slice(0, 12).map((tag, index) => (
+      <CardTag 
+        key={index}
+        variant={tag.color} 
+        className={`${selectedTags.has(index) ? style.selected : ''}`}
+        onClick={() => handleTagClick(index)}
+      >
+        {tag.name}
+      </CardTag>
+    ))}
+  </div>
+  
+  {aiRecommendedTags && aiRecommendedTags.length > 0 && aiRecommendedTags.some(tag => tag.name) && (
+    <div className={style.aiRecommendedSection}>
+      <div className={style.aiRecommendedLabel}>AIおすすめ</div>
+      <div className={style.aiRecommendedTags}>
+        {aiRecommendedTags.map((tag, index) => (
+          <CardTag
+            key={`ai-recommended-${index}`}
+            variant={tag.color}
+            className={style.aiTag}
           >
-            {tags[0].name}
+            {tag.name}
           </CardTag>
-        )}
-        {tags[1] && (
-          <CardTag 
-            variant={tags[1].color} 
-            className={`${style.tag2} ${selectedTags.has(1) ? style.selected : ''}`}
-            onClick={() => handleTagClick(1)}
-          >
-            {tags[1].name}
-          </CardTag>
-        )}
-        {tags[2] && (
-          <CardTag 
-            variant={tags[2].color} 
-            className={`${style.tag3} ${selectedTags.has(2) ? style.selected : ''}`}
-            onClick={() => handleTagClick(2)}
-          >
-            {tags[2].name}
-          </CardTag>
-        )}
-        {tags[3] && (
-          <CardTag 
-            variant={tags[3].color} 
-            className={`${style.tag1} ${selectedTags.has(3) ? style.selected : ''}`}
-            onClick={() => handleTagClick(3)}
-          >
-            {tags[3].name}
-          </CardTag>
-        )}
-        {tags[4] && (
-          <CardTag 
-            variant={tags[4].color} 
-            className={`${style.tag2} ${selectedTags.has(4) ? style.selected : ''}`}
-            onClick={() => handleTagClick(4)}
-          >
-            {tags[4].name}
-          </CardTag>
-        )}
-        {tags[5] && (
-          <CardTag 
-            variant={tags[5].color} 
-            className={`${style.tag3} ${selectedTags.has(5) ? style.selected : ''}`}
-            onClick={() => handleTagClick(5)}
-          >
-            {tags[5].name}
-          </CardTag>
-        )}
-        {tags[6] && (
-          <CardTag 
-            variant={tags[6].color} 
-            className={`${style.tag1} ${selectedTags.has(6) ? style.selected : ''}`}
-            onClick={() => handleTagClick(6)}
-          >
-            {tags[6].name}
-          </CardTag>
-        )}
-        {tags[7] && (
-          <CardTag 
-            variant={tags[7].color} 
-            className={`${style.tag2} ${selectedTags.has(7) ? style.selected : ''}`}
-            onClick={() => handleTagClick(7)}
-          >
-            {tags[7].name}
-          </CardTag>
-        )}
-        {tags[8] && (
-          <CardTag 
-            variant={tags[8].color} 
-            className={`${style.tag3} ${selectedTags.has(8) ? style.selected : ''}`}
-            onClick={() => handleTagClick(8)}
-          >
-            {tags[8].name}
-          </CardTag>
-        )}
-        {tags[9] && (
-          <CardTag 
-            variant={tags[9].color} 
-            className={`${style.tag1} ${selectedTags.has(9) ? style.selected : ''}`}
-            onClick={() => handleTagClick(9)}
-          >
-            {tags[9].name}
-          </CardTag>
-        )}
-        {tags[10] && (
-          <CardTag 
-            variant={tags[10].color} 
-            className={`${style.tag2} ${selectedTags.has(10) ? style.selected : ''}`}
-            onClick={() => handleTagClick(10)}
-          >
-            {tags[10].name}
-          </CardTag>
-        )}
-        {tags[11] && (
-          <CardTag 
-            variant={tags[11].color} 
-            className={`${style.tag3} ${selectedTags.has(11) ? style.selected : ''}`}
-            onClick={() => handleTagClick(11)}
-          >
-            {tags[11].name}
-          </CardTag>
-        )}
-      {aiRecommendedTags && aiRecommendedTags.length > 0 && aiRecommendedTags.some(tag => tag.name) && (
-        <div className={style.aiRecommendedSection}>
-          <div className={style.aiRecommendedLabel}>AIおすすめ</div>
-          <div className={style.aiRecommendedTags}>
-            {aiRecommendedTags.map((tag, index) => (
-              <CardTag
-                key={`ai-recommended-${index}`}
-                variant={tag.color}
-                className={style.aiTag}
-              >
-                {tag.name}
-              </CardTag>
-            ))}
-          </div>
-        </div>
-      )}
-      </CardContent>
+        ))}
+      </div>
+    </div>
+  )}
+  </CardContent>
       <CardFooter className={style.footer}>
         <Button 
           onClick={onClick} 
