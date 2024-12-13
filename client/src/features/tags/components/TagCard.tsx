@@ -49,7 +49,7 @@ export const TagCard = ({ type }: TagCardProps) => {
       }
       setError(null);
     } catch (error) {
-      setError("Failed to load tags");
+      setError(`Failed to load tags:${error}`);
     } finally {
       setIsLoading(false);
     }
@@ -86,11 +86,13 @@ export const TagCard = ({ type }: TagCardProps) => {
           try {
             const data = JSON.parse(event.data);
             if (Array.isArray(data.recommendedTagName) && Array.isArray(data.recommendedTagColor)) {
-              const recommendedTags: TagType[] = data.recommendedTagName.map((name, index) => ({
-                id: index,
-                name: name,
-                color: data.recommendedTagColor[index] as ButtonVariant,
-              }));
+              const recommendedTags: TagType[] = data.recommendedTagName.map(
+                (name: string, index: number) => ({
+                  id: index,
+                  name: name,
+                  color: data.recommendedTagColor[index] as ButtonVariant,
+                }),
+              );
               console.log("Received new recommended tags:", recommendedTags);
               setAiRecommendedTags(recommendedTags);
             }
