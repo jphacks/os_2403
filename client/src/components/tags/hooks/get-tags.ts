@@ -6,14 +6,15 @@ export const getTags = async (): Promise<TagType[]> => {
     const response = await apiClient.get("/tag");
     // APIレスポンスの型を明示的に定義
     type ApiTag = {
-      Name: string;
-      Color: string;
+      name: string;
+      color: string;
     };
 
     // タグの変換時に明示的な型付け
-    return response.data.tags.map((tag: ApiTag) => ({
-      name: tag.Name,
-      color: tag.Color.toLowerCase() as ButtonVariant,
+    console.log(response.data);
+    return response.data.map((tag: ApiTag) => ({
+      name: tag.name,
+      color: tag.color.toLowerCase() as ButtonVariant,
     }));
   } catch (error) {
     console.error("Failed to fetch tags:", error);
