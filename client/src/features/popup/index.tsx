@@ -50,9 +50,9 @@ export const Popup: React.FC<PopupProps> = ({ cards }) => {
             publisher={card.community_info.name}
             publisherIcon={card.community_info.img}
             datetime={card.date}
-            tags={card.tag.map(tag => ({
-              name: tag.toString(),
-            }))}
+            // tags={card.tag.map(tag => ({
+            //   name: tag.toString(),
+            // }))}
             imageUrl={card.img}
             liked={false}
             handleEventClose={() => handleEventClose(card.title)}
