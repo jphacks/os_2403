@@ -14,7 +14,7 @@ type EventCardProps = {
   publisher: string;
   publisherIcon: string;
   datetime: string;
-  tags: TagType[];
+  tags?: TagType[];
   imageUrl: string;
   liked?: boolean;
   handleEventClose: () => void;
@@ -37,7 +37,7 @@ export function EventCard({
       <CardHeader className={style.cardHeader}>
         <div className={style.tagWrapper}>
           <div className={style.tags}>
-            {tags.map(tag => (
+            {tags?.map(tag => (
               <CardTag key={tag.name} variant={"red"}>
                 {tag.name}
               </CardTag>

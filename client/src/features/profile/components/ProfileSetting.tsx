@@ -35,7 +35,7 @@ const profileFormShema = z.object({
   mem2: z.string().optional(),
   mem3: z.string(),
   img: z.string(),
-  email: z.string().min(1, { message: "入力必須な項目です。" }),
+  email: z.string().email({ message: "有効なメールアドレスを入力してください。" }).min(1, { message: "入力必須な項目です。" }),
   self: z.string(),
 });
 
@@ -75,7 +75,6 @@ export const ProfileSetting = (props: PrpfileSettingProps) => {
     const file = event.target.files?.[0];
     if (file) {
       const url = await uploadImageToS3(file);
-      console.log(url);
       if (url) {
         form.setValue("img", url);
         setPreview(url);
@@ -118,13 +117,13 @@ export const ProfileSetting = (props: PrpfileSettingProps) => {
         email: data?.email,
       };
       await apiClient.put(`/community/${currentCommunity?.uuid}`, community);
-      console.log(community);
 
       //扱うのはuuidとnameとimgのみ
       const setCommunity: Community = {
         uuid: currentCommunity?.uuid || "",
         name: data?.name,
         email: data?.email,
+        mem1: data?.mem1,
         img: data?.img,
       };
       setCurrentCommunity(setCommunity);
@@ -135,7 +134,6 @@ export const ProfileSetting = (props: PrpfileSettingProps) => {
   React.useEffect(() => {
     if (props.type === "user" && currentUser?.uuid) {
       apiClient.get(`/user/${currentUser?.uuid}`).then(res => {
-        console.log(res.data);
         form.reset({
           name: res.data.name,
           mem1: res.data.mem1,
@@ -149,7 +147,6 @@ export const ProfileSetting = (props: PrpfileSettingProps) => {
       });
     } else if (props.type === "community" && currentCommunity?.uuid) {
       apiClient.get(`/community/${currentCommunity?.uuid}`).then(res => {
-        // console.log(res.data);
         form.reset({
           name: res.data.name,
           mem1: res.data.mem1,

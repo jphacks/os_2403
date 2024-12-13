@@ -25,7 +25,6 @@ export default function Home() {
     if (isFirstRender.current) {
       GetCommunities().then(communities => {
         setCommunities(communities);
-        console.log(communities);
       });
 
       getTags().then(tags => {
@@ -84,7 +83,7 @@ export default function Home() {
         <div className="bg-[#FFFFFF1A] p-4 rounded-md mb-6">
           <h1 className="text-xl font-bold text-[#FFFFFFD0] mb-2">タグで絞り込む</h1>
           <div className="flex flex-wrap gap-2">
-            {tags.map(tag => (
+            {tags?.map(tag => (
               <CardTag key={tag.name} variant={tag.color} onClick={() => handleTagClick(tag)}>
                 {tag.name}
               </CardTag>

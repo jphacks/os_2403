@@ -7,7 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EventCard } from "@/features/event";
 import { getEvents } from "@/features/event/hooks/get-events";
 import { EventType } from "@/features/event/types/event";
-import { Menubar } from "@/features/menubar/components/menubar";
 import { Popup } from "@/features/popup";
 import { TagType } from "@/features/tags/types/tag";
 import { useEffect, useState } from "react";
@@ -61,14 +60,12 @@ const EventPage = () => {
   }, [invitedEvents]);
 
   const handleEventClose = () => {
-    console.log("Event closed");
   };
 
   return (
     <>
       {/*<AuthProvider>*/}
       {!loading && events.length > 0 && showPopup && <Popup cards={events} />}
-      <Menubar />
       <div className={styles.inviteCheck}>
         <InviteCheck size={500} />
       </div>
@@ -103,9 +100,6 @@ const EventPage = () => {
               publisher={event.community_info.name}
               publisherIcon={event.community_info.img}
               datetime={event.date}
-              tags={event.tag.map(tag => ({
-                name: tag.toString(),
-              }))}
               imageUrl={event.img}
               liked={false}
               handleEventClose={handleEventClose}

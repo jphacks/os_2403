@@ -98,7 +98,6 @@ const ScoutListPage = () => {
       setScoutList(prevList =>
         prevList?.map(item => {
           if (item.id === id) {
-            console.log("更新: ", { ...item, isLiked: !item.isLiked });
             return { ...item, isLiked: !item.isLiked };
           }
           return item;
@@ -121,8 +120,6 @@ const ScoutListPage = () => {
   const selectIsLiked = scoutList?.find(item => item.id === selectNumber)?.isLiked;
   React.useEffect(() => {
     // updateScoutStatusForReaded(props?.id);
-    console.log("refreshTrigger updated:", refreshTrigger);
-
     fetchScoutList();
   }, [refreshTrigger]);
 

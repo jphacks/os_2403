@@ -1,7 +1,7 @@
 "use client";
 
-import ChatRooms from "@/features/chat/components/chat-rooms";
-import ChatWindow from "@/features/chat/components/chat-window";
+import ChatRooms from "@/features/chat/components/ChatRooms";
+import ChatWindow from "@/features/chat/components/ChatWindow";
 import { Room } from "@/features/chat/types/types";
 import { useState } from "react";
 import "./Page.scss";

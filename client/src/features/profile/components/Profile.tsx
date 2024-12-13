@@ -96,7 +96,7 @@ type ProfileDetailCardProps = z.infer<typeof profileDetailCardPropsSchema>;
 export const ProfileDetailCard = (props: ProfileDetailCardProps) => {
   const [currentAccountType] = useAtom(accountTypeAtom);
 
-  const [detail, setDetail] = React.useState<User | Community>(null);
+  const [detail, setDetail] = React.useState<User | Community>();
   const uuid = props.uuid;
 
   React.useEffect(() => {
