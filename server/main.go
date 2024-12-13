@@ -126,7 +126,8 @@ func main() {
 	router.GET("/api/communities", communityHandler.GetAll)
 	router.PUT("/api/community/:uuid", communityHandler.Update)
 
-	router.GET("/api/tag", tagHandler.GetRandom)
+	router.GET("/api/tag/random", tagHandler.GetRandom)
+	router.GET("/api/tag", tagHandler.GetAll)
 	router.GET("/api/scoutlist/getcommunitydetail", scoutListHandler.GetCommunityDetailWithScoutList)
 	router.POST("/api/scoutlist/createscout", scoutListHandler.CreateScouts)
 	router.GET("/api/scoutlist/getdmlist/community", scoutListHandler.GetCommunityDetailByScoutList)
