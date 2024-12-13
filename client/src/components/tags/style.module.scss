@@ -63,6 +63,7 @@
 .red {
   color: theme.$red;
   border-color: theme.$red;
+  background-color: rgb(255 246 246);
 
   &:hover {
     color: theme.$red;
@@ -82,6 +83,7 @@
 .blue {
   color: rgb(30 64 175);
   border-color: rgb(30 64 175);
+  background-color: rgb(239 244 254);
 
   &:hover {
     color: rgb(30 64 175);
@@ -101,6 +103,7 @@
 .green {
   color: rgb(22 101 52);
   border-color: rgb(22 101 52);
+  background-color: rgb(240 252 241);
 
   &:hover {
     color: rgb(22 101 52);
@@ -120,10 +123,11 @@
 .gray {
   color: rgb(31 41 55);
   border-color: rgb(31 41 55);
+  background-color: rgb(253 254 255);
 
   &:hover {
     color: rgb(31 41 55);
-    background-color: rgb(243 244 246);
+    background-color: rgb(223 224 226);
   }
 
   &.active {

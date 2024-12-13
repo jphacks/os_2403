@@ -1,15 +1,17 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import styles from "../styles/user-card.module.scss";
+import { ButtonVariant } from "@/features/tags/types/tag";
+import CardTag from "@/components/tags/card-tag";
 
 export type UserCardType = {
   uuid: string;
   username: string;
   icon?: string;
-  tags?: number[];
+  tags?: string[];
+  tag_colors?: string[];
   detail?: string;
   university?: string;
   onClick: () => void;
@@ -21,6 +23,7 @@ export function UserCard({
   username,
   icon,
   tags,
+  tag_colors,
   detail,
   university,
   onClick,
@@ -38,10 +41,10 @@ export function UserCard({
   return (
     <Card className={cn(styles.profileCard, selected && styles.selected)} onClick={handleClick}>
       <div className={styles.tagsContainer}>
-        {tags?.map(tag => (
-          <Badge key={tag} className={styles.tag}>
+        {tags?.map((tag, index) => (
+          <CardTag key={tag} variant={tag_colors?.[index]?.toLowerCase() as ButtonVariant}>
             {tag}
-          </Badge>
+          </CardTag>
         ))}
       </div>
 
@@ -73,7 +76,7 @@ export function UserCard({
             aria-label="詳細を見る"
           >
             <span className={styles.arrow}>›</span>
-            もっと詳しく
+            <span className={styles.moreButtonText}>もっと詳しく</span>
           </button>
         </div>
       </div>

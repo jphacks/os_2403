@@ -1,0 +1,22 @@
+@use "@/styles/theme";
+
+
+.container {
+    background-color: theme.$theme-community-sub;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 0.5rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }

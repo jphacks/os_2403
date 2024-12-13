@@ -12,7 +12,7 @@ type UserListProps = {
 export function UserList({ users, handleCardClick, selectedUser }: UserListProps) {
   return (
     <ScrollArea className={style.userContainer}>
-      <div className="grid grid-cols-2 gap-2 p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-4">
         {users?.map(user => (
           <UserCard
             key={user.uuid}
@@ -20,6 +20,7 @@ export function UserList({ users, handleCardClick, selectedUser }: UserListProps
             username={user.name}
             icon={user.img}
             tags={user.tags}
+            tag_colors={user.tag_colors}
             detail={user.self}
             university={user.mem1}
             onClick={() => handleCardClick(user)}

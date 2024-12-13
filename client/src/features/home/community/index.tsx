@@ -13,6 +13,9 @@ import { MessageForm } from "./components/message-form";
 import { SearchBar } from "./components/search-bar";
 import { SelectedUserBadges } from "./components/selected-user-badges";
 import { UserList } from "./components/user-list";
+import { TagType } from "@/features/tags/types/tag";
+import { getTags } from "@/components/tags/hooks/get-tags";
+import { SearchTags } from "./components/search-tags";
 
 export function CommunityHome() {
   const [users, setUsers] = useState<User[]>([]);
@@ -23,19 +26,29 @@ export function CommunityHome() {
   const [sending, setSending] = useState(false);
   const router = useRouter();
   const isFirstRender = useRef(true);
+  const [tags, setTags] = useState<TagType[]>([]);
+  const [selectedTags, setSelectedTags] = useState<TagType[]>([]);
 
   useEffect(() => {
     if (isFirstRender.current) {
       GetUsers().then(users => {
         setUsers(users);
       });
+
+      getTags().then(tags => {
+        setTags(tags);
+      });
       isFirstRender.current = false;
     }
   }, []);
 
-  const filteredUsers = users?.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filteredUsers = users?.filter(user => {
+    const matchesName = user.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTags =
+      selectedTags.length === 0 ||
+      selectedTags.every((selectedTag) => user.tags?.includes(selectedTag.name));
+    return matchesName && matchesTags;
+  });
 
   const handleCardClick = (user: User) => {
     if (!selectedUser.includes(user)) {
@@ -54,6 +67,14 @@ export function CommunityHome() {
         ? selectedUser.filter(user => user.uuid !== uuid)
         : [...selectedUser, foundUser];
     });
+  };
+
+  const handleTagClick = (tag: TagType) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((selectedTag) => selectedTag !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
   };
 
   const handleSubmit = async () => {
@@ -86,9 +107,11 @@ export function CommunityHome() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold text-white mt-4 ml-10">ホーム</h1>
+      <h1 className="text-2xl font-bold text-white mt-5 ml-10 pt-3">ホーム</h1>
       <div className="container mx-auto p-4">
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+
+        <SearchTags tags={tags} handleTagClick={handleTagClick} />
 
         <UserList
           users={filteredUsers}
