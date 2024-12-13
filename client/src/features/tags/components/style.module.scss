@@ -5,6 +5,9 @@
   width: 1305px;
   height: 600px;
 }
+.cardContainer{
+  padding: 2rem 0;
+}
 
 .header {
   text-align: center;
@@ -15,8 +18,17 @@
   font-style: normal;
   font-weight: 600;
   font-size: 50px;
+  text-align: center;
 }
 
+.cardTitle{
+  text-align: center;
+  font-size: 2.5rem;
+}
+.CardDescription{
+  text-align: center;
+  font-size: 1.2rem;
+}
 .description {
   color: theme.$gray;
   font-family: 'Calibri';
@@ -36,7 +48,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  size:1.5rem;
+  size:rem;
   gap: 10px;
   padding: 20px;
 }
@@ -57,8 +69,9 @@
 
 .aiRecommendedSection {
   width: 60%;
-  margin-top: 20px;
-  padding: 15px;
+  margin-top: 0.5rem;
+  margin:auto;
+  padding: 0.8rem;
   background: linear-gradient(90deg, #5BC7F9 0%, #FF6FEC 50%, #FF537B 100%);
   border-radius: 8px;
 }
@@ -67,22 +80,24 @@
   font-family: 'MOBO';
   font-size: 24px;
   color: white;
-  margin-bottom: 10px;
-  text-align: center;
+  margin-bottom: 0.25rem;
+  padding:0.24rem;
 }
 
 .aiRecommendedTags {
   display: flex;
-  gap: 10px;
+  gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .aiTag {
+  height:4rem;
   font-style: normal;
   font-weight: 400;
-  font-size: 39px;
-  line-height: 48px;
+  font-size: 2rem;
+  line-height: 2rem;
+
 }
 
 .selected {

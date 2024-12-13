@@ -188,10 +188,10 @@ export const TagCard = ({ type }: TagCardProps) => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <Card>
+    <Card className={style.cardContainer}>
       <CardHeader>
-        <CardTitle>タグを探してみよう！</CardTitle>
-        <CardDescription>
+        <CardTitle className={style.cardTitle}>タグを探してみよう！</CardTitle>
+        <CardDescription className={style.CardDescription}>
           気になるタグを3個以上選んでみよう！
         </CardDescription>
       </CardHeader>

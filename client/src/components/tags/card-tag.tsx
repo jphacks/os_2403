@@ -30,7 +30,7 @@ function formatContent(children: React.ReactNode): React.ReactNode {
   }
 
   const contentLength = getContentLength(children);
-  if (contentLength > 8) {
+  if (contentLength > 12) {
     return `${Array.from(children).slice(0, 8).join("")}...`;
   }
   return children;
