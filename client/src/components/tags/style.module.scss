@@ -63,79 +63,119 @@
 .red {
   color: theme.$red;
   border-color: theme.$red;
-  background-color: rgb(255 246 246);
+  background-color: mix(theme.$red, theme.$white, 15%);
 
   &:hover {
     color: theme.$red;
-    background-color: rgb(254 226 226);
+    background-color: mix(theme.$red, theme.$white, 5%);
   }
 
   &.active {
-    color: rgb(255 255 255);
+    color: theme.$white;
     background-color: theme.$red;
 
     &:hover {
-      background-color: rgb(127 29 29);
+      background-color: lighten(theme.$red, 10%);
     }
   }
 }
 
 .blue {
-  color: rgb(30 64 175);
-  border-color: rgb(30 64 175);
-  background-color: rgb(239 244 254);
+  color: theme.$blue;
+  border-color: theme.$blue;
+  background-color: mix(theme.$blue, theme.$white, 15%);
 
   &:hover {
-    color: rgb(30 64 175);
-    background-color: rgb(219 234 254);
+    color: theme.$blue;
+    background-color: mix(theme.$blue, theme.$white, 5%);
   }
 
   &.active {
-    color: rgb(255 255 255);
-    background-color: rgb(30 64 175);
+    color: theme.$white;
+    background-color: theme.$blue;
 
     &:hover {
-      background-color: rgb(30 58 138);
+      background-color: lighten(theme.$blue, 10%);
+    }
+  }
+}
+.yellow{
+  color: theme.$yellow;
+  border-color: theme.$yellow;
+  background-color: mix(theme.$yellow, theme.$white, 15%);
+
+  &:hover {
+    color: theme.$yellow;
+    background-color: mix(theme.$yellow, theme.$white, 5%);
+  }
+
+  &.active {
+    color: theme.$white;
+    background-color: theme.$yellow;
+
+    &:hover {
+      background-color: lighten(theme.$yellow, 10%);
     }
   }
 }
 
 .green {
-  color: rgb(22 101 52);
-  border-color: rgb(22 101 52);
-  background-color: rgb(240 252 241);
+  color: theme.$green;
+  border-color: theme.$green;
+  background-color: mix(theme.$green, theme.$white, 15%);
 
   &:hover {
-    color: rgb(22 101 52);
-    background-color: rgb(220 252 231);
+    color: theme.$green;
+    background-color: mix(theme.$green, theme.$white, 5%);
   }
 
   &.active {
-    color: rgb(255 255 255);
-    background-color: rgb(22 101 52);
+    color: theme.$white;
+    background-color: theme.$green;
 
     &:hover {
-      background-color: rgb(20 83 45);
+      background-color: lighten(theme.$green, 10%);
     }
   }
 }
 
 .gray {
-  color: rgb(31 41 55);
-  border-color: rgb(31 41 55);
-  background-color: rgb(253 254 255);
+  color: theme.$gray;
+  border-color: theme.$black;
+  background-color: mix(theme.$gray, theme.$white, 15%);
 
   &:hover {
-    color: rgb(31 41 55);
-    background-color: rgb(223 224 226);
+    color: theme.$gray;
+    background-color: mix(theme.$gray, theme.$white, 5%);
   }
 
   &.active {
-    color: rgb(255 255 255);
-    background-color: rgb(31 41 55);
+    color: theme.$white;
+    background-color: theme.$gray;
 
     &:hover {
-      background-color: rgb(17 24 39);
+      background-color: lighten(theme.$gray, 10%);
+    }
+  }
+}
+
+
+.purple {
+  color: theme.$purple;
+  border-color: theme.$purple;
+  background-color: mix(theme.$purple, theme.$white, 15%);
+
+  &:hover {
+    color: theme.$purple;
+    background-color: mix(theme.$purple, theme.$white, 5%);
+  }
+
+  &.active {
+    color: theme.$white;
+    background-color: theme.$purple;
+
+    &:hover {
+      background-color: lighten(theme.$purple, 10%);
     }
   }
 }
