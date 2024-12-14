@@ -69,7 +69,7 @@ func (h *userHandler) FindByID(ctx *gin.Context) {
 		"mem1":       user.Mem1,
 		"mem2":       user.Mem2,
 		"mem3":       user.Mem3,
-		"tags":       user.Tags,
+		"tag_name":   user.Tags,
 		"tag_colors": user.TagColors,
 	}
 

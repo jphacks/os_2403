@@ -35,7 +35,10 @@ const profileFormShema = z.object({
   mem2: z.string().optional(),
   mem3: z.string(),
   img: z.string(),
-  email: z.string().email({ message: "有効なメールアドレスを入力してください。" }).min(1, { message: "入力必須な項目です。" }),
+  email: z
+    .string()
+    .email({ message: "有効なメールアドレスを入力してください。" })
+    .min(1, { message: "入力必須な項目です。" }),
   self: z.string(),
 });
 

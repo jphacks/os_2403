@@ -59,8 +59,7 @@ const EventPage = () => {
     };
   }, [invitedEvents]);
 
-  const handleEventClose = () => {
-  };
+  const handleEventClose = () => {};
 
   return (
     <>

@@ -124,7 +124,7 @@ export const TagCard = ({ type }: TagCardProps) => {
     };
   }, [type, currentUser?.uuid, currentCommunity?.uuid]);
 
-  const handleTagClick = (index: number, isAiTag: boolean = false) => {
+  const handleTagClick = (index: number, isAiTag = false) => {
     setSelectedTags(prev => {
       const newSet = new Set(prev);
       if (newSet.has(index)) {
@@ -169,9 +169,9 @@ export const TagCard = ({ type }: TagCardProps) => {
       return;
     }
 
-    const selectedTagNames = Array.from(selectedTags).map(index => (
-      tags[index]?.name || aiRecommendedTags[index]?.name
-    )).filter(Boolean);
+    const selectedTagNames = Array.from(selectedTags)
+      .map(index => tags[index]?.name || aiRecommendedTags[index]?.name)
+      .filter(Boolean);
 
     try {
       if (ws.current) {

@@ -99,7 +99,7 @@ export default function Home() {
                 uuid={community.uuid}
                 communityname={community.name}
                 icon={community.img}
-                tags={community.tags}
+                tags={community.tag_name}
                 tag_colors={community.tag_colors}
                 detail={community.self}
                 university={community.mem1}

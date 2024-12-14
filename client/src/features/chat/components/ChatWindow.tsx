@@ -54,7 +54,6 @@ export const TagCard = ({ type }: TagCardProps) => {
     let wsInstance: WebSocket | null = null;
     let isComponentMounted = true;
 
-
     const initializeWebSocket = async () => {
       const uuid = type === "user" ? currentUser?.uuid : currentCommunity?.uuid;
       if (!uuid) {
