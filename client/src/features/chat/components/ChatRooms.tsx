@@ -16,7 +16,7 @@ interface ChatRoomsProps {
 
 const ChatRooms: React.FC<ChatRoomsProps> = ({ onSelectRoom }) => {
   const [rooms, setRooms] = useState<Room[]>([]);
-  const [accountType, ] = useAtom(accountTypeAtom);
+  const [accountType] = useAtom(accountTypeAtom);
   const [currentUser] = useAtom(userAtom);
   const [currentCommunity] = useAtom(communityAtom);
 

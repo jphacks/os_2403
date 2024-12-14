@@ -1,3 +1,4 @@
+// TagCard.tsx
 "use client";
 import CardTag from "@/components/tags/card-tag";
 import { getTags } from "@/components/tags/hooks/get-tags";
@@ -10,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { userAtom } from "@/features/account/stores";
 import { communityAtom } from "@/features/account/stores";
 import { ButtonVariant, TagType } from "@/features/tags/types/tag";
@@ -18,6 +20,7 @@ import { apiClient } from "@/utils/client";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { SearchBar } from "./SearchBar";
 import style from "./style.module.scss";
 import { SearchBar } from "./SearchBar";
 
@@ -42,7 +45,6 @@ export const TagCard = ({ type }: TagCardProps) => {
 
   const filteredTags = tags.filter(tag =>
     tag.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   useEffect(() => {
     console.log("aiRecommendedTags updated:", aiRecommendedTags);
@@ -78,7 +80,7 @@ export const TagCard = ({ type }: TagCardProps) => {
       try {
         await fetchTags();
 
-        const wsUrl = `ws://localhost:8080/api/ws/tag_recommend/${uuid}`;
+        const wsUrl = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/ws/tag_recommend/${uuid}`;
         console.log("Initializing WebSocket connection to:", wsUrl);
         wsInstance = new WebSocket(wsUrl);
         ws.current = wsInstance;
@@ -159,6 +161,7 @@ export const TagCard = ({ type }: TagCardProps) => {
               return newRegularSet;
             });
           }
+
         }
         return newSet;
       });
@@ -191,11 +194,11 @@ export const TagCard = ({ type }: TagCardProps) => {
     if (type === "user") {
       uuid = currentUser?.uuid;
       endpoint = `/user/${uuid}`;
-      redirectPath = "/user/signin";
+      redirectPath = "/user/home";
     } else {
       uuid = currentCommunity?.uuid;
       endpoint = `/community/${uuid}`;
-      redirectPath = "/community/signin";
+      redirectPath = "/community/home";
     }
 
     if (!uuid) {
