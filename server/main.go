@@ -1,4 +1,3 @@
-// main.go
 package main
 
 import (
@@ -13,6 +12,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/jphacks/os_2403/infrastructure/dao"
 	"github.com/jphacks/os_2403/infrastructure/gpt"
+	"github.com/jphacks/os_2403/infrastructure/mail"
 	"github.com/jphacks/os_2403/infrastructure/middleware"
 	"github.com/jphacks/os_2403/interfaces/handlers"
 	"github.com/jphacks/os_2403/usecase"
@@ -73,11 +73,14 @@ func main() {
 	threadRepo := dao.NewThreadRepository(db)
 	tagClickHistoryRepo := dao.NewTagClickHistory(db)
 
+	// メール系
+	mailClient := mail.NewMailClient("tarakokko3233@gmail.com")
+
 	authUserUsecase := usecase.NewAuthUserUseCase(userRepo, sessionRepo, memberRepo, tagRepo)
 	authcommunityUsecase := usecase.NewAuthCommunityUseCase(communityRepo, sessionRepo, memberRepo, tagRepo)
 	userUsecase := usecase.NewUserUseCase(userRepo, memberRepo, tagRepo)
 	communityUsecase := usecase.NewCommunityUseCase(communityRepo, memberRepo, tagRepo)
-	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo, userRepo, communityRepo, messageRepo, tagRepo, memberRepo)
+	scoutListUsecase := usecase.NewScoutListUsecase(scoutListRepo, userRepo, communityRepo, messageRepo, tagRepo, memberRepo, mailClient)
 	eventUsecase := usecase.NewEventUsecase(eventRepo)
 	tagUsecase := usecase.NewTagUseCase(tagRepo)
 	tagClickHistoryUsecase := usecase.NewTagClickHistoryUsecase(tagClickHistoryRepo)
