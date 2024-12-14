@@ -4,9 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { GetUserByUUID } from "@/features/account/api";
+import { getCommunityByUUID, getUserByUUID } from "@/features/account/api";
 import { useSetBaseAccountType } from "@/features/account/hooks";
 import { accountTypeAtom, communityAtom, userAtom } from "@/features/account/stores";
+import { Community } from "@/features/account/types/community";
 import { User } from "@/features/account/types/user";
 import style from "@/features/profile/components/style.module.scss";
 import { apiClient } from "@/utils/client";
@@ -16,7 +17,6 @@ import react from "react";
 import React from "react";
 import z from "zod";
 
-//user
 const profileSchema = z.object({
   name: z.string(),
   mem1: z.string(),
@@ -86,15 +86,28 @@ export const ProfileCard = () => {
   );
 };
 
+const profileDetailCardPropsSchema = z.object({
+  uuid: z.string(),
+});
+
+type ProfileDetailCardProps = z.infer<typeof profileDetailCardPropsSchema>;
+
 //uuidを渡すように
-export const ProfileDetailCard = () => {
-  const [userDetail, setUserDetail] = React.useState<User | null>(null);
-  const uuid = "3b8eb4ec-f54c-463c-90dc-8e3cd9c1f2d3";
+export const ProfileDetailCard = (props: ProfileDetailCardProps) => {
+  const [currentAccountType] = useAtom(accountTypeAtom);
+
+  const [detail, setDetail] = React.useState<User | Community>();
+  const uuid = props.uuid;
 
   React.useEffect(() => {
     const fetch = async () => {
-      const data = await GetUserByUUID(uuid);
-      setUserDetail(data);
+      if (currentAccountType === "user") {
+        const data = await getCommunityByUUID(uuid);
+        setDetail(data);
+      } else {
+        const data = await getUserByUUID(uuid);
+        setDetail(data);
+      }
     };
     fetch();
   }, [uuid]);
@@ -104,16 +117,16 @@ export const ProfileDetailCard = () => {
       <Card className={style.profile_detail_card}>
         <div className={style.profile_detail_tags}>タグず</div>
         <div className={style.profile_property_container}>
-          <h1 className={style.profile_detail_name}>{userDetail?.name || "田中角栄"}</h1>
+          <h1 className={style.profile_detail_name}>{detail?.name || "田中角栄"}</h1>
           <Avatar className={style.profile_detail_avatar_card}>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <p className={style.profile_detail_mem1}>{userDetail?.mem1 || "立命館大学"}</p>
+          <p className={style.profile_detail_mem1}>{detail?.mem1 || "立命館大学"}</p>
         </div>
         <div className={style.profile_detail_self_container}>
           <ScrollArea className={style.profile_detail_self} type="scroll">
-            {userDetail?.self ||
+            {detail?.self ||
               `
       上手くいって欲しい……そんなのは当たり前のごとく思ってますけれども、やっぱりこの界隈で簡単に許されることでは無い
       単純にスパンが短すぎて、この前ボロ泣きした私や大勢のファン、ホロメンたちが浮かばれない気がしてさ

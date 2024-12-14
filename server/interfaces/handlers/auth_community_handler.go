@@ -1,15 +1,18 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/sessions"
 	"github.com/jphacks/os_2403/usecase"
-	"net/http"
 )
 
 type communityHandler struct {
 	authUsecase     usecase.IAuthCommunityUsecase
 	sessionsUsecase usecase.IAuthCommunityUsecase
+	tagUsecase      usecase.ITagUsecase
+	threadUsecase   usecase.IThreadUsecase
 	store           *sessions.CookieStore
 }
 
@@ -23,10 +26,12 @@ type (
 	LoginCommunityRequest  = usecase.InputCommunitySignIn
 )
 
-func NewAuthCommunityHandler(authUsecase usecase.IAuthCommunityUsecase, store *sessions.CookieStore) IAuthCommunityHandler {
+func NewAuthCommunityHandler(authUsecase *usecase.IAuthCommunityUsecase, store *sessions.CookieStore, tagusecase *usecase.ITagUsecase, threadUsecase *usecase.IThreadUsecase) IAuthCommunityHandler {
 	return &communityHandler{
-		authUsecase: authUsecase,
-		store:       store,
+		authUsecase:   *authUsecase,
+		store:         store,
+		tagUsecase:    *tagusecase,
+		threadUsecase: *threadUsecase,
 	}
 }
 
@@ -67,7 +72,18 @@ func (h *communityHandler) SignUp(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "sign in successful"})
+	tags, err := h.tagUsecase.GetAll(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	// スレッド作成の関数呼び出し
+	_, err = h.threadUsecase.CreateThread(ctx, uuid.String(), tags)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "sign up successful", "uuid": uuid})
 }
 
 func (h *communityHandler) SignIn(ctx *gin.Context) {
@@ -92,7 +108,7 @@ func (h *communityHandler) SignIn(ctx *gin.Context) {
 	}
 
 	session.Values["user_id"] = uuid // ユーザーIDを保存
-	session.Values["account_type"] = "user"
+	session.Values["account_type"] = "community"
 	// セッションの設定を調整
 	session.Options = &sessions.Options{
 		Path:     "/",

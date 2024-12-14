@@ -2,16 +2,19 @@ package handlers
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"github.com/jphacks/os_2403/usecase"
-	"net/http"
 )
 
 type authUserHandler struct {
 	authUsecase     usecase.IAuthUsecase
 	sessionsUsecase usecase.IAuthUsecase
+	tagUsecase      usecase.ITagUsecase
+	threadUsecase   usecase.IThreadUsecase
 	store           *sessions.CookieStore
 }
 
@@ -27,10 +30,12 @@ type (
 	SignInRequest = usecase.InputSignIn
 )
 
-func NewAuthUserHandler(authUsecase usecase.IAuthUsecase, store *sessions.CookieStore) IAuthHandler {
+func NewAuthUserHandler(authUsecase *usecase.IAuthUsecase, store *sessions.CookieStore, tagUsecase *usecase.ITagUsecase, threadUsecase *usecase.IThreadUsecase) IAuthHandler {
 	return &authUserHandler{
-		authUsecase: authUsecase,
-		store:       store,
+		authUsecase:   *authUsecase,
+		store:         store,
+		tagUsecase:    *tagUsecase,
+		threadUsecase: *threadUsecase,
 	}
 }
 
@@ -71,7 +76,18 @@ func (h *authUserHandler) SignUp(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"message": "sign in successful"})
+	tags, err := h.tagUsecase.GetAll(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	// スレッド作成の関数呼び出し
+	_, err = h.threadUsecase.CreateThread(ctx, uuid.String(), tags)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{"message": "sign in successful", "uuid": uuid})
 }
 
 func (h *authUserHandler) SignIn(ctx *gin.Context) {
@@ -156,7 +172,7 @@ func (h *authUserHandler) CheckSession(c *gin.Context) {
 
 	// ユーザー情報をレスポンスとして返す
 	response := map[string]interface{}{
-		"user_id":      session.Values["user_id"],
+		"uuid":         session.Values["user_id"],
 		"account_type": session.Values["account_type"],
 		"status":       "authenticated",
 	}

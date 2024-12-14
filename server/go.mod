@@ -10,6 +10,7 @@ require (
 	github.com/gorilla/websocket v1.5.3
 	github.com/joho/godotenv v1.5.1
 	github.com/rollbar/rollbar-go v1.4.5
+	github.com/sashabaranov/go-openai v1.36.0
 	golang.org/x/crypto v0.27.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gorm.io/driver/mysql v1.5.7

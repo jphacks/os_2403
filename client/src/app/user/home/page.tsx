@@ -1,117 +1,116 @@
 "use client";
 
-import InviteCheck from "@/../public/invite-check";
-import LikeSearch from "@/../public/like-search";
+import CardTag from "@/components/tags/card-tag";
 import { getTags } from "@/components/tags/hooks/get-tags";
-import TagButton from "@/components/tags/tag-button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { EventCard } from "@/features/event";
-import { getEvents } from "@/features/event/hooks/get-events";
-import { EventType } from "@/features/event/types/event";
-import { Popup } from "@/features/popup";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Community } from "@/features/account/types/community";
+import { CommunityCard } from "@/features/home/user/components/CommunityCard";
+import { GetCommunities } from "@/features/home/user/hooks/gets-communities";
 import { TagType } from "@/features/tags/types/tag";
-import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import InviteCheck from "../../../../public/invite-check";
 import styles from "./style.module.scss";
 
-const EventPage = () => {
+export default function Home() {
+  const [communities, setCommunities] = useState<Community[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCommunity, setSelectedCommunity] = useState<Community[]>([]);
   const [tags, setTags] = useState<TagType[]>([]);
-  const [events, setEvents] = useState<EventType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [selectedTags, setSelectedTags] = useState<TagType[]>([]);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
-    let mounted = true;
-    const fetchTags = async () => {
-      try {
-        const response = await getTags();
-        if (mounted) {
-          setTags(response);
-        }
-      } catch (error) {
-        console.error("Failed to fetch tags:", error);
-      }
-    };
+    if (isFirstRender.current) {
+      GetCommunities().then(communities => {
+        setCommunities(communities);
+      });
 
-    const fetchEvents = async () => {
-      try {
-        const fetchedEvents = await getEvents();
-        if (mounted) {
-          setEvents(fetchedEvents);
-          if (fetchedEvents.length > 0) {
-            setShowPopup(true);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to fetch events:", error);
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    };
-    fetchTags();
-    fetchEvents();
-    return () => {
-      mounted = false;
-    };
+      getTags().then(tags => {
+        setTags(tags);
+      });
+      isFirstRender.current = false;
+    }
   }, []);
 
-  const handleEventClose = () => {
-    console.log("Event closed");
+  const handleTagClick = (tag: TagType) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter(selectedTag => selectedTag !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+
+  const filteredCommunities = communities?.filter(community => {
+    const matchesName = community.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTags =
+      selectedTags.length === 0 ||
+      selectedTags.every(selectedTag => community.tags?.includes(selectedTag.name));
+    return matchesName && matchesTags;
+  });
+
+  const handleCardClick = (community: Community) => {
+    if (!selectedCommunity.includes(community)) {
+      setSelectedCommunity([...selectedCommunity, community]);
+    } else {
+      setSelectedCommunity(selectedCommunity.filter(selected => selected !== community));
+    }
   };
 
   return (
     <>
-
-      {/*<AuthProvider>*/}
-      {!loading && events.length > 0 && showPopup && <Popup cards={events} />}
       <div className={styles.inviteCheck}>
         <InviteCheck size={500} />
       </div>
-      <div className={styles.header}>
-        <div className={styles.titleWrapper}>
-          <LikeSearch size={100} />
-        </div>
-
-        <div className={styles.tagWrapper}>
-          {tags?.length > 0 ? (
-            <div className={styles.tagsContainer}>
-              {tags.map(tag => (
-                <TagButton key={tag.name} variant="red">
-                  {tag.name}
-                </TagButton>
-              ))}
-            </div>
-          ) : (
-            <Skeleton className="w-full h-[40px] rounded-lg" />
-          )}
-        </div>
-      </div>
-
-      <div className={styles.cardWrapper}>
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          events.map((event, index) => (
-            <EventCard
-              key={`${event.community_uuid}-${index}`}
-              title={event.title}
-              publisher={event.community_info.name}
-              publisherIcon={event.community_info.img}
-              datetime={event.date}
-              tags={event.tag.map(tag => ({
-                name: tag.toString(),
-              }))}
-              imageUrl={event.img}
-              liked={false}
-              handleEventClose={handleEventClose}
+      <h1 className="text-2xl font-bold text-[#FFFFFFD0] mt-20 ml-10">コミュニティー一覧</h1>
+      <div className="container mx-auto p-4">
+        <div className="flex justify-center mb-6">
+          <div className="w-full max-w-md relative">
+            <Input
+              type="text"
+              placeholder="コミュニティー名で検索..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full pr-10"
             />
-          ))
-        )}
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              <Search size={20} />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-[#FFFFFF1A] p-4 rounded-md mb-6">
+          <h1 className="text-xl font-bold text-[#FFFFFFD0] mb-2">タグで絞り込む</h1>
+          <div className="flex flex-wrap gap-2">
+            {tags?.map(tag => (
+              <CardTag key={tag.name} variant={tag.color} onClick={() => handleTagClick(tag)}>
+                {tag.name}
+              </CardTag>
+            ))}
+          </div>
+        </div>
+
+        <ScrollArea className={styles.communityContainer}>
+          <div className="grid grid-cols-2 gap-2 p-4">
+            {filteredCommunities?.map(community => (
+              <CommunityCard
+                key={community.name}
+                uuid={community.uuid}
+                communityname={community.name}
+                icon={community.img}
+                tags={community.tags}
+                tag_colors={community.tag_colors}
+                detail={community.self}
+                university={community.mem1}
+                onClick={() => {
+                  handleCardClick(community);
+                }}
+              />
+            ))}
+          </div>
+        </ScrollArea>
       </div>
-      {/*</AuthProvider>*/}
     </>
   );
-};
-
-export default EventPage;
+}

@@ -27,7 +27,7 @@ import { useAtom } from "jotai/index";
 import { CircleChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import react from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -46,37 +46,30 @@ const LoginFormSchema = z.object({
 type LoginForm = z.infer<typeof LoginFormSchema>;
 
 export const SignInDialog = (props: LoginCardProps) => {
-  const [currentUser, setCurrentUser] = useAtom(userAtom);
-  const [currentCommunity, setCurrentCommunity] = useAtom(communityAtom);
-  const [_currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
+  const [, setCurrentUser] = useAtom(userAtom);
+  const [, setCurrentCommunity] = useAtom(communityAtom);
+  const [, setCurrentAccountType] = useAtom(accountTypeAtom);
   const router = useRouter();
 
-  react.useEffect(() => {
-    console.log("currentUser updated:", currentUser);
-    console.log("currentCommunity updated:", currentCommunity);
-  }, [currentUser, currentCommunity]);
+  const get_base_url = `/${props.type}`;
+  const signup_url = `/${props.type}/signup`;
+  const signin_url = `/${props.type}/signin`;
 
-  let title = "";
-  let alternative = "";
-  let get_base_url = "";
-  let signin_url = "";
-  let signup_url = "";
-  let link = "";
-  if (props.type === "user") {
-    title = "ユーザーログイン";
-    alternative = "イベント・サークル運営者の方はこちら";
-    get_base_url = "/user";
-    signin_url = "/user/signin";
-    signup_url = "/user/signup";
-    link = "/community/signin";
-  } else if (props.type === "community") {
-    title = "イベント・サークル運営者ログイン";
-    alternative = "ユーザーの方はこちら";
-    get_base_url = "/community";
-    signin_url = "/community/signin";
-    signup_url = "/community/signup";
-    link = "/user/signin";
-  }
+  const otherType = props.type === "user" ? "community" : "user";
+  const link = `/${otherType}/signin`;
+
+  const config = {
+    user: {
+      title: "ユーザーログイン",
+      alternative: "イベント・サークル運営者の方はこちら",
+    },
+    community: {
+      title: "イベント・サークル運営者ログイン",
+      alternative: "ユーザーの方はこちら",
+    },
+  };
+
+  const { title, alternative } = config[props.type] || {};
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(LoginFormSchema),
@@ -93,9 +86,9 @@ export const SignInDialog = (props: LoginCardProps) => {
 
       if (props.type === "user") {
         setCurrentAccountType("user");
+
         const uuid = signInResponse.data.uuid;
         const response = await apiClient.get(`${get_base_url}/${uuid}`);
-        console.log(response);
         const user: User = {
           uuid: response.data.uuid,
           name: response.data.name,
@@ -107,12 +100,13 @@ export const SignInDialog = (props: LoginCardProps) => {
       } else if (props.type === "community") {
         setCurrentAccountType("community");
         const uuid = signInResponse.data.uuid;
+
         const response = await apiClient.get(`${get_base_url}/${uuid}`);
-        console.log(response);
         const community: Community = {
           uuid: response.data.uuid,
           name: response.data.name,
           email: response.data.email,
+          mem1: response.data.mem1,
           img: response.data.img,
         };
         setCurrentCommunity(community);
@@ -122,12 +116,19 @@ export const SignInDialog = (props: LoginCardProps) => {
       toast("サインインしました。");
     } catch (err) {
       console.error(err);
+      setTimeout(() => {
+        toast.error("サインインに失敗しました");
+      }, 10);
     }
   };
 
   const onClick = () => {
     router.push(signup_url);
   };
+
+  React.useEffect(() => {
+    setCurrentAccountType("not");
+  }, []);
 
   return (
     <Card className={style.card}>

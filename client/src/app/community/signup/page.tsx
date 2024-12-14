@@ -1,4 +1,4 @@
-import { SignUpDialog } from "@/features/signup/components/signup";
+import { SignUpDialog } from "@/features/signup/components/Signup";
 // import style from "./style.module.scss";
 
 const SignupPage = () => {

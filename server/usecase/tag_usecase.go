@@ -22,6 +22,7 @@ type InputTagUpdate struct {
 
 type ITagUsecase interface {
 	GetRandom(ctx context.Context) ([]*models.Tag, error)
+	GetAll(ctx context.Context) ([]*models.Tag, error)
 }
 
 type tagUsecase struct {
@@ -37,6 +38,15 @@ func NewTagUseCase(tagRepo repositories.ITagRepository) ITagUsecase {
 func (u *tagUsecase) GetRandom(ctx context.Context) ([]*models.Tag, error) {
 
 	tags, err := u.tagRepo.GetRandomTags(ctx, 16)
+	if err != nil {
+		return nil, err
+	}
+
+	return tags, nil
+}
+
+func (u *tagUsecase) GetAll(ctx context.Context) ([]*models.Tag, error) {
+	tags, err := u.tagRepo.GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}

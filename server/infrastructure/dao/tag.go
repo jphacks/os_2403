@@ -43,9 +43,25 @@ func (r *tagRepository) GetRandomTags(ctx context.Context, limit int) ([]*models
 	return tags, nil
 }
 
+func (r *tagRepository) GetAll(ctx context.Context) ([]*models.Tag, error) {
+	var tags []*models.Tag
+	if err := r.db.WithContext(ctx).Find(&tags).Error; err != nil {
+		return nil, err
+	}
+	return tags, nil
+}
+
 func (r *tagRepository) FindTagByID(ctx context.Context, tagID int) (*models.Tag, error) {
 	var tag models.Tag
 	if err := r.db.WithContext(ctx).First(&tag, tagID).Error; err != nil {
+		return nil, err
+	}
+	return &tag, nil
+}
+
+func (r *tagRepository) FindTagByName(ctx context.Context, tagName string) (*models.Tag, error) {
+	var tag models.Tag
+	if err := r.db.WithContext(ctx).Where("name = ?", tagName).First(&tag).Error; err != nil {
 		return nil, err
 	}
 	return &tag, nil

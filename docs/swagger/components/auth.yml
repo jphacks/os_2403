@@ -14,3 +14,29 @@ Signin:
   required:
     - email
     - password
+
+Session:
+  type: object
+  properties:
+    uuid:
+      type: string
+      format: uuid
+      description: アカウントのuuid
+      example: "hoge"
+    account_type:
+      type: string
+      format: string
+      description: アカウントタイプ
+      example: "user"
+    status:
+      type: string
+      format: string
+      description: 承認済みかのステータス
+      example: "authenticated"
+  required:
+    - uuid
+    - account_type
+    - status
+
+
+

@@ -7,9 +7,11 @@ export const CommunitySchema = z.object({
   password: z.string().optional(),
   img: z.string().optional(),
   self: z.string().optional(),
-  mem1: z.string().optional(),
+  mem1: z.string(),
   mem2: z.string().optional(),
   mem3: z.string().optional(),
+  tags: z.string().array().optional(),
+  tag_colors: z.string().array().optional(),
 });
 
 export type Community = z.infer<typeof CommunitySchema>;

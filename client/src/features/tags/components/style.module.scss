@@ -6,9 +6,12 @@
   height: 600px;
 }
 
+.cardContainer {
+  padding: 2rem 0;
+}
+
 .header {
   text-align: center;
-
 }
 
 .title {
@@ -16,6 +19,17 @@
   font-style: normal;
   font-weight: 600;
   font-size: 50px;
+  text-align: center;
+}
+
+.cardTitle {
+  text-align: center;
+  font-size: 2.5rem;
+}
+
+.CardDescription {
+  text-align: center;
+  font-size: 1.2rem;
 }
 
 .description {
@@ -33,36 +47,13 @@
   align-items: center;
 }
 
-.tag1 {
-  width: 206px;
-  height: 72px;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 39px;
-  line-height: 48px;
-  margin-top: 10px;
-  margin-right: 10px;
-}
-
-.tag2 {
-  width: 412px;
-  height: 72px;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 39px;
-  margin-top: 10px;
-  margin-right: 10px;
-}
-
-.tag3 {
-  width: 309px;
-  height: 72px;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 39px;
-  line-height: 48px;
-  margin-top: 10px;
-  margin-right: 10px;
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  size: rem;
+  gap: 10px;
+  padding: 20px;
 }
 
 .footer {
@@ -77,4 +68,40 @@
   font-weight: 400;
   font-size: 22px;
   line-height: 100%;
+}
+
+.aiRecommendedSection {
+  width: 60%;
+  margin: auto;
+  padding: 0.8rem;
+  background: linear-gradient(90deg, #5BC7F9 0%, #FF6FEC 50%, #FF537B 100%);
+  border-radius: 8px;
+}
+
+.aiRecommendedLabel {
+  font-family: 'MOBO';
+  font-size: 24px;
+  color: white;
+  margin-bottom: 0.25rem;
+  padding: 0.24rem;
+}
+
+.aiRecommendedTags {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.aiTag {
+  height: 4rem;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 2rem;
+  line-height: 2rem;
+
+}
+
+.selected {
+  background-color: rgba(theme.$gray, 0.1);
 }

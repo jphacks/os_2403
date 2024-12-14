@@ -11,14 +11,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { accountTypeAtom, communityAtom } from "@/features/account/stores";
+import { userAtom } from "@/features/account/stores";
+import { Community } from "@/features/account/types/community";
+import { User } from "@/features/account/types/user";
 import { apiClient } from "@/utils/client";
+import { useAtom } from "jotai";
 import { CircleChevronRight } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import style from "./style.module.scss";
-import { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
 
 type SignUpProps = {
   type: "user" | "community";
@@ -29,8 +36,7 @@ const SignupFormSchema = z.object({
   mem1: z.string().min(1, { message: "入力必須な項目です。" }),
   mem2: z.string(),
   mem3: z.string(),
-  img: z.string(),
-  email: z.string().min(1, { message: "入力必須な項目です。" }),
+  email: z.string().email({ message: "有効なメールアドレスを入力してください。" }).min(1, { message: "入力必須な項目です。" }),
   password: z.string().min(1, { message: "入力必須な項目です。" }),
   self: z.string(),
 });
@@ -40,25 +46,29 @@ type SignupForm = z.infer<typeof SignupFormSchema>;
 export const SignUpDialog = (props: SignUpProps) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [, setCurrentUser] = useAtom(userAtom);
+  const [, setCurrentCommunity] = useAtom(communityAtom);
+  const [_currentAccountType, setCurrentAccountType] = useAtom(accountTypeAtom);
 
-  let name = "";
-  let introduction = "";
-  let api_url = "";
-  let go_url = "";
-  if (props.type === "user") {
-    name = "ニックネーム";
-    introduction = "自己紹介";
-    api_url = "/user/signup";
-    go_url = "/user/signup/tags";
-  } else if (props.type === "community") {
-    name = "団体名";
-    introduction = "団体紹介";
-    api_url = "/community/signup";
-    go_url = "/community/signin";
-  }
+  const get_base_url = `/${props.type}`;
+  const api_url = `/${props.type}/signup`;
+  const go_url = `/${props.type}/signup/tags`;
+
+  const config = {
+    user: {
+      name: "ニックネーム",
+      introduction: "自己紹介",
+    },
+    community: {
+      name: "団体名",
+      introduction: "団体紹介",
+    },
+  };
+
+  const { name, introduction } = config[props.type] || {};
 
   const form = useForm<SignupForm>({
-    // resolver: zodResolver(SignupFormSchema),
+    resolver: zodResolver(SignupFormSchema),
     defaultValues: {
       name: "",
       mem1: "",
@@ -70,12 +80,41 @@ export const SignUpDialog = (props: SignUpProps) => {
     },
   });
 
-  const onSubmit = async (signupData: SignupForm) => {
+  const onSubmit = async (loginData: SignupForm) => {
     try {
-      await apiClient.post(api_url, signupData);
+      const signUpResponse = await apiClient.post(api_url, loginData);
+
+      if (props.type === "user") {
+        setCurrentAccountType("user");
+        const uuid = signUpResponse.data.uuid;
+        const response = await apiClient.get(`${get_base_url}/${uuid}`);
+        const user: User = {
+          uuid: response.data.uuid,
+          name: response.data.name,
+          email: response.data.email,
+          img: response.data.img,
+        };
+        setCurrentUser(user);
+      } else if (props.type === "community") {
+        setCurrentAccountType("community");
+        const uuid = signUpResponse.data.uuid;
+        const response = await apiClient.get(`${get_base_url}/${uuid}`);
+        const community: Community = {
+          uuid: response.data.uuid,
+          name: response.data.name,
+          email: response.data.email,
+          mem1: response.data.mem1,
+          img: response.data.img,
+        };
+        setCurrentCommunity(community);
+      }
+      toast("サインインしました。");
       router.push(go_url);
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    } catch (err) {
+      console.error("Sign up error:", err);
+      setTimeout(() => {
+        toast.error("サインアップに失敗しました");
+      }, 10);
     }
   };
 
@@ -177,7 +216,7 @@ export const SignUpDialog = (props: SignUpProps) => {
                       <Input
                         placeholder="パスワード"
                         {...field}
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? "text" : "password"}
                         className={`${style.input} pr-12`}
                       />
                     </FormControl>

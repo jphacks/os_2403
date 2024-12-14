@@ -1,5 +1,5 @@
 import { User } from "@/features/account/types/user";
-import { apiClient } from "@/utils/client"; // axios clientをインポート
+import { apiClient } from "@/utils/client";
 
 export const GetUsers = async (): Promise<User[]> => {
   try {

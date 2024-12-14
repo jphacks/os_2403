@@ -16,12 +16,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className="min-h-screen">
-        <BackGroundColor>
-          <Menubar />
-          <main className="flex-grow">{children}</main>
-          <Toaster />
-        </BackGroundColor>
+      <body className="min-h-screen overflow-hidden">
+        <div className="overflow-auto h-screen">
+          <BackGroundColor>
+            <Menubar />
+            <main className="flex-grow">{children}</main>
+            <Toaster richColors />
+          </BackGroundColor>
+        </div>
       </body>
     </html>
   );

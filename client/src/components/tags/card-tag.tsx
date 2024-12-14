@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import styles from "./style.module.scss";
 
-type ButtonVariant = "red" | "blue" | "green" | "gray";
+type ButtonVariant = "red" | "blue" | "green" | "gray" | "purple" | "yellow" | "pink" | "orange";
 
 interface CardTagProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -30,7 +30,7 @@ function formatContent(children: React.ReactNode): React.ReactNode {
   }
 
   const contentLength = getContentLength(children);
-  if (contentLength > 8) {
+  if (contentLength > 12) {
     return `${Array.from(children).slice(0, 8).join("")}...`;
   }
   return children;

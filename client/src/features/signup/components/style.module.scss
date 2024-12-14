@@ -1,4 +1,4 @@
-@use "../../../styles/theme";
+@use "@/styles/theme";
 
 .mobo {
   font-family: MOBO;
@@ -8,11 +8,14 @@
 .card {
   font-family: Calibri;
   display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
   width: 60%;
-  margin: 4rem auto;
   box-shadow: 0 0 8px theme.$black;
-  background-color:theme.$background;
-  padding: 2rem;
+
+  background-color: theme.$background;
 
   .label {
     color: #878383;

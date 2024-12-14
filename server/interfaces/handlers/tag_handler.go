@@ -12,6 +12,7 @@ type tagHandler struct {
 
 type ITagHandler interface {
 	GetRandom(ctx *gin.Context)
+	GetAll(ctx *gin.Context)
 }
 
 type (
@@ -33,4 +34,24 @@ func (h *tagHandler) GetRandom(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "get tag random done", "tags": tags})
+}
+
+func (h *tagHandler) GetAll(ctx *gin.Context) {
+	tags, err := h.tagUsecase.GetAll(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+
+	var res []gin.H
+	for _, tag := range tags {
+		res = append(res, gin.H{
+			"name":  tag.Name,
+			"color": tag.Color,
+		})
+	}
+
+	ctx.JSON(http.StatusOK, res)
+
 }

@@ -12,3 +12,5 @@ func NewTag(name string) *Tag {
 		Color: "red", // デフォルト値
 	}
 }
+
+type Tags []Tag
