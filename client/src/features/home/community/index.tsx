@@ -46,7 +46,7 @@ export function CommunityHome() {
     const matchesName = user.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesTags =
       selectedTags.length === 0 ||
-      selectedTags.every(selectedTag => user.tags?.includes(selectedTag.name));
+      selectedTags.every(selectedTag => user.tag_name?.includes(selectedTag.name));
     return matchesName && matchesTags;
   });
 

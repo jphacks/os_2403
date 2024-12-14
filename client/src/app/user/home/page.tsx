@@ -46,7 +46,7 @@ export default function Home() {
     const matchesName = community.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesTags =
       selectedTags.length === 0 ||
-      selectedTags.every(selectedTag => community.tags?.includes(selectedTag.name));
+      selectedTags.every(selectedTag => community.tag_name?.includes(selectedTag.name));
     return matchesName && matchesTags;
   });
 
