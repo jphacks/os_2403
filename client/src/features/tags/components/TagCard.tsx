@@ -152,11 +152,11 @@ export const TagCard = ({ type }: TagCardProps) => {
     if (type === "user") {
       uuid = currentUser?.uuid;
       endpoint = `/user/${uuid}`;
-      redirectPath = "/user/signin";
+      redirectPath = "/user/home";
     } else {
       uuid = currentCommunity?.uuid;
       endpoint = `/community/${uuid}`;
-      redirectPath = "/community/signin";
+      redirectPath = "/community/home";
     }
 
     if (!uuid) {
