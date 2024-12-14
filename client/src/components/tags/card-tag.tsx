@@ -20,7 +20,7 @@ function getContentLength(content: React.ReactNode): number {
 
 function getSizeClass(length: number): string {
   if (length <= 3) return styles.cardSmall;
-  if (length <= 5) return styles.cardMedium;
+  if (length <= 6) return styles.cardMedium;
   return styles.cardLarge;
 }
 

@@ -1,4 +1,3 @@
-// TagCard.tsx
 "use client";
 import CardTag from "@/components/tags/card-tag";
 import { getTags } from "@/components/tags/hooks/get-tags";
@@ -31,12 +30,15 @@ export const TagCard = ({ type }: TagCardProps) => {
   const ws = useRef<WebSocket | null>(null);
   const [tags, setTags] = useState<TagType[]>([]);
   const [aiRecommendedTags, setAiRecommendedTags] = useState<TagType[]>([]);
-  const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
+  const [selectedRegularTags, setSelectedRegularTags] = useState<Set<number>>(new Set());
+  const [selectedAiTags, setSelectedAiTags] = useState<Set<number>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentUser] = useAtom(userAtom);
   const [currentCommunity] = useAtom(communityAtom);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const totalSelectedTags = new Set([...selectedRegularTags, ...selectedAiTags]);
 
   const filteredTags = tags.filter(tag =>
     tag.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -133,23 +135,52 @@ export const TagCard = ({ type }: TagCardProps) => {
   }, [type, currentUser?.uuid, currentCommunity?.uuid]);
 
   const handleTagClick = (index: number, isAiTag: boolean = false) => {
-    setSelectedTags(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(index)) {
-        newSet.delete(index);
-      } else {
-        newSet.add(index);
+    if (isAiTag) {
+      const aiTag = aiRecommendedTags[index];
+      const regularTagIndex = tags.findIndex(tag => tag.name === aiTag.name);
 
-        if (ws.current?.readyState === WebSocket.OPEN) {
-          const tagName = isAiTag ? aiRecommendedTags[index].name : tags[index].name;
-          const message = {
-            tag: tagName,
-          };
-          ws.current.send(JSON.stringify(message));
+      setSelectedAiTags(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(index)) {
+          newSet.delete(index);
+          if (regularTagIndex !== -1) {
+            setSelectedRegularTags(prevRegular => {
+              const newRegularSet = new Set(prevRegular);
+              newRegularSet.delete(regularTagIndex);
+              return newRegularSet;
+            });
+          }
+        } else {
+          newSet.add(index);
+          if (regularTagIndex !== -1) {
+            setSelectedRegularTags(prevRegular => {
+              const newRegularSet = new Set(prevRegular);
+              newRegularSet.add(regularTagIndex);
+              return newRegularSet;
+            });
+          }
         }
-      }
-      return newSet;
-    });
+        return newSet;
+      });
+    } else {
+      setSelectedRegularTags(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(index)) {
+          newSet.delete(index);
+        } else {
+          newSet.add(index);
+        }
+        return newSet;
+      });
+    }
+
+    if (ws.current?.readyState === WebSocket.OPEN) {
+      const tagName = isAiTag ? aiRecommendedTags[index].name : tags[index].name;
+      const message = {
+        tag: tagName,
+      };
+      ws.current.send(JSON.stringify(message));
+    }
   };
 
   const onClick = async () => {
@@ -172,14 +203,15 @@ export const TagCard = ({ type }: TagCardProps) => {
       return;
     }
 
-    if (selectedTags.size < 1) {
+    if (totalSelectedTags.size < 1) {
       alert("1つ以上のタグを選択してください");
       return;
     }
 
-    const selectedTagNames = Array.from(selectedTags).map(index => (
-      tags[index]?.name || aiRecommendedTags[index]?.name
-    )).filter(Boolean);
+    const selectedTagNames = [
+      ...Array.from(selectedRegularTags).map(index => tags[index]?.name),
+      ...Array.from(selectedAiTags).map(index => aiRecommendedTags[index]?.name)
+    ].filter(Boolean);
 
     try {
       if (ws.current) {
@@ -212,13 +244,13 @@ export const TagCard = ({ type }: TagCardProps) => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
         />
-        <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+        <ScrollArea className="w-full h-[120px] whitespace-nowrap rounded-md border">
           <div className={style.tagContainer}>
             {filteredTags.map((tag, index) => (
               <CardTag
                 key={index}
                 variant={tag.color}
-                className={`${selectedTags.has(index) ? style.selected : ""}`}
+                className={`${selectedRegularTags.has(index) ? style.selected : ""}`}
                 onClick={() => handleTagClick(index)}
               >
                 {tag.name}
@@ -238,7 +270,7 @@ export const TagCard = ({ type }: TagCardProps) => {
                   <CardTag
                     key={`ai-recommended-${index}`}
                     variant={tag.color}
-                    className={`${selectedTags.has(index) ? style.selected : ""} ${style.aiTag}`}
+                    className={`${selectedAiTags.has(index) ? style.selected : ""} ${style.aiTag}`}
                     onClick={() => handleTagClick(index, true)}
                   >
                     {tag.name}
@@ -249,10 +281,10 @@ export const TagCard = ({ type }: TagCardProps) => {
           )}
       </CardContent>
       <CardFooter className={style.footer}>
-        <Button onClick={onClick} className={style.button} disabled={selectedTags.size < 1}>
+        <Button onClick={onClick} className={style.button} disabled={totalSelectedTags.size < 1}>
           これが気に入った！
         </Button>
       </CardFooter>
     </Card>
   );
-}
+};
