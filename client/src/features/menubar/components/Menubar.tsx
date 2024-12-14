@@ -34,7 +34,7 @@ export const Menubar = () => {
   const profileURI = `${baseAccountURI}/profile`;
   const settingURI = `${profileURI}/setting`;
   const homeURI = `${baseAccountURI}/home`;
-  const tagregisterURI = `${baseAccountURI}/tag`; //要修正
+  const tagregisterURI = `${baseAccountURI}/signup/tags`; //要修正
   let accountName = "";
   let accountIcon = "https://github.com/shadcn.png";
 
