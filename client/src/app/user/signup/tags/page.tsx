@@ -2,7 +2,7 @@ import { TagCard } from "@/features/tags/components/TagCard";
 import style from "./style.module.scss";
 
 const RegisterTags = () => {
-  const mockData = {
+  const _mockData = {
     message: "sign in successful",
     tags: [
       {

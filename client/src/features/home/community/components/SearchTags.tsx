@@ -1,7 +1,7 @@
 import CardTag from "@/components/tags/card-tag";
-import { TagType } from "@/features/tags/types/tag";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { TagType } from "@/features/tags/types/tag";
 import { useState } from "react";
 import style from "../styles/search-tags.module.scss";
 
@@ -14,7 +14,7 @@ export function SearchTags({ tags, handleTagClick }: SearchTagsProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredTags = tags?.filter(tag =>
-    tag.name.toLowerCase().includes(searchQuery.toLowerCase())
+    tag.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -24,7 +24,7 @@ export function SearchTags({ tags, handleTagClick }: SearchTagsProps) {
         type="text"
         placeholder="タグ名で検索..."
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={e => setSearchQuery(e.target.value)}
         className="mb-4"
       />
       <ScrollArea className="w-full whitespace-nowrap rounded-md border gap-1">

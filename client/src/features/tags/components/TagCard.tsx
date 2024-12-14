@@ -15,14 +15,12 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { userAtom } from "@/features/account/stores";
 import { communityAtom } from "@/features/account/stores";
 import { ButtonVariant, TagType } from "@/features/tags/types/tag";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { apiClient } from "@/utils/client";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { SearchBar } from "./SearchBar";
 import style from "./style.module.scss";
-import { SearchBar } from "./SearchBar";
 
 type TagCardProps = {
   type: "user" | "community";
@@ -44,7 +42,8 @@ export const TagCard = ({ type }: TagCardProps) => {
   const totalSelectedTags = new Set([...selectedRegularTags, ...selectedAiTags]);
 
   const filteredTags = tags.filter(tag =>
-    tag.name.toLowerCase().includes(searchQuery.toLowerCase())
+    tag.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   useEffect(() => {
     console.log("aiRecommendedTags updated:", aiRecommendedTags);
@@ -136,7 +135,7 @@ export const TagCard = ({ type }: TagCardProps) => {
     };
   }, [type, currentUser?.uuid, currentCommunity?.uuid]);
 
-  const handleTagClick = (index: number, isAiTag: boolean = false) => {
+  const handleTagClick = (index: number, isAiTag = false) => {
     if (isAiTag) {
       const aiTag = aiRecommendedTags[index];
       const regularTagIndex = tags.findIndex(tag => tag.name === aiTag.name);
@@ -161,7 +160,6 @@ export const TagCard = ({ type }: TagCardProps) => {
               return newRegularSet;
             });
           }
-
         }
         return newSet;
       });
@@ -213,7 +211,7 @@ export const TagCard = ({ type }: TagCardProps) => {
 
     const selectedTagNames = [
       ...Array.from(selectedRegularTags).map(index => tags[index]?.name),
-      ...Array.from(selectedAiTags).map(index => aiRecommendedTags[index]?.name)
+      ...Array.from(selectedAiTags).map(index => aiRecommendedTags[index]?.name),
     ].filter(Boolean);
 
     try {
@@ -243,10 +241,7 @@ export const TagCard = ({ type }: TagCardProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <SearchBar 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         <ScrollArea className="w-full h-[120px] whitespace-nowrap rounded-md border">
           <div className={style.tagContainer}>
             {filteredTags.map((tag, index) => (

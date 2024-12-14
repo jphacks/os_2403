@@ -23,7 +23,7 @@ export default function Home() {
   const [searchQueryTag, setSearchQueryTag] = useState("");
 
   const filteredTags = tags?.filter(tag =>
-    tag.name.toLowerCase().includes(searchQueryTag.toLowerCase())
+    tag.name.toLowerCase().includes(searchQueryTag.toLowerCase()),
   );
 
   useEffect(() => {
@@ -91,7 +91,7 @@ export default function Home() {
             type="text"
             placeholder="タグ名で検索..."
             value={searchQueryTag}
-            onChange={(e) => setSearchQueryTag(e.target.value)}
+            onChange={e => setSearchQueryTag(e.target.value)}
             className="mb-4"
           />
           <ScrollArea className="w-full whitespace-nowrap rounded-md gap-1">
