@@ -11,16 +11,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { userAtom } from "@/features/account/stores";
 import { communityAtom } from "@/features/account/stores";
 import { ButtonVariant, TagType } from "@/features/tags/types/tag";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { apiClient } from "@/utils/client";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import style from "./style.module.scss";
 import { SearchBar } from "./SearchBar";
+import style from "./style.module.scss";
 
 type TagCardProps = {
   type: "user" | "community";
@@ -39,7 +39,7 @@ export const TagCard = ({ type }: TagCardProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredTags = tags.filter(tag =>
-    tag.name.toLowerCase().includes(searchQuery.toLowerCase())
+    tag.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export const TagCard = ({ type }: TagCardProps) => {
       try {
         await fetchTags();
 
-        const wsUrl = `ws://localhost:8080/api/ws/tag_recommend/${uuid}`;
+        const wsUrl = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/ws/tag_recommend/${uuid}`;
         console.log("Initializing WebSocket connection to:", wsUrl);
         wsInstance = new WebSocket(wsUrl);
         ws.current = wsInstance;
@@ -208,10 +208,7 @@ export const TagCard = ({ type }: TagCardProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <SearchBar 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         <ScrollArea className="w-full whitespace-nowrap rounded-md border">
           <div className={style.tagContainer}>
             {filteredTags.map((tag, index) => (
@@ -255,4 +252,4 @@ export const TagCard = ({ type }: TagCardProps) => {
       </CardFooter>
     </Card>
   );
-}
+};
