@@ -117,22 +117,18 @@ export const ProfileDetailCard = (props: ProfileDetailCardProps) => {
       <Card className={style.profile_detail_card}>
         <div className={style.profile_detail_tags}>タグず</div>
         <div className={style.profile_property_container}>
-          <h1 className={style.profile_detail_name}>{detail?.name || "田中角栄"}</h1>
+          <h1 className={style.profile_detail_name}>{detail?.name || "データなし"}</h1>
           <Avatar className={style.profile_detail_avatar_card}>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <p className={style.profile_detail_mem1}>{detail?.mem1 || "立命館大学"}</p>
+          <p className={style.profile_detail_mem1}>{detail?.mem1 || "データなし"}</p>
         </div>
         <div className={style.profile_detail_self_container}>
           <ScrollArea className={style.profile_detail_self} type="scroll">
             {detail?.self ||
               `
-      上手くいって欲しい……そんなのは当たり前のごとく思ってますけれども、やっぱりこの界隈で簡単に許されることでは無い
-      単純にスパンが短すぎて、この前ボロ泣きした私や大勢のファン、ホロメンたちが浮かばれない気がしてさ
-      まぁさ、嬉しいんだけれども。
-      さすがに1,2年は空けて欲しかった気持ち
-      激重厄介ファンだからこそ、大好きだったからこそ容易には受け入れられない壁があるんや……
+    データなし
     `
                 .split("\n")
                 .map(line => (
