@@ -3,7 +3,7 @@
 import CardTag from "@/components/tags/card-tag";
 import { getTags } from "@/components/tags/hooks/get-tags";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Community } from "@/features/account/types/community";
 import { CommunityCard } from "@/features/home/user/components/CommunityCard";
 import { GetCommunities } from "@/features/home/user/hooks/gets-communities";
@@ -20,6 +20,11 @@ export default function Home() {
   const [tags, setTags] = useState<TagType[]>([]);
   const [selectedTags, setSelectedTags] = useState<TagType[]>([]);
   const isFirstRender = useRef(true);
+  const [searchQueryTag, setSearchQueryTag] = useState("");
+
+  const filteredTags = tags?.filter(tag =>
+    tag.name.toLowerCase().includes(searchQueryTag.toLowerCase())
+  );
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -82,13 +87,23 @@ export default function Home() {
 
         <div className="bg-[#FFFFFF1A] p-4 rounded-md mb-6">
           <h1 className="text-xl font-bold text-[#FFFFFFD0] mb-2">タグで絞り込む</h1>
-          <div className="flex flex-wrap gap-2">
-            {tags?.map(tag => (
-              <CardTag key={tag.name} variant={tag.color} onClick={() => handleTagClick(tag)}>
-                {tag.name}
-              </CardTag>
-            ))}
-          </div>
+          <Input
+            type="text"
+            placeholder="タグ名で検索..."
+            value={searchQueryTag}
+            onChange={(e) => setSearchQueryTag(e.target.value)}
+            className="mb-4"
+          />
+          <ScrollArea className="w-full whitespace-nowrap rounded-md gap-1">
+            <div className="flex w-max space-x-4 p-4">
+              {filteredTags?.map(tag => (
+                <CardTag key={tag.name} variant={tag.color} onClick={() => handleTagClick(tag)}>
+                  {tag.name}
+                </CardTag>
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         </div>
 
         <ScrollArea className={styles.communityContainer}>
