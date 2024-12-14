@@ -73,7 +73,7 @@
 .profile_card {
   width: 1000px;
   height: 500px;
-  margin: 0, 10rem;
+  margin: 0 10rem;
   position: relative;
   display: flex; //titleとselfを横並びにするのに使った
   border: 3px solid theme.$black;
@@ -95,8 +95,12 @@
   }
 
   .profile_word_container {
-    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 3rem;
   }
+
 
   .profile_title {
     border-bottom: 1px solid theme.$gray;
@@ -109,6 +113,7 @@
       font-style: normal;
       font-weight: 400;
       position: absolute;
+      //transform: translateX(-50%);
       left: 300px;
       color: #000000;
       font-size: 20px;
@@ -123,14 +128,34 @@
   font-weight: 600;
   color: black;
   font-size: 53px;
+  text-align: center;
 }
 
 .profile_self {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
-  width: 400px;
+  //width: 400px;
+  width: 30rem;
   border-bottom: 1px solid theme.$gray;
+  //margin: auto;
+}
+
+.profile_tag_container {
+  position: absolute;
+  bottom: 5rem;
+}
+
+.profile_tag_name {
+  font-family: MOBO;
+  font-weight: 600;
+  font-size: 30px;
+}
+
+.profile_tags {
+  display: flex;
+  padding: 0.5rem;
+  gap: 1rem;
 }
 
 //profile_detail_card
@@ -141,6 +166,7 @@
   border: solid theme.$black;
   overflow: hidden;
 }
+
 
 .profile_detail_tags {
   width: 90%;

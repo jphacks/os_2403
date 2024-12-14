@@ -1,7 +1,7 @@
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import React, { useState, useEffect, useRef } from "react";
 import { Message, Room, SendMessage } from "../types/types";
-import "./ChatWindow.scss";
+import "./chat-wind.module.scss";
 import { userAtom } from "@/features/account/stores";
 import { communityAtom } from "@/features/account/stores";
 import { accountTypeAtom } from "@/features/account/stores"; // axiosをインポート
@@ -37,7 +37,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room }) => {
       return;
     }
 
-    let account;
+    let account = "";
     if (accountType === "community") {
       account = currentCommunity?.uuid || "gg";
     } else if (accountType === "user") {

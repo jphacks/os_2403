@@ -16,6 +16,7 @@ import { userAtom } from "@/features/account/stores";
 import { Community } from "@/features/account/types/community";
 import { User } from "@/features/account/types/user";
 import { apiClient } from "@/utils/client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai";
 import { CircleChevronRight } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
@@ -24,7 +25,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import style from "./style.module.scss";
 
 type SignUpProps = {
@@ -36,7 +36,10 @@ const SignupFormSchema = z.object({
   mem1: z.string().min(1, { message: "入力必須な項目です。" }),
   mem2: z.string(),
   mem3: z.string(),
-  email: z.string().email({ message: "有効なメールアドレスを入力してください。" }).min(1, { message: "入力必須な項目です。" }),
+  email: z
+    .string()
+    .email({ message: "有効なメールアドレスを入力してください。" })
+    .min(1, { message: "入力必須な項目です。" }),
   password: z.string().min(1, { message: "入力必須な項目です。" }),
   self: z.string(),
 });

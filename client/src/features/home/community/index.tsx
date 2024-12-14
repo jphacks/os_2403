@@ -11,11 +11,11 @@ import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { UserList } from "./components/UserList";
 import { MessageForm } from "./components/MessageForm";
 import { SearchBar } from "./components/SearchBar";
 import { SearchTags } from "./components/SearchTags";
 import { SelectedUserBadges } from "./components/SelectedUserBadges";
+import { UserList } from "./components/UserList";
 
 export function CommunityHome() {
   const [users, setUsers] = useState<User[]>([]);
@@ -46,7 +46,7 @@ export function CommunityHome() {
     const matchesName = user.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesTags =
       selectedTags.length === 0 ||
-      selectedTags.every(selectedTag => user.tags?.includes(selectedTag.name));
+      selectedTags.every(selectedTag => user.tag_name?.includes(selectedTag.name));
     return matchesName && matchesTags;
   });
 

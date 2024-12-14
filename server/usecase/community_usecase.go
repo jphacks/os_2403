@@ -26,16 +26,17 @@ type InputCommunityFindByID struct {
 }
 
 type CommunityResponse struct {
-	UUID     uuid.UUID
-	Name     string
-	Email    string
-	Password []byte
-	Img      string
-	Self     string
-	Mem1     string
-	Mem2     string
-	Mem3     string
-	Tags     []string `json:"tag"`
+	UUID      uuid.UUID
+	Name      string
+	Email     string
+	Password  []byte
+	Img       string
+	Self      string
+	Mem1      string
+	Mem2      string
+	Mem3      string
+	TagNames  []string `json:"tag_name"`
+	TagColors []string `json:"tag_color"`
 }
 
 type GetAllCommunityResponse struct {
@@ -196,25 +197,28 @@ func (u *communityUsecase) FindByID(ctx context.Context, input InputCommunityFin
 
 	// Find tags by ID and collect their names
 	tagNames := make([]string, 0, len(community.Tags))
+	tagColors := make([]string, 0, len(community.Tags))
 	for _, tagID := range community.Tags {
 		tag, err := u.tagRepo.FindTagByID(ctx, tagID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to find tag by ID (%d): %w", tagID, err)
 		}
 		tagNames = append(tagNames, tag.Name)
+		tagColors = append(tagColors, tag.Color)
 	}
 
 	communityRes := &CommunityResponse{
-		UUID:     community.UUID,
-		Name:     community.Name,
-		Email:    community.Email,
-		Password: community.Password,
-		Img:      community.Img,
-		Self:     community.Self,
-		Mem1:     mem1.Name,
-		Mem2:     mem2.Name,
-		Mem3:     mem3.Name,
-		Tags:     tagNames,
+		UUID:      community.UUID,
+		Name:      community.Name,
+		Email:     community.Email,
+		Password:  community.Password,
+		Img:       community.Img,
+		Self:      community.Self,
+		Mem1:      mem1.Name,
+		Mem2:      mem2.Name,
+		Mem3:      mem3.Name,
+		TagNames:  tagNames,
+		TagColors: tagColors,
 	}
 	return communityRes, nil
 }
