@@ -2,12 +2,11 @@ package usecase
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"github.com/jphacks/os_2403/domain/models"
 	"github.com/jphacks/os_2403/domain/repositories"
-	"gopkg.in/gomail.v2"
-	"os"
+	"github.com/jphacks/os_2403/infrastructure/mail"
+	"log"
 )
 
 type IScoutListUsecase interface {
@@ -25,9 +24,10 @@ type scoutListUsecase struct {
 	memberRepo    repositories.IMemberRepository
 	communityRepo repositories.ICommunityRepository
 	messageRepo   repositories.MessageRepository
+	mailClient    mail.IMailClient
 }
 
-func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo repositories.IUserRepository, communityRepo repositories.ICommunityRepository, messageRepo repositories.MessageRepository, tagRepo repositories.ITagRepository, memberRepo repositories.IMemberRepository) IScoutListUsecase {
+func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo repositories.IUserRepository, communityRepo repositories.ICommunityRepository, messageRepo repositories.MessageRepository, tagRepo repositories.ITagRepository, memberRepo repositories.IMemberRepository, mailClient mail.IMailClient) IScoutListUsecase {
 	return &scoutListUsecase{
 		scoutListRepo: repo,
 		userRepo:      userRepo,
@@ -35,31 +35,45 @@ func NewScoutListUsecase(repo repositories.IScoutListRepository, userRepo reposi
 		messageRepo:   messageRepo,
 		tagRepo:       tagRepo,
 		memberRepo:    memberRepo,
+		mailClient:    mailClient,
 	}
 }
 
-func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.ScoutList, context string) error {
-	var user *models.User
-	var community *models.Community
+func (u *scoutListUsecase) Create(ctx context.Context, scoutDetailList *models.ScoutList, content string) error {
+	// トランザクション的な処理のために、データベース処理を先に行う
+	err := u.scoutListRepo.Create(ctx, scoutDetailList)
+	if err != nil {
+		return err
+	}
 
+	// ユーザー情報取得
 	user, err := u.userRepo.FindByID(ctx, scoutDetailList.User_UUID.String())
 	if err != nil {
 		return err
 	}
 
-	community, err = u.communityRepo.FindByID(ctx, scoutDetailList.Community_UUID.String())
+	// コミュニティ情報取得
+	community, err := u.communityRepo.FindByID(ctx, scoutDetailList.Community_UUID.String())
 	if err != nil {
 		return err
 	}
 
-	// メール送信
-	err = sendEmail(context, user, community)
-	if err != nil {
-		return err
-	}
-	return u.scoutListRepo.Create(ctx, scoutDetailList)
+	// 非同期でメール送信
+	go func() {
+		err := u.mailClient.SendEmail(content, user, community)
+		if err != nil {
+			// エラーログを記録
+			log.Printf("Failed to send email: %v", err)
+		}
+	}()
+
+	return nil
 }
 
+// アプリケーション終了時にクリーンアップするために
+func (u *scoutListUsecase) Cleanup() {
+	u.mailClient.Close()
+}
 func (u *scoutListUsecase) ChangeStatus(ctx context.Context, ID uint, status models.ScoutStatus) error {
 	scoutList, err := u.scoutListRepo.FindByID(ctx, ID)
 	if err != nil {
@@ -242,35 +256,4 @@ func (u *scoutListUsecase) GetWithUserDetail(ctx context.Context, communityUUID 
 	}
 
 	return responses, nil
-}
-
-func sendEmail(content string, user *models.User, community *models.Community) error {
-
-	m := gomail.NewMessage()
-
-	// 送信元
-	m.SetHeader("From", "tarakokko3233@gmail.com")
-
-	// 送信先
-	m.SetHeader("To", user.Email)
-
-	// 件名
-	m.SetHeader("Subject", "[hubme]コミュニティからのスカウト")
-
-	// メール本文にpublisherを追加
-	body := community.Name + "community.Email" + " このコミュニティに参加してみませんか？" + "\n" + "https://hubme.click" + "\n" + content
-	m.SetBody("text/plain", body)
-
-	// ダイヤラの設定
-	d := gomail.NewDialer("smtp.gmail.com", 587, "tarakokko3233@gmail.com", os.Getenv("GOOGLE_ACCOUNT_TOKEN"))
-
-	// GmailはTLS接続を要求
-	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
-
-	// メール送信
-	if err := d.DialAndSend(m); err != nil {
-		return err
-	}
-
-	return nil
 }
