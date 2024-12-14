@@ -7,7 +7,7 @@
 }
 
 .cardContainer {
-  padding: 2rem 0;
+  padding: 1rem 0;
 }
 
 .header {
@@ -40,6 +40,13 @@
   font-size: 20px;
 }
 
+.container {
+  background-color: theme.$theme-community-sub;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
 .content {
   display: flex;
   flex-wrap: wrap;
@@ -48,12 +55,15 @@
 }
 
 .tagContainer {
-  display: flex;
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  grid-auto-flow: column;
+  gap: 0.8rem;
+  padding: 1rem;
   flex-wrap: wrap;
-  justify-content: center;
-  size: rem;
-  gap: 10px;
-  padding: 20px;
+  min-height: 15rem;
+  overflow-y: hidden;
+  align-content: flex-start;
 }
 
 .footer {
@@ -72,7 +82,7 @@
 
 .aiRecommendedSection {
   width: 60%;
-  margin: auto;
+  margin: 20px auto;
   padding: 0.8rem;
   background: linear-gradient(90deg, #5BC7F9 0%, #FF6FEC 50%, #FF537B 100%);
   border-radius: 8px;
@@ -99,7 +109,6 @@
   font-weight: 400;
   font-size: 2rem;
   line-height: 2rem;
-
 }
 
 .selected {

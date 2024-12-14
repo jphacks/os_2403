@@ -54,6 +54,16 @@ User:
         format: string
         description: "所属3"
         example: ""
+      tag_name:
+        type: array
+        description: tagの名前
+        items:
+          type: string
+      tag_colors:
+        type: array
+        description: tagの色
+        items:
+          type: string
   required:
     - uuid
     - name

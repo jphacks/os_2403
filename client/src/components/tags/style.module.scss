@@ -33,7 +33,6 @@
 .card_tag {
   height: 4rem;
   overflow: hidden;
-  font-size: 30px;
   font-weight: 500;
   line-height: 1rem;
   text-overflow: ellipsis;
@@ -48,16 +47,19 @@
 .cardSmall {
   min-width: 5rem;
   padding: 0 2rem;
+  font-size: 28px;
 }
 
 .cardMedium {
   min-width: 7rem;
   padding: 0 2rem;
+  font-size: 25px;
 }
 
 .cardLarge {
   min-width: 9rem;
   padding: 0 2rem;
+  font-size: 20px;
 }
 
 .red {

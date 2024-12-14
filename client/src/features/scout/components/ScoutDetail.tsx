@@ -38,7 +38,7 @@ export const ScoutDetail = (props: ScoutDetailProps) => {
     const communityInfo: CommunityInfo = {
       name: communityData.name,
       mem1: communityData.mem1,
-      tags: communityData.tags,
+      tags: communityData.tag_name,
       icon: communityData.img,
       self: communityData.self,
     };
